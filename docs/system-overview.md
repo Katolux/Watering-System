@@ -89,27 +89,25 @@ Rules:
 ---
 
 ## Architecture Diagram (ASCII)
-
                  ┌───────────▼──────────┐
                  │   Weather API (Pi)   │
                  │  Open-Meteo Forecast │
-                 └──────────┬───────────┘
-                            │ JSON
-                ┌───────────▼─────────────┐
+                 └───────────┬──────────┘
+                             │ JSON
+                ┌────────────▼────────────┐
                 │   Weather Logic Layer   │
-                │  (wind, sun, rain, temp)│
-                └───────────┬─────────────┘
-                            │
-                ┌───────────▼─────────────┐
+                │ (wind, sun, rain, temp) │
+                └────────────┬────────────┘
+                             │
+                ┌────────────▼────────────┐
                 │  Irrigation Logic Layer │
-                │ (soil type + plant type)│
-                └───────────┬─────────────┘
-                            │
-        ┌───────────────────┼───────────────────┐
-        │                   │                   │
-        ▼                   ▼                   ▼
-  Sensors Layer       Actuator Layer       Safety Systems
- (moisture, temp)     (relay, pump)       (tank, cooldown)
+                │  (soil type + plant)    │
+                └────────────┬────────────┘
+                             │
+     ┌───────────────────────┼────────────────────────┐
+     ▼                       ▼                        ▼
+Sensors Layer        Actuator Layer             Safety Systems
+(moisture, temp)     (relay, pump)          (tank, cooldown, errors)
 
 ---
 ## Automated Processes Summary
