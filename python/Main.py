@@ -1,3 +1,5 @@
+```python
+
 from get_weather_new import refresh_weather
 #from historic_sensor import get_last_10_days_sensors 
 #from historic_weather import get_last_10_days_weather 
@@ -82,3 +84,5 @@ def historic_menu():
 
 # Run the app
 main_menu()
+
+```
