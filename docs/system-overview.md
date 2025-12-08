@@ -111,11 +111,6 @@ Rules:
   Sensors Layer       Actuator Layer       Safety Systems
  (moisture, temp)     (relay, pump)       (tank, cooldown)
 
-
-
-
-
-
 ---
 ## Automated Processes Summary
 
