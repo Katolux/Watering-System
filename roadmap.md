@@ -1,127 +1,78 @@
-Project Roadmap
+# Project Roadmap
 
-This roadmap outlines the planned development stages for the Automated Watering System.
-It follows a simple progression: get basic readings working → add logic → add weather → improve intelligence.
+This file outlines the planned development stages for the watering system.
 
-Phase 1 – Core System (IN PROGRESS)
+---
 
-Soil moisture sensor reading
+## Phase 1 – Core System (IN PROGRESS)
+- Basic moisture reading
+- DHT22 temperature & humidity
+- Manual watering controls
+- Pump activation via relay
+- Basic main.ino and sensors.ino
 
-DHT22 temperature and humidity
+---
 
-Manual pump activation using relay
+## Phase 2 – Smart Logic
+- Moisture thresholds
+- Temperature adjustments
+- Basic rain prediction
+- Safety delays
 
-Basic Arduino structure: main + sensors
+---
 
-First debugging output over Serial
-
-Status: In progress
-
-Phase 2 – Basic Irrigation Logic
-
-Moisture thresholds for watering
-
-Simple IF/ELSE decision-making
-
-Cooldown timers between cycles
-
-Safety cutoff for low tank level
-
-First working irrigation cycle
-
-Status: Planned
-
-Phase 3 – Weather Integration (Python + Arduino)
-
+## Phase 3 – Weather Integration
 Python (Raspberry Pi):
-
-Retrieve hourly and daily forecast using Open-Meteo
-
-Use temperature, humidity, rain probability, precipitation, cloud cover, sunshine duration, wind speed
-
-Process data using the get_weather.py script
-
-Save simplified JSON output for Arduino/ESP to read
+- Retrieve hourly and daily forecast from Open-Meteo
+- Extract temperature, humidity, rain probability, precipitation, cloud cover, sunshine duration, wind speed
+- Process data using get_weather.py
+- Provide simplified JSON output for Arduino/ESP
 
 Arduino / ESP:
+- Read simplified JSON forecast
+- Adjust irrigation logic based on weather
 
-Load simplified forecast data
+---
 
-Use weather to adjust watering logic
+## Phase 4 – Advanced Irrigation Logic
+Environmental factors:
+- Temperature (adjust watering on heat/cold)
+- Wind (evaporation)
+- Sunshine duration
+- Rain probability
 
-Status: Planned
+Soil factors:
+- Clay, loam, sand behavior
+- Retention and absorption speed
 
-Phase 4 – Smart Watering Logic (Advanced)
+Plant factors:
+- Water requirements per species
 
-Full intelligent watering including:
-
-Environmental Factors:
-
-Temperature effect (hot → more water, cold → less)
-
-Wind effect (windy → more evaporation → more water)
-
-Sunshine duration
-
-Rain probability + rainfall trend
-
-Soil Factors:
-
-Clay: slow absorption, high retention
-
-Sandy: fast absorption, low retention
-
-Loam: balanced behavior
-
-Plant Factors:
-
-High-demand (tomato, cucumber)
-
-Medium-demand (herbs, flowers)
-
-Low-demand (rosemary, lavender)
-
-Combined watering calculation:
+Combined formula:
 base_time × temperature_factor × wind_factor × soil_factor × plant_factor
 
-Status: Future
+---
 
-Phase 5 – Data Logging & Dashboard
+## Phase 5 – Data Logging and Dashboard
+- Log moisture and weather
+- Log watering events
+- Display live sensor data
+- Manual watering from dashboard
+- Adjustable thresholds
 
-Store moisture, weather, and watering events
+---
 
-Display live sensor data
+## Phase 6 – Deployment and Stabilisation
+- Waterproof housing
+- Cable routing
+- Multi-zone support
+- Field calibration
 
-Manual watering button via web interface
+---
 
-Adjust thresholds from dashboard
+## Phase 7 – Optional Features
+- Fertilizer injection
+- Light sensor
+- Soil nutrients
+- Greenhouse integration
 
-Status: Future
-
-Phase 6 – Final Deployment & Stabilisation
-
-Waterproof housing for electronics
-
-Cable routing and tubing optimization
-
-Multi-zone irrigation possibility
-
-Field calibration and adjustment
-
-Status: Later
-
-Phase 7 – Optional Add-Ons
-
-Fertilizer injector
-
-Greenhouse integration
-
-Light intensity sensor
-
-Soil nutrient monitoring
-
-Adaptive learning model (very future)
-
-Roadmap Philosophy
-
-Start simple → get it working → grow it into a smart, adaptive system.
