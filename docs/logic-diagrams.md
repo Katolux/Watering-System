@@ -1,4 +1,3 @@
-~~~ 
 Logic Diagrams  
 This document outlines the decision-making process of the watering system.
 
@@ -38,7 +37,7 @@ ELIF wind_speed >= mild_wind_limit:
 ELSE:
     evaporation_factor = LOW
 
-Wind increases evaporation → more watering.
+Wind increases evaporation → more watering.  
 No wind → soil holds moisture longer.
 
 ---
@@ -90,9 +89,73 @@ Final watering duration =
 Tank Protection Logic
 
 IF tank_level == LOW:
-    PUMP OFF
-    BLOCK irrigation
+    PUMP OFF  
+    BLOCK irrigation  
     ALERT user (future)
 
+---
+
+Sensor Reading Logic
+
+The system collects soil and air data automatically several times each day.
+
+START  
+    ↓  
+Attempt to read JSON from Arduino  
+    ↓  
+Connection OK?  
+    ├─ No → Log error  
+    │       Use last valid readings  
+    │       END  
+    ↓ Yes  
+Collect readings for 5 seconds  
+    ↓  
+Valid readings found?  
+    ├─ No → Retry once  
+    │       ↓  
+    │     Retry valid?  
+    │         ├─ No → Log error → END  
+    │         └─ Yes → Continue  
+    ↓ Yes  
+Compute averages (moisture, soil_temp, air_temp, humidity)  
+    ↓  
+Save record to database (SQLite)  
+    ↓  
+END
+
+---
+
+Weather Update Logic
+
+The weather forecast updates once per day automatically.
+
+START (daily)  
+    ↓  
+Request forecast from Open-Meteo API  
+    ↓  
+Success?  
+    ├─ Yes → Save data to SQLite → END  
+    ↓ No  
+Retry once  
+    ↓  
+Retry success?  
+    ├─ Yes → Save data → END  
+    └─ No → Log failure  
+           Use last valid forecast  
+           END
+
+---
+
+Manual Sensor Read Logic
+
+User selects "Read sensors now"  
+    ↓  
+Perform a single 5-second reading cycle  
+    ↓  
+Save to history + display measurements  
+    ↓  
+END
+
+---
+
 These diagrams will grow as the system evolves.
-~~~ 
