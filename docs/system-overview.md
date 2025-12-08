@@ -89,6 +89,7 @@ Rules:
 ---
 
 ## Architecture Diagram (ASCII)
+~~~
                  ┌───────────▼──────────┐
                  │   Weather API (Pi)   │
                  │  Open-Meteo Forecast │
@@ -108,7 +109,7 @@ Rules:
      ▼                       ▼                        ▼
 Sensors Layer        Actuator Layer             Safety Systems
 (moisture, temp)     (relay, pump)          (tank, cooldown, errors)
-
+~~~
 ---
 ## Automated Processes Summary
 
