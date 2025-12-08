@@ -1,1 +1,19 @@
 
+# Arduino build files
+*.hex
+*.elf
+*.eep
+*.o
+*.d
+*.bin
+*.ld
+
+# Mac / Windows junk
+.DS_Store
+Thumbs.db
+
+# VSCode settings
+.vscode/
+
+# Logs
+*.log
