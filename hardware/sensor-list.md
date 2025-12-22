@@ -1,52 +1,70 @@
-# Sensor List
+Sensor List
 
-This project uses several sensors to collect environmental data for automated irrigation control.  
-Below is the list of sensors included in the current version of the system.
+This document describes the sensors used by the automated irrigation system.
+Only sensors that are currently used or architecturally supported are listed here.
 
----
+🌱 Soil Moisture Sensors (Capacitive)
 
-## 🌱 Soil Moisture Sensor – Capacitive v2.0
-- **Type:** Analog capacitive moisture sensor  
-- **Purpose:** Detect soil moisture level to determine watering frequency  
-- **Advantages:**  
-  - More reliable than resistive sensors  
-  - Less prone to corrosion  
-- **Output:** 0–1023 analog value (Arduino ADC)
+Type: Analog capacitive soil moisture sensors
 
----
+Purpose:
 
-## 🌡️ Temperature & Humidity Sensor – DHT22
-- **Type:** Digital temperature & humidity  
-- **Purpose:**  
-  - Adjust watering logic based on heat  
-  - Protect plants during cold nights  
-- **Output:**  
-  - Temperature in °C  
-  - Humidity in %
+Measure soil moisture in the root zone
 
----
+Provide feedback for irrigation duration calculation
 
-## 💧 Water Level Sensor (Tank)
-Depending on final selection, the system may use:
-- **Float sensor** (simple ON/OFF water level detection)  
-or  
-- **HC-SR04 ultrasonic sensor** (measure tank height)
+Characteristics:
 
-**Purpose:** Avoid running the pump dry.
+Resistant to corrosion (no exposed electrodes)
 
----
+Suitable for long-term soil installation
 
-## ⚡ Relay Module (Pump / Valve Control)
-- **Type:** 1–4 channel relay module  
-- **Purpose:** Switch water pump or solenoid valve based on irrigation logic  
-- **Input:** 5V digital  
-- **Output:** 12V or 220V depending on configuration
+Usage:
 
----
+Multiple sensors can be installed across irrigation zones
 
-## 📌 Additional Planned Sensors (Future)
-- Light intensity sensor (LDR or BH1750)  
-- Air pressure sensor (BMP280)  
+Readings are averaged over a short time window
 
-The system is modular, and more sensors may be added as the project evolves.
+Output:
 
+Analog value (ADC), interpreted and calibrated in software
+
+Soil moisture sensors influence watering duration, not whether irrigation is allowed.
+
+💧 Optional Water Tank Level Sensor
+
+Type: Simple float switch (digital)
+
+Purpose:
+
+Detect low water level in supply tank
+
+Prevent irrigation when insufficient water is available
+
+Behavior:
+
+When a low level is detected:
+
+Irrigation is blocked
+
+Valves remain closed
+
+Event is logged
+
+No ultrasonic distance sensors are used.
+
+⚡ Actuation Interface (Not a Sensor)
+
+While not a sensor, the actuation interface is part of the physical I/O layer:
+
+Type: Relay module or MOSFET driver
+
+Purpose:
+
+Switch 12 V solenoid valves
+
+Control:
+
+Digital output from Arduino
+
+This interface executes commands calculated by the Raspberry Pi.
