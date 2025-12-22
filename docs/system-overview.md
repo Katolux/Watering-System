@@ -6,28 +6,28 @@ This document describes the high-level architecture of the automated watering sy
 
 ## Purpose
 
-The goal of this project is to automate irrigation in a 70 m² garden using real-time sensor data and weather forecasting.  
-The system helps reduce water waste, improve soil health, and protect plants from heat or drought stress.
+The goal of this project is to automate irrigation in a 70 m² garden using real-time sensor data and daily weather data.  
+The system helps reduce water waste, improve soil health, and protect plants from heat, wind, or drought stress.
 
 ---
 
 ## Core System Components
 
 1. Soil moisture monitoring (capacitive sensors)
-2. Temperature & humidity monitoring (DHT22)
+2. Optional environmental monitoring (future expansion)
 3. Optional water-tank level detection
-4. Pump or solenoid control via relay module
-5. Weather forecast integration (Open-Meteo API)
+4. Solenoid valve control via relay or MOSFET module
+5. Weather data integration (Open-Meteo API, daily aggregates)
 6. Smart irrigation logic that considers:
-   - Soil hydration
-   - Soil type (future)
-   - Plant type (future)
-   - Temperature & humidity
+   - Soil moisture
+   - Soil type
+   - Plant type
+   - Temperature
    - Wind
    - Rain probability and precipitation
-   - Sunshine duration
 7. Automated sensor collection (multiple times per day)
 8. Automatic recovery in case of sensor or API failure
+
 
 
 ---
@@ -40,39 +40,38 @@ The system has four major layers:
 Reads environmental data from the Arduino sensor hub:
 
 - Soil moisture  
-- Soil temperature  
-- Air temperature  
-- Air humidity  
-- Light level (optional, future)
+- (Optional) environmental sensors (future)
 
 Data is delivered to the Raspberry Pi in JSON format.  
 Failed readings never block watering—the system uses the last valid record.
 
 
-2..**Weather Layer**  
-Retrieves hourly and daily forecast data from Open-Meteo, including:
+
+2. **Weather Layer**  
+Retrieves daily aggregated weather data from Open-Meteo, including:
 
 - Rain probability  
-- Expected precipitation  
+- Precipitation  
 - Temperature  
-- Sunshine duration  
 - Wind speed  
-- Cloud cover
 
 Weather is refreshed automatically once per day.
 
 If the request fails:
 - The system retries once  
-- If it still fails, it uses the last valid forecast and logs the issue  
+- If it still fails, it uses the last valid forecast and logs the issue
+ 
 
 
 3. **Logic Layer**  
-   Makes decisions based on:
-   - Soil moisture thresholds
-   - Weather predictions
-   - Soil and plant profiles
-   - Wind-adjusted evaporation rate
-   - Heat or cold protection rules
+Calculates watering duration based on:
+- Soil moisture ranges
+- Weather-derived modifiers
+- Soil type coefficients
+- Plant type coefficients
+- Wind-adjusted evaporation rate
+- Heat and cold protection rules
+
 4. **Sensor Reliability Logic**  
 Sensor readings are advisory and never block irrigation.
 
@@ -84,7 +83,8 @@ Rules:
 
 
 5. **Actuator Layer**  
-   Controls irrigation cycles, pump run-times, and safety shutdowns.
+Controls irrigation cycles, valve run-times, and safety shutdowns.
+
 
 ---
 
@@ -97,7 +97,7 @@ Rules:
                              │ JSON
                 ┌────────────▼────────────┐
                 │   Weather Logic Layer   │
-                │ (wind, sun, rain, temp) │
+                │ (wind, rain, temp)      │
                 └────────────┬────────────┘
                              │
                 ┌────────────▼────────────┐
@@ -108,7 +108,7 @@ Rules:
      ┌───────────────────────┼────────────────────────┐
      ▼                       ▼                        ▼
 Sensors Layer        Actuator Layer             Safety Systems
-(moisture, temp)     (relay, pump)          (tank, cooldown, errors)
+(moisture, temp)     (relay, valves)          (tank, cooldown, errors)
 ~~~
 ---
 ## Automated Processes Summary
@@ -116,7 +116,7 @@ Sensors Layer        Actuator Layer             Safety Systems
 ### Daily processes
 - Weather API update  
 - Sensor reading cycles  
-- Daily average calculation  
+- Daily state calculation  
 - Automatic irrigation if needed  
 
 ### User-triggered processes
@@ -138,6 +138,6 @@ The watering system aims to behave like a good gardener:
 - It avoids watering before rain.
 - It reduces watering if soil holds moisture well.
 - It increases watering in heat or wind.
-- It updates decisions hourly based on forecast changes.
+- It updates decisions based on daily conditions and recent sensor data.
 
 This document will expand as more features are added.
