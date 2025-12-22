@@ -15,7 +15,7 @@ The project is intentionally simple and modular so anyone can replicate or adapt
 
 ---
 
-##🔧 Hardware
+## 🔧 Hardware
 
 System architecture:
 - Raspberry Pi (system coordinator and data hub)
