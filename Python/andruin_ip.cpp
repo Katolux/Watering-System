@@ -2,8 +2,8 @@
 
 //to check IP on Andruino Nano, as it can change with hard resets or similar
 
-const char* ssid = "Sunrise_2.4GHz_2FC64B";
-const char* password = "jQ9w1uxFm3u6";
+const char* ssid = "your wifi";
+const char* password = "your password";
 
 void setup() {
   Serial.begin(115200);
@@ -31,4 +31,5 @@ void setup() {
 
 void loop() {
   // nothing
+
 }
