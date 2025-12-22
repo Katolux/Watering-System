@@ -5,8 +5,8 @@
 // to Python, so pythons stores them in the DB. To upload to Andruino nano
 
 // -------- WIFI ----------
-const char* ssid = "Sunrise_2.4GHz_2FC64B";
-const char* password = "jQ9w1uxFm3u6";
+const char* ssid = "your wifi";
+const char* password = "your password";
 
 // -------- PYTHON SERVER ----------
 const char* serverURL = "http://192.168.1.31:5000/soil";
@@ -142,4 +142,5 @@ void goToSleepUntilNextRun(int seconds) {
 
   esp_sleep_enable_timer_wakeup((uint64_t)seconds * 1000000ULL);
   esp_deep_sleep_start();
+
 }
