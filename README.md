@@ -13,6 +13,27 @@ The goal is to reduce water waste, maintain consistent soil health, and eventual
 
 The project is intentionally simple and modular so anyone can replicate or adapt it for their own garden.
 
+## 🚧 Project Status
+
+This project is currently in the **build and integration phase**.
+
+### Implemented
+- Raspberry Pi as central controller and data hub
+- SQLite database schema and data storage
+- Sensor reading logic on Arduino
+- Base irrigation logic and coefficients
+- Weather data ingestion (Open-Meteo, daily aggregates)
+
+### In Progress
+- Integration of weather data into irrigation decisions
+- System-wide testing and calibration
+- Test code consolidation into a dedicated test/ directory
+
+### Planned
+- Web-based monitoring dashboard
+- Predictive watering models (ML)
+- Seasonal auto-calibration using historical data
+
 ---
 
 ## 🔧 Hardware
@@ -54,8 +75,6 @@ Other components:
 
 ## 🧠 Software Features
 
-🧠 Software Features
-
 - Soil moisture readings from hardware sensors
 - Weather-based modifiers (rain, wind, temperature)
 - Fixed base watering time per irrigation zone
@@ -74,7 +93,7 @@ Planned extensions:
 Note: Weather data acquisition is implemented; integration into irrigation decisions is actively under development.
 
 
-##🧪 Technologies Used
+## 🧪 Technologies Used
 
 Embedded:
 - Arduino C++ (Nano ESP32)
@@ -90,6 +109,8 @@ Data & logic:
 
 External data:
 - Open-Meteo API (daily aggregates only – planned)
+
+Note: A dedicated test/ directory will be added as test scripts are consolidated and cleaned during the integration phase.
 
 
 ---
