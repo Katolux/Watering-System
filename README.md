@@ -1,46 +1,60 @@
 # Watering System – Automated Irrigation for a 70 m² Garden
 
-An open-source watering system designed for my 70 m² home garden in Switzerland.  
+An open-source, hardware-first automated irrigation system for my ~70 m² home garden in Switzerland.  
 This project is part of my personal learning journey as I transition into the tech field, and also serves as a showcase of my logic, coding style, and problem-solving approach.
 
 ---
 
 ## 🌱 Project Overview
 
-This system monitors soil moisture, temperature, and weather forecasts to automatically optimise watering cycles.  
+This system monitors soil moisture and environmental conditions to control irrigation cycles.
+Weather-based optimisation and prediction are planned future steps.
 The goal is to reduce water waste, maintain consistent soil health, and eventually build a fully autonomous irrigation controller.
 
 The project is intentionally simple and modular so anyone can replicate or adapt it for their own garden.
 
 ---
 
-## 🔧 Hardware
+##🔧 Hardware
 
-**Microcontroller:** Arduino Uno R3  
-**Sensors:**
-- Capacitive Soil Moisture Sensor v2.0  
-- DHT22 (Temperature & Humidity)  
-- Water Level Sensor (Basic Float or Ultrasonic HC-SR04 — depending on final choice)  
-- Relay Module for pump/valve control  
+Controller:
+- Arduino Nano ESP32 (primary controller)
 
-**Other components:**  
-- 12 V water pump or solenoid valve  
-- 4/7 mm irrigation tubing (via Temu)  
-- Power supply and wiring  
-- Optional: protective enclosure for outdoor installation  
+Sensors:
+- Capacitive soil moisture sensors (analog, multi-zone)
+- Optional environmental sensor (temperature) – future expansion
+
+Actuation:
+- 12 V solenoid valves (drip irrigation)
+- Relay or MOSFET module for valve control
+
+Water system:
+- Drip irrigation (assumed throughout the project)
+- 1/2" main line with reducers to micro-tubing (4/7 mm) or drip tubing.
+
+Other components:
+- External 12 V power supply
+- Waterproof IP67 enclosure
+- Internal jumper wiring (Dupont / JST as appropriate)
 
 ---
 
 ## 🧠 Software Features
 
-- Reads real-time soil moisture and temperature  
-- Fetches weather data (rain probability, temperature forecast) from **Open-Meteo API**  
-- Smart watering logic:
-  - Skip irrigation if rain is forecast
-  - Delay watering if soil moisture is already above threshold
-  - Protect plants during heat spikes or cold nights
+🧠 Software Features
+
+- Reads soil moisture from hardware sensors
+- Fixed base watering time per zone
+- Conditional watering logic based on soil thresholds
+- Daily weather data ingestion (future step)
+- Data logging to a single SQLite database
+- Modular design for additional sensors and zones
+
+Future features (planned):
+- Weather-based modifiers (rain, wind, heat)
+- Predictive watering models (ML)
+- Remote monitoring dashboard
 - Error detection and redundancy checks  
-- Modular structure for additional sensors or expansions
 
 ---
 
@@ -58,10 +72,10 @@ The project is intentionally simple and modular so anyone can replicate or adapt
 
 ## 👨‍💻 About Me
 
-I’m Alfonso (“Katolux”), 36 years old.  
+I’m Alfonso (“Katolux”). 
 My background includes:
-- Gastronomy and professional cooking (15 years)  
-- Licensed boat captain/sjipper with global experience as delivery and charter skipper 
+- Gastronomy and professional cooking (+10 years).  
+- Licensed boat captain/skipper with global experience as delivery and charter skipper. 
 - Technical roles at Banco Santander España (handling ISO 20022 XML remittance files)  
 - Apple Genius & technical support  
 
