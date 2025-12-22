@@ -1,61 +1,85 @@
-# Weather Logic Test Cases
+## Weather & Irrigation Logic – Test Scenarios
 
-## Case 1: Rain Expected
-- Rain probability: 80%
-- Soil moisture: LOW
-- Temperature: 19°C
-### Expected:
-Skip watering completely.
+This document defines expected behavior for the irrigation calculation logic.
+All values assume daily aggregated weather data and coefficient-based modifiers.
 
 ---
 
-## Case 2: Windy Afternoon
-- Wind speed: 22 km/h
-- Temperature: 20°C
+## Case 1: High Rain Probability
+Inputs:
+- Rain probability (daily): 80%
 - Soil moisture: LOW
-### Expected:
-Increase watering duration (evaporation increases).
+- Temperature (daily max): 19°C
+
+Expected behavior:
+- Rain modifier strongly reduces watering
+- Final watering time reduced to zero or minimum safety threshold
 
 ---
 
-## Case 3: Dry Soil + Hot Weather
+## Case 2: High Wind Day
+Inputs:
+- Wind speed (daily max): 22 km/h
+- Temperature (daily max): 20°C
 - Soil moisture: LOW
-- Temperature: 32°C
+
+Expected behavior:
+- Wind evaporation modifier increases watering time
+- Increase remains capped within safety limits
+
+---
+
+## Case 3: Dry Soil + Heat Stress
+Inputs:
+- Soil moisture: LOW
+- Temperature (daily max): 32°C
 - Wind: mild
-### Expected:
-Large watering multiplier (heat stress + evaporation).
+
+Expected behavior:
+- Heat and soil modifiers combine
+- High watering multiplier applied
+- Final duration limited by max watering cap
 
 ---
 
-## Case 4: Cold + Moist Soil
-- Temperature: 7°C
+## Case 4: Cold Day + Moist Soil
+Inputs:
+- Temperature (daily max): 7°C
 - Soil moisture: MEDIUM or HIGH
-### Expected:
-Reduce or skip watering.
+
+Expected behavior:
+- Cold modifier reduces water demand
+- Watering reduced or skipped entirely
 
 ---
 
-## Case 5: Soil Type Variation
-### Clay Soil:
-- Moisture increases slowly, holds water long
-### Expected:
-Reduce watering time.
+## Case 5: Soil Type Influence
 
-### Sandy Soil:
-- Moisture drains quickly
-### Expected:
-Increase watering time.
+# Clay soil:
+- High retention coefficient
+Expected behavior:
+- Slower moisture decay
+- Reduced watering time compared to neutral soil
+
+# Sandy soil:
+- Low retention coefficient
+Expected behavior:
+- Faster moisture loss
+- Increased watering time
 
 ---
 
-## Case 6: Plant Type Variation
-### Tomato:
-- Needs stable moisture
-### Expected:
-Higher base watering.
+## Case 6: Plant Type Influence
 
-### Rosemary:
-- Avoid overwatering
-### Expected:
-Lower base watering.
+Tomato:
+- High water demand coefficient
+Expected behavior:
+- Higher base watering requirement
+- Strong response to heat stress
+
+Rosemary:
+- Low water demand coefficient
+Expected behavior:
+- Reduced base watering
+- Aggressive overwatering prevention
 
