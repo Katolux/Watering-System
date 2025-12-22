@@ -17,25 +17,38 @@ The project is intentionally simple and modular so anyone can replicate or adapt
 
 ##🔧 Hardware
 
-Controller:
-- Arduino Nano ESP32 (primary controller)
+System architecture:
+- Raspberry Pi (system coordinator and data hub)
+- Arduino Nano ESP32 (real-time hardware controller)
+
+Raspberry Pi responsibilities:
+- Runs core irrigation logic
+- Stores all data in SQLite (garden_system.db)
+- Manages soil and plant coefficients
+- Ingests daily weather data
+- Future web dashboard and ML logic
+
+Arduino responsibilities:
+- Reads soil moisture sensors
+- Controls solenoid valves
+- Executes commands received from the Raspberry Pi
+- Provides a safe, deterministic hardware layer
 
 Sensors:
-- Capacitive soil moisture sensors (analog, multi-zone)
-- Optional environmental sensor (temperature) – future expansion
+- Capacitive soil moisture sensors (multi-zone)
 
 Actuation:
 - 12 V solenoid valves (drip irrigation)
-- Relay or MOSFET module for valve control
+- Relay or MOSFET module
 
 Water system:
 - Drip irrigation (assumed throughout the project)
-- 1/2" main line with reducers to micro-tubing (4/7 mm) or drip tubing.
 
 Other components:
 - External 12 V power supply
 - Waterproof IP67 enclosure
-- Internal jumper wiring (Dupont / JST as appropriate)
+- Internal jumper wiring
+
 
 ---
 
@@ -43,30 +56,41 @@ Other components:
 
 🧠 Software Features
 
-- Reads soil moisture from hardware sensors
-- Fixed base watering time per zone
-- Conditional watering logic based on soil thresholds
-- Daily weather data ingestion (future step)
-- Data logging to a single SQLite database
-- Modular design for additional sensors and zones
+- Soil moisture readings from hardware sensors
+- Weather-based modifiers (rain, wind, temperature)
+- Fixed base watering time per irrigation zone
+- Water demand calculation based on:
+  - Soil moisture
+  - Soil type coefficients
+  - Plant type coefficients
+- All coefficients stored and versioned in the database
+- Single SQLite database for all system data
 
-Future features (planned):
-- Weather-based modifiers (rain, wind, heat)
+Planned extensions:
+- Seasonal calibration using historical data
 - Predictive watering models (ML)
 - Remote monitoring dashboard
-- Error detection and redundancy checks  
 
----
+Note: Weather data acquisition is implemented; integration into irrigation decisions is actively under development.
 
-## 🧪 Technologies Used
 
-- **Arduino C++**  
-- **Open-Meteo API** (HTTP GET requests via WiFi module, future step)  
-- **JSON parsing** for forecast data  
-- **Basic state machine logic** for irrigation scheduling  
-- Planned future integration with:
-  - Raspberry Pi for data logging
-  - Web dashboard for remote monitoring
+##🧪 Technologies Used
+
+Embedded:
+- Arduino C++ (Nano ESP32)
+
+System & backend:
+- Raspberry Pi (Linux)
+- Python
+- SQLite (single database: garden_system.db)
+
+Data & logic:
+- Coefficient-based water demand models
+- Modular logic layers (sensor → calculation → actuation)
+
+External data:
+- Open-Meteo API (daily aggregates only – planned)
+
 
 ---
 
