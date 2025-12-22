@@ -4,8 +4,8 @@
 //simple test to make sure the andruino is sending info and we can catch it with the flask server
 
 // -------- WIFI ----------
-const char* ssid = "Sunrise_2.4GHz_2FC64B";
-const char* password = "jQ9w1uxFm3u6";
+const char* ssid = "your wifi";
+const char* password = "your password";
 
 // -------- SERVER (your laptop) ----------
 const char* serverURL = "http://192.168.1.31:5000/soil";
@@ -73,3 +73,4 @@ void loop() {
 
   delay(60000); // 1 minute between sends
 }
+
