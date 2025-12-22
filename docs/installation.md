@@ -84,6 +84,8 @@ Verify:
 Sensor readings are transmitted
 Valve commands are executed correctly
 
+---
+
 ## 3 Weather Data Setup
 
 Configure Open-Meteo parameters in the Python script
@@ -93,6 +95,8 @@ Rain probability
 Precipitation
 Wind speed
 Confirm weather data is stored locally before logic execution
+
+---
 
 ## 4 Testing
 
@@ -105,6 +109,8 @@ Observe:
 - Correct valve timing
 - Safe shutdown behavior
 - No over-watering
+
+---
 
 ## 5 Deployment
 
