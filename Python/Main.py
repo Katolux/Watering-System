@@ -1,6 +1,5 @@
 from get_weather_new import refresh_weather
-#from historic_sensor import get_last_10_days_sensors 
-from historic_weather import print_last_10_days_weather 
+from historic_weather import print_last_days_weather 
 
 def main_menu():
     while True:
@@ -73,8 +72,8 @@ def historic_menu():
         option = input("Select an option: ")
 
         if option == "1":
-            print("Showing weather history... (placeholder)")
-            print_last_10_days_weather()
+            print("Showing weather history...")
+            print_last_days_weather()
         elif option == "2":
             print("Showing sensors history... (placeholder)")
             #get_last_10_days_sensors()
@@ -132,3 +131,4 @@ def plant_submenu():
 
 # Run the app
 main_menu()
+
