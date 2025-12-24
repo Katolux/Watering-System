@@ -60,4 +60,4 @@ def print_last_days_weather(days=10):
             f"Wind {wind_max:.1f} km/h @ {wind_dir:.0f}°"
         )
 
-    print("-" * 80)
+    print("-" * 70)
