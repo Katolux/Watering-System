@@ -6,7 +6,7 @@ from pathlib import Path
 # CONFIG
 # --------------------------------------------------
 
-DB_PATH = "garden_system.db"   # single database
+DB_PATH = "garden_system.db"   
 MODEL_DIR = Path("ml_models")
 MODEL_DIR.mkdir(exist_ok=True)
 
@@ -41,10 +41,7 @@ def load_beds(conn):
 
 
 def load_sensor_daily(conn):
-    """
-    Daily aggregation of sensor readings.
-    You can change AVG/MIN/MAX later without touching the schema.
-    """
+    
     return pd.read_sql("""
         SELECT
             date(ts) AS date,
@@ -101,7 +98,7 @@ def load_plantings(conn):
 
 # --------------------------------------------------
 # FEATURE ENGINEERING (STATIC BED FEATURES)
-# --------------------------------------------------
+# -------------------------------------------------
 
 def build_bed_profile(conn):
     """
@@ -228,3 +225,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+
