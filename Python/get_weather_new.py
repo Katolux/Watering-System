@@ -13,8 +13,8 @@ def init_weather_db():
     cur = conn.cursor()
     cur.execute("""
         CREATE TABLE IF NOT EXISTS weather_data (
+            date TEXT PRIMARY KEY,
             timestamp TEXT,
-            date TEXT,
             temp_max REAL,
             temp_min REAL,
             precipitation REAL,
@@ -28,17 +28,37 @@ def init_weather_db():
     conn.close()
 
 
+
 def save_weather_record(record):
     conn = sqlite3.connect(DB_NAME)
     cur = conn.cursor()
     cur.execute(
         """
-        INSERT INTO weather_data
+        INSERT INTO weather_data (
+            date,
+            timestamp,
+            temp_max,
+            temp_min,
+            precipitation,
+            sunshine,
+            daylight,
+            wind_max,
+            wind_dir
+        )
         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+        ON CONFLICT(date) DO UPDATE SET
+            timestamp = excluded.timestamp,
+            temp_max = excluded.temp_max,
+            temp_min = excluded.temp_min,
+            precipitation = excluded.precipitation,
+            sunshine = excluded.sunshine,
+            daylight = excluded.daylight,
+            wind_max = excluded.wind_max,
+            wind_dir = excluded.wind_dir
         """,
         (
-            datetime.utcnow().isoformat(),
             record["date"],
+            datetime.utcnow().isoformat(),
             record["temp_max"],
             record["temp_min"],
             record["precipitation"],
