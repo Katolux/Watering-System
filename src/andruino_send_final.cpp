@@ -1,23 +1,21 @@
 #include <WiFi.h>
 #include <HTTPClient.h>
 #include <time.h>
-// Connect to wifi, stablish connection with our python server and send the average of the reading from the sensor
-// to Python, so pythons stores them in the DB. To upload to Andruino nano
 
 // -------- WIFI ----------
 const char* ssid = "your wifi";
 const char* password = "your password";
 
 // -------- PYTHON SERVER ----------
-const char* serverURL = "http://192.168.1.31:5000/soil";
+const char* serverURL = "your Ip for the server";
 
 // -------- SENSOR ----------
 const int SENSOR_PIN = A0;
 
 // -------- TIME ----------
 const char* ntpServer = "pool.ntp.org";
-const long gmtOffset_sec = 3600;      // UTC+1
-const int daylightOffset_sec = 3600;  // DST
+const long gmtOffset_sec = 3600;
+const int daylightOffset_sec = 3600;
 
 // -------- SCHEDULE ----------
 struct RunTime {
@@ -38,7 +36,7 @@ const unsigned long SAMPLE_INTERVAL_MS = 100;
 
 // -------- FUNCTION DECLARATIONS ----------
 int readSoilAverage();
-void sendToServer(int moisture);
+bool sendToServer(int moisture);
 void goToSleepUntilNextRun(int seconds);
 
 void setup() {
@@ -82,65 +80,4 @@ void loop() {
         currentHour == r.hour &&
         currentMinute == r.minute) {
 
-      int moisture = readSoilAverage();
-      sendToServer(moisture);
-
-      r.done = true;
-
-      // For now: sleep 6 hours after sending
-      goToSleepUntilNextRun(6 * 60 * 60);
-    }
-  }
-
-  delay(30000);
-}
-
-// -------- FUNCTIONS ----------
-
-int readSoilAverage() {
-  unsigned long start = millis();
-  long sum = 0;
-  int count = 0;
-
-  while (millis() - start < SAMPLE_TIME_MS) {
-    sum += analogRead(SENSOR_PIN);
-    count++;
-    delay(SAMPLE_INTERVAL_MS);
-  }
-
-  int avg = sum / count;
-  Serial.print("Soil moisture avg: ");
-  Serial.println(avg);
-  return avg;
-}
-
-void sendToServer(int moisture) {
-  if (WiFi.status() != WL_CONNECTED) return;
-
-  HTTPClient http;
-  http.begin(serverURL);
-  http.addHeader("Content-Type", "application/json");
-
-  String payload = "{";
-  payload += "\"bed\":\"bed_1\",";
-  payload += "\"sensor\":\"soil_1\",";
-  payload += "\"moisture\":" + String(moisture);
-  payload += "}";
-
-  int code = http.POST(payload);
-
-  Serial.print("HTTP code: ");
-  Serial.println(code);
-
-  http.end();
-}
-
-void goToSleepUntilNextRun(int seconds) {
-  Serial.print("Sleeping for ");
-  Serial.print(seconds);
-  Serial.println(" seconds");
-
-  esp_sleep_enable_timer_wakeup((uint64_t)seconds * 1000000ULL);
-  esp_deep_sleep_start();
-
-}
+      i
