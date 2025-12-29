@@ -38,7 +38,7 @@ def print_last_days_weather(days=10):
         return
 
     print(f"\n🌤️  Last {len(rows)} Days of Weather")
-    print("-" * 80)
+    print("-" * 70)
 
     for (
         date,
