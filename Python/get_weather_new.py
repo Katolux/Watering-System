@@ -97,7 +97,7 @@ def refresh_weather():
             "wind_direction_10m_dominant",
         ],
         "models": "best_match",
-        "timezone": "auto",
+        "timezone": "UTC",
     }
 
     response = openmeteo.weather_api(url, params=params)[0]
