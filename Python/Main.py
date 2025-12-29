@@ -1,5 +1,10 @@
 from get_weather_new import refresh_weather
 from historic_weather import print_last_days_weather 
+from garden_config import add_bed_menu, list_beds_with_sensors
+from garden_config import init_beds_and_sensors_tables
+from python_receiver_final import init_sensor_readings_table
+from get_weather_new import init_weather_db
+
 
 def main_menu():
     while True:
@@ -97,6 +102,7 @@ def automation_menu():
 
         if option == "1":
             print ("Showing Bed and Plants...(placeholder)")
+            bed_submenu()
         elif option == "2":
             plant_submenu()
         elif option == "3":
@@ -127,8 +133,33 @@ def plant_submenu():
             else :
                 print("Invalid option. Try again")
               
+def bed_submenu():
+    while True:
+        print("\nBed Management Menu")
+        print("-"*70)
+        print("1. Add bed")
+        print("2. List beds")
+        print("3. Close")
+        option = input("Choose option: ")
+
+        if option == "1":
+            add_bed_menu()
+        elif option == "2":
+            list_beds_with_sensors()
+        elif option == "3":
+            break
+        else :
+            print("Invalid option. Try again")
 
 
-# Run the app
-main_menu()
+def init_system():
+    init_weather_db()
+    init_beds_and_sensors_tables()
+    init_sensor_readings_table()
+
+if __name__ == "__main__":
+    init_system()
+    main_menu()
+
+
 
