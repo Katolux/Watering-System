@@ -1,86 +1,73 @@
 from flask import Flask, request, jsonify
 import sqlite3
-from datetime import datetime
+from datetime import datetime, timezone
 
 DB_NAME = "garden_system.db"
-
 app = Flask(__name__)
 
-# ---------- DB INIT ----------
-def init_db():
+
+def init_sensor_readings_table():
     conn = sqlite3.connect(DB_NAME)
     cur = conn.cursor()
-
     cur.execute("""
         CREATE TABLE IF NOT EXISTS sensor_readings (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
-            timestamp TEXT,
-            date TEXT,
+            timestamp TEXT NOT NULL,
+            date TEXT NOT NULL,
             bed_id TEXT,
-            sensor_id TEXT,
-            reading_index INTEGER,
-            moisture_raw INTEGER
+            sensor_id TEXT NOT NULL,
+            moisture_raw INTEGER NOT NULL
         )
     """)
-
     conn.commit()
     conn.close()
 
-# ---------- HELPERS ----------
-def get_next_reading_index(conn, bed_id, sensor_id, date):
-    cur = conn.cursor()
-    cur.execute("""
-        SELECT COUNT(*) FROM sensor_readings
-        WHERE bed_id = ? AND sensor_id = ? AND date = ?
-    """, (bed_id, sensor_id, date))
+init_sensor_readings_table()
 
-    count = cur.fetchone()[0]
-    return count + 1  # 1, 2, 3
-
-# ---------- ROUTE ----------
-@app.route("/soil", methods=["POST"])
-def receive_soil():
-    data = request.json
-
-    bed_id = data["bed"]
-    sensor_id = data["sensor"]
-    moisture = int(data["moisture"])
-
-    now = datetime.utcnow()
-    date_str = now.date().isoformat()
+def save_reading(bed_id, sensor_id, moisture_raw):
+  
+    now = datetime.now(timezone.utc)
     timestamp = now.isoformat()
+    date_str = now.date().isoformat()        
 
     conn = sqlite3.connect(DB_NAME)
-
-    reading_index = get_next_reading_index(
-        conn, bed_id, sensor_id, date_str
-    )
-
     cur = conn.cursor()
     cur.execute("""
-        INSERT INTO sensor_readings
-        (timestamp, date, bed_id, sensor_id, reading_index, moisture_raw)
-        VALUES (?, ?, ?, ?, ?, ?)
-    """, (
-        timestamp,
-        date_str,
-        bed_id,
-        sensor_id,
-        reading_index,
-        moisture
-    ))
-
+        INSERT INTO sensor_readings (timestamp, date, bed_id, sensor_id, moisture_raw)
+        VALUES (?, ?, ?, ?, ?)
+    """, (timestamp, date_str, bed_id, sensor_id, moisture_raw))
     conn.commit()
     conn.close()
 
+@app.route("/soil", methods=["POST"])
+def receive_soil():
+    data = request.get_json(silent=True) or {}
+
+    # bed is optional; allow missing / null / "test"
+    bed_id = data.get("bed")  # may be None
+    sensor_id = data.get("sensor")
+    moisture = data.get("moisture")
+
+    if sensor_id is None or moisture is None:
+        return jsonify({"status": "error", "error": "Missing sensor or moisture"}), 400
+
+    try:
+        moisture = int(moisture)
+    except (TypeError, ValueError):
+        return jsonify({"status": "error", "error": "moisture must be an integer"}), 400
+
+    save_reading(bed_id, sensor_id, moisture)
+
+    # ---------- DEBUG PRINT ----------
     print(
-        f"{date_str} | {bed_id} | {sensor_id} | "
-        f"reading {reading_index} | moisture {moisture}"
+        f"[SENSOR] saved | "
+        f"bed={bed_id} | "
+        f"sensor={sensor_id} | "
+        f"moisture={moisture}"
     )
+    # ---------------------------------
 
-    return jsonify({"status": "ok", "reading_index": reading_index}), 200
+
+    return jsonify({"status": "ok"}), 200
 
 
-if __name__ == "__main__":
-    init_db()
-    app.run(host="0.0.0.0", port=5000)
