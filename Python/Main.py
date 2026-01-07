@@ -1,8 +1,7 @@
 from get_weather_new import refresh_weather
 from historic_weather import print_last_days_weather 
-from garden_config import add_bed_menu, list_beds_with_sensors
-from garden_config import init_beds_and_sensors_tables
-from python_receiver_final import init_sensor_readings_table
+from repositories import add_bed_menu, list_beds_with_sensors
+from db_schema import init_beds_and_sensors_tables, init_sensor_readings_table
 from get_weather_new import init_weather_db
 
 
@@ -160,6 +159,7 @@ def init_system():
 if __name__ == "__main__":
     init_system()
     main_menu()
+
 
 
 
