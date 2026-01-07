@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>📜 Historic Weather</h2>
+
+<table border="1" cellpadding="5">
+  <tr>
+    <th>Date</th>
+    <th>Max °C</th>
+    <th>Min °C</th>
+    <th>Rain (mm)</th>
+    <th>Sun (min)</th>
+    <th>Daylight (min)</th>
+    <th>Wind (km/h)</th>
+    <th>Direction</th>
+  </tr>
+
+  {% for row in weather %}
+  <tr>
+    <td>{{ row[0] }}</td>
+    <td>{{ "%.1f"|format(row[1]) }}</td>   
+    <td>{{ "%.1f"|format(row[2]) }}</td>   
+    <td>{{ "%.2f"|format(row[3]) }}</td>   
+    <td>{{ "%.0f"|format(row[4]) }}</td>   
+    <td>{{ "%.0f"|format(row[5]) }}</td>   
+    <td>{{ "%.1f"|format(row[6]) }}</td>   
+    <td>{{ "%.0f"|format(row[7]) }}°</td>
+
+  </tr>
+  {% endfor %}
+</table>
+
+<a href="/">⬅ Back</a>
+{% endblock %}

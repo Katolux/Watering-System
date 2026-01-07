@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>🌱 Plants Management</h2>
+
+<h3>Add new plant</h3>
+
+<form method="post" action="/automation/plants/add">
+  <label>Plant ID:
+    <input type="text" name="plant_id" required>
+  </label><br><br>
+
+  <label>Name:
+    <input type="text" name="name" required>
+  </label><br><br>
+
+  <label>Min moisture:
+    <input type="number" name="min_moisture">
+  </label><br><br>
+
+  <label>Max moisture:
+    <input type="number" name="max_moisture">
+  </label><br><br>
+
+  <label>
+  Base watering (min):
+  <input type="number" name="base_minutes" min="1" required>
+  </label><br><br>
+
+  <button type="submit">Add plant</button>
+</form>
+
+<hr>
+
+<h3>Existing plants</h3>
+<ul>
+  {% set current_family = None %}
+  {% for p in plants %}
+    {% if p[0] != current_family %}
+      <li><strong>{{ p[0]|capitalize }}</strong></li>
+      {% set current_family = p[0] %}
+    {% endif %}
+    <li style="margin-left: 20px;">
+      {{ p[1] }} — {{ p[2] }}–{{ p[3] }}
+    </li>
+  {% endfor %}
+</ul>
+
+
+<a href="/automation">⬅ Back</a>
+{% endblock %}
