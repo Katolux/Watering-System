@@ -19,6 +19,7 @@ reflecting the current Raspberry Pi–centric architecture and data-driven desig
 - Daily weather data downloaded from Open-Meteo API
 - Weather data stored locally for processing
 - Clear separation between data ingestion and decision logic
+- Idempotent ingestion (safe retries)
 
 ---
 
@@ -31,6 +32,7 @@ reflecting the current Raspberry Pi–centric architecture and data-driven desig
   - Soil coefficients
   - Plant coefficients
 - Command flow: Raspberry Pi → Arduino → valves
+- Manual approval / dry-run mode
 
 ---
 
@@ -61,6 +63,8 @@ reflecting the current Raspberry Pi–centric architecture and data-driven desig
 - Cable management and strain relief
 - Long-run stability testing
 - Fail-safe behavior validation (API down, Pi reboot, etc.)
+- Watchdog / restart strategy
+- State recovery after reboot
 
 ---
 
