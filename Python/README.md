@@ -47,39 +47,19 @@ Key design decisions:
 ---
 
 ## File Overview
-
+```
 garden_system/
-├─ app.py
-│ Flask application and UI routes
-│
-├─ python_receiver_final.py
-│ Production sensor ingestion endpoint
-│
-├─ db.py
-│ Centralized database connection handling
-│
-├─ db_schema.py
-│ SQLite table definitions and constraints
-│
-├─ db_init.py
-│ Database initialization logic
-│
-├─ repositories.py
-│ Data access layer (pure SQL, no business logic)
-│
-├─ watering_engine.py
-│ Watering decision engine (v1 beta)
-│
-├─ watering_decision.py
-│ Pure, factor-based decision logic
-│
-├─ templates/
-│ HTML templates for the web UI
-│
-└─ static/
-Static assets (CSS, JS)
-
-
+├─ app.py # Flask application and UI routes
+├─ python_receiver_final.py # Production sensor ingestion endpoint
+├─ db.py # Centralized DB connection handling
+├─ db_schema.py # SQLite table definitions and constraints
+├─ db_init.py # Database initialization
+├─ repositories.py # Data access layer (pure SQL)
+├─ watering_engine.py # Watering decision engine (v1 beta)
+├─ watering_decision.py # Pure decision logic
+├─ templates/ # HTML templates
+└─ static/ # Static assets (CSS, JS)
+```
 ---
 
 ## Database Notes
