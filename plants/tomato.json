@@ -1,0 +1,669 @@
+{
+  "plant_id": "tomato",
+  "common_name": "Tomato",
+  "scientific_name": "Solanum lycopersicum",
+
+  "defaults": {
+    "watering": {
+      "water_need": "high",
+      "moisture_targets": {
+        "min_moisture": 42,
+        "max_moisture": 58
+      },
+      "base_minutes": 25,
+      "mulch_recommended": false
+    },
+
+    "tolerances": {
+      "drought": "medium",
+      "heat": "high",
+      "waterlogging": "low"
+    },
+
+    "root_depth_class": "deep",
+
+    "calendar": {
+      "weeks": {
+        "sow_indoor": [10, 17],
+        "sow_outdoor": null,
+        "transplant_outdoor": [20, 24],
+        "harvest": [27, 45]
+      },
+      "months": {
+        "sow_indoor": [3, 4],
+        "sow_outdoor": null,
+        "transplant_outdoor": [5, 6],
+        "harvest": [7, 11]
+      }
+    },
+
+    "spacing_cm": {
+      "between_rows": [70, 90],
+      "in_row": [40, 60]
+    },
+
+    "germination": {
+      "days": [7, 14],
+      "temp_c": [20, 28]
+    },
+
+    "nutrition": {
+      "need": "high",
+      "stage_plan": [
+        { "stage": "vegetative", "focus": "balanced" },
+        { "stage": "flowering", "focus": "higher_k" },
+        { "stage": "fruiting", "focus": "higher_k" }
+      ]
+    },
+
+    "actions": [
+      "prick_out_when_true_leaves",
+      "train_main_stem",
+      "remove_suckers",
+      "fertilize_after_established"
+    ],
+
+    "resistance": {
+      "HR": [],
+      "IR": []
+    }
+  },
+
+  "varieties": {
+    "Moneymaker": {
+      "sources": ["Landi/UFA"],
+      "overrides": {
+        "calendar": {
+          "months": {
+            "sow_indoor": [3, 4],
+            "harvest": [7, 10]
+          },
+          "weeks": {
+            "sow_indoor": [10, 17],
+            "harvest": [27, 44]
+          }
+        },
+        "actions": [
+          "two_stems",
+          "remove_suckers"
+        ]
+      }
+    },
+
+    "Zuckertraube": {
+      "sources": ["Landi/UFA"],
+      "overrides": {
+        "calendar": {
+          "months": {
+            "sow_indoor": [3, 5],
+            "harvest": [7, 10]
+          },
+          "weeks": {
+            "sow_indoor": [10, 22],
+            "harvest": [27, 44]
+          }
+        },
+        "actions": [
+          "multi_stem_ok"
+        ]
+      }
+    },
+
+    "Montfavet H 63-5 F1": {
+      "sources": ["Landi/UFA", "Mauser"],
+      "overrides": {
+        "watering": {
+          "mulch_recommended": true
+        },
+        "calendar": {
+          "months": {
+            "sow_indoor": [3, 4],
+            "transplant_outdoor": [5, 6],
+            "harvest": [7, 11]
+          },
+          "weeks": {
+            "sow_indoor": [11, 16],
+            "transplant_outdoor": [20, 24],
+            "harvest": [27, 45]
+          }
+        },
+        "spacing_cm": {
+          "between_rows": 80,
+          "in_row": 50
+        }
+      }
+    },
+
+    "Berner Rosen": {
+      "sources": ["Landi/UFA", "Mauser"],
+      "overrides": {
+        "calendar": {
+          "months": {
+            "sow_indoor": [3, 4],
+            "transplant_outdoor": [5, 6],
+            "harvest": [8, 11]
+          },
+          "weeks": {
+            "sow_indoor": [11, 16],
+            "transplant_outdoor": [20, 24],
+            "harvest": [31, 45]
+          }
+        },
+        "spacing_cm": {
+          "between_rows": 80,
+          "in_row": 50
+        }
+      }
+    },
+
+    "UFA-Spezial F1": {
+      "sources": ["Landi/UFA"],
+      "overrides": {
+        "calendar": {
+          "months": {
+            "sow_indoor": [3, 4],
+            "harvest": [7, 10]
+          },
+          "weeks": {
+            "sow_indoor": [10, 17],
+            "harvest": [27, 44]
+          }
+        }
+      }
+    },
+
+    "Sweet F1": {
+      "sources": ["Landi/UFA"],
+      "overrides": {
+        "calendar": {
+          "months": {
+            "sow_indoor": [3, 4],
+            "harvest": [7, 10]
+          },
+          "weeks": {
+            "sow_indoor": [10, 17],
+            "harvest": [27, 44]
+          }
+        }
+      }
+    },
+
+    "Cherry-Spezial F1": {
+      "sources": ["Landi/UFA"],
+      "overrides": {
+        "watering": {
+          "mulch_recommended": true
+        },
+        "calendar": {
+          "months": {
+            "sow_indoor": [3, 4],
+            "harvest": [7, 10]
+          },
+          "weeks": {
+            "sow_indoor": [10, 17],
+            "harvest": [27, 44]
+          }
+        }
+      }
+    },
+
+    "San Marzano": {
+      "sources": ["Landi/UFA", "Mauser"],
+      "overrides": {
+        "watering": {
+          "mulch_recommended": true
+        },
+        "calendar": {
+          "months": {
+            "sow_indoor": [3, 4],
+            "transplant_outdoor": [5, 6],
+            "harvest": [7, 11]
+          },
+          "weeks": {
+            "sow_indoor": [11, 16],
+            "transplant_outdoor": [20, 24],
+            "harvest": [27, 45]
+          }
+        },
+        "germination": {
+          "days": 10,
+          "temp_c": [20, 28]
+        },
+        "spacing_cm": {
+          "between_rows": 80,
+          "in_row": 50
+        }
+      }
+    },
+
+    "Harzglut": {
+      "sources": ["Mauser"],
+      "overrides": {
+        "calendar": {
+          "months": {
+            "sow_indoor": [3, 4],
+            "transplant_outdoor": [5, 6],
+            "harvest": [7, 11]
+          },
+          "weeks": {
+            "sow_indoor": [11, 16],
+            "transplant_outdoor": [20, 24],
+            "harvest": [27, 45]
+          }
+        },
+        "germination": {
+          "days": 10,
+          "temp_c": [20, 28]
+        },
+        "spacing_cm": {
+          "between_rows": 60,
+          "in_row": 50
+        }
+      }
+    },
+
+    "Ravi": {
+      "sources": ["Mauser"],
+      "overrides": {
+        "calendar": {
+          "months": {
+            "sow_indoor": [3, 4],
+            "transplant_outdoor": [5, 6],
+            "harvest": [7, 11]
+          },
+          "weeks": {
+            "sow_indoor": [11, 16],
+            "transplant_outdoor": [20, 24],
+            "harvest": [27, 45]
+          }
+        },
+        "germination": {
+          "days": 10,
+          "temp_c": [20, 28]
+        },
+        "spacing_cm": {
+          "between_rows": 80,
+          "in_row": 50
+        },
+        "actions": [
+          "prick_out_to_single_plant_8cm_pot"
+        ]
+      }
+    },
+
+    "Trilly F1": {
+      "sources": ["Mauser"],
+      "overrides": {
+        "calendar": {
+          "months": {
+            "sow_indoor": [3, 4],
+            "transplant_outdoor": [5, 6],
+            "harvest": [7, 11]
+          },
+          "weeks": {
+            "sow_indoor": [11, 16],
+            "transplant_outdoor": [20, 24],
+            "harvest": [27, 45]
+          }
+        },
+        "germination": {
+          "days": 10,
+          "temp_c": [20, 28]
+        },
+        "spacing_cm": {
+          "between_rows": 80,
+          "in_row": 50
+        },
+        "actions": [
+          "prick_out_to_single_plant_8cm_pot"
+        ]
+      }
+    },
+
+    "Master": {
+      "sources": ["Mauser"],
+      "overrides": {
+        "calendar": {
+          "months": {
+            "sow_indoor": [3, 4],
+            "transplant_outdoor": [5, 6],
+            "harvest": [7, 11]
+          },
+          "weeks": {
+            "sow_indoor": [11, 16],
+            "transplant_outdoor": [20, 24],
+            "harvest": [27, 45]
+          }
+        },
+        "germination": {
+          "days": 10,
+          "temp_c": [20, 28]
+        },
+        "spacing_cm": {
+          "between_rows": 80,
+          "in_row": 50
+        }
+      }
+    },
+
+    "Sun Cherry F1": {
+      "sources": ["Mauser"],
+      "overrides": {
+        "calendar": {
+          "months": {
+            "sow_indoor": [3, 4],
+            "transplant_outdoor": [5, 6],
+            "harvest": [7, 11]
+          },
+          "weeks": {
+            "sow_indoor": [11, 16],
+            "transplant_outdoor": [20, 24],
+            "harvest": [27, 45]
+          }
+        },
+        "germination": {
+          "days": 10,
+          "temp_c": [20, 28]
+        },
+        "spacing_cm": {
+          "between_rows": 80,
+          "in_row": 50
+        },
+        "watering": {
+          "mulch_recommended": true
+        },
+        "actions": [
+          "prefer_two_stems_or_strong_side_shoot"
+        ]
+      }
+    },
+
+    "Sweet Orange F1": {
+      "sources": ["Mauser"],
+      "overrides": {
+        "calendar": {
+          "months": {
+            "sow_indoor": [3, 4],
+            "transplant_outdoor": [5, 6],
+            "harvest": [7, 11]
+          },
+          "weeks": {
+            "sow_indoor": [11, 16],
+            "transplant_outdoor": [20, 24],
+            "harvest": [27, 45]
+          }
+        },
+        "germination": {
+          "days": 10,
+          "temp_c": [20, 28]
+        },
+        "spacing_cm": {
+          "between_rows": 75,
+          "in_row": 40
+        }
+      }
+    },
+
+    "Marzemino F1": {
+      "sources": ["Mauser"],
+      "overrides": {
+        "calendar": {
+          "months": {
+            "sow_indoor": [3, 4],
+            "transplant_outdoor": [5, 6],
+            "harvest": [7, 11]
+          },
+          "weeks": {
+            "sow_indoor": [11, 17],
+            "transplant_outdoor": [20, 24],
+            "harvest": [27, 45]
+          }
+        },
+        "germination": {
+          "days": 10,
+          "temp_c": [20, 28]
+        },
+        "spacing_cm": null
+      }
+    },
+
+    "Bombonera F1": {
+      "sources": ["Mauser"],
+      "overrides": {
+        "calendar": {
+          "months": {
+            "sow_indoor": [3, 4],
+            "transplant_outdoor": [5, 6],
+            "harvest": [7, 11]
+          },
+          "weeks": {
+            "sow_indoor": [11, 17],
+            "transplant_outdoor": [20, 24],
+            "harvest": [27, 45]
+          }
+        },
+        "germination": {
+          "days": 10,
+          "temp_c": [20, 28]
+        },
+        "spacing_cm": null
+      }
+    },
+
+    "Cherrytomato Ildi": {
+      "sources": ["Mauser"],
+      "overrides": {
+        "calendar": {
+          "months": {
+            "sow_indoor": [3, 4],
+            "transplant_outdoor": [5, 6],
+            "harvest": [7, 11]
+          },
+          "weeks": {
+            "sow_indoor": [11, 17],
+            "transplant_outdoor": [20, 24],
+            "harvest": [27, 45]
+          }
+        },
+        "germination": {
+          "days": 10,
+          "temp_c": [20, 28]
+        },
+        "spacing_cm": null
+      }
+    },
+
+    "Crimson Crush F1": {
+      "sources": ["Mauser"],
+      "overrides": {
+        "calendar": {
+          "months": {
+            "sow_indoor": [3, 4],
+            "transplant_outdoor": [5, 6],
+            "harvest": [7, 11]
+          },
+          "weeks": {
+            "sow_indoor": [11, 17],
+            "transplant_outdoor": [20, 24],
+            "harvest": [27, 45]
+          }
+        },
+        "germination": {
+          "days": 10,
+          "temp_c": [20, 28]
+        },
+        "spacing_cm": null
+      }
+    },
+
+    "Pyros": {
+      "sources": ["Mauser"],
+      "overrides": {
+        "calendar": {
+          "months": {
+            "sow_indoor": [3, 4],
+            "transplant_outdoor": [5, 6],
+            "harvest": [7, 11]
+          },
+          "weeks": {
+            "sow_indoor": [11, 17],
+            "transplant_outdoor": [20, 24],
+            "harvest": [27, 45]
+          }
+        },
+        "germination": {
+          "days": 10,
+          "temp_c": [20, 28]
+        },
+        "spacing_cm": null
+      }
+    },
+
+    "Heartbreaker Vita F1": {
+      "sources": ["Mauser"],
+      "overrides": {
+        "calendar": {
+          "months": {
+            "sow_indoor": [3, 4],
+            "transplant_outdoor": [5, 6],
+            "harvest": [7, 11]
+          },
+          "weeks": {
+            "sow_indoor": [11, 17],
+            "transplant_outdoor": [20, 24],
+            "harvest": [27, 45]
+          }
+        },
+        "germination": {
+          "days": 10,
+          "temp_c": [20, 28]
+        },
+        "spacing_cm": null
+      }
+    },
+
+    "Wildtomtato Rote Murmel": {
+      "sources": ["Mauser"],
+      "overrides": {
+        "calendar": {
+          "months": {
+            "sow_indoor": [3, 4],
+            "transplant_outdoor": [5, 6],
+            "harvest": [7, 11]
+          },
+          "weeks": {
+            "sow_indoor": [11, 17],
+            "transplant_outdoor": [20, 24],
+            "harvest": [27, 45]
+          }
+        },
+        "germination": {
+          "days": 10,
+          "temp_c": [20, 28]
+        },
+        "spacing_cm": null
+      }
+    },
+
+    "Buffalo Steak F1": {
+      "sources": ["Mauser"],
+      "overrides": {
+        "calendar": {
+          "months": {
+            "sow_indoor": [3, 4],
+            "transplant_outdoor": [5, 6],
+            "harvest": [7, 11]
+          },
+          "weeks": {
+            "sow_indoor": [11, 17],
+            "transplant_outdoor": [20, 24],
+            "harvest": [27, 45]
+          }
+        },
+        "germination": {
+          "days": 10,
+          "temp_c": [20, 28]
+        },
+        "spacing_cm": null
+      }
+    },
+
+    "Principe Borghese": {
+      "sources": ["Mauser"],
+      "overrides": {
+        "calendar": {
+          "months": {
+            "sow_indoor": [3, 4],
+            "transplant_outdoor": [5, 6],
+            "harvest": [7, 11]
+          },
+          "weeks": {
+            "sow_indoor": [11, 17],
+            "transplant_outdoor": [20, 24],
+            "harvest": [27, 45]
+          }
+        },
+        "germination": {
+          "days": 10,
+          "temp_c": [20, 28]
+        },
+        "spacing_cm": {
+          "between_rows": 80,
+          "in_row": 50
+        }
+      }
+    },
+
+    "Goldene Königin": {
+      "sources": ["Mauser"],
+      "overrides": {
+        "calendar": {
+          "months": {
+            "sow_indoor": [3, 4],
+            "transplant_outdoor": [5, 6],
+            "harvest": [7, 11]
+          },
+          "weeks": {
+            "sow_indoor": [11, 17],
+            "transplant_outdoor": [20, 24],
+            "harvest": [27, 45]
+          }
+        },
+        "germination": {
+          "days": 10,
+          "temp_c": [20, 28]
+        },
+        "spacing_cm": null
+      }
+    },
+
+    "Ochsengerz": {
+      "sources": ["Mauser"],
+      "overrides": {
+        "calendar": {
+          "months": {
+            "sow_indoor": [3, 4],
+            "transplant_outdoor": [5, 6],
+            "harvest": [7, 11]
+          },
+          "weeks": {
+            "sow_indoor": [11, 17],
+            "transplant_outdoor": [20, 24],
+            "harvest": [27, 45]
+          }
+        },
+        "germination": {
+          "days": 10,
+          "temp_c": [20, 28]
+        },
+        "spacing_cm": null
+      }
+    }
+  },
+
+  "meta": {
+    "region_basis": "CH",
+    "sources": ["Landi/UFA voucher", "Samen Mauser"],
+    "calendar_policy": "months are source-of-truth; weeks are derived for planning and may be approximate"
+  }
+}

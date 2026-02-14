@@ -1,0 +1,166 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>🪴 Beds Management</h2>
+
+<!-- ================= ADD BED ================= -->
+
+<h3>Add new bed</h3>
+
+<form method="post" action="/automation/beds/add">
+  <label>
+    Bed ID:
+    <input type="text" name="bed_id" required>
+  </label>
+  <br><br>
+
+  <label>
+    Active:
+    <select name="active">
+      <option value="1">Yes</option>
+      <option value="0">No</option>
+    </select>
+  </label>
+  <br><br>
+
+  <button type="submit">Add bed</button>
+</form>
+
+<hr>
+
+<!-- ================= ASSIGN PLANT ================= -->
+
+<h3>Assign plant to bed</h3>
+
+<form method="post" action="/automation/beds/assign">
+
+  <label>
+    Bed:
+    <select name="bed_id" required>
+      {% for bed in beds %}
+        <option value="{{ bed.bed_id }}">{{ bed.bed_id }}</option>
+      {% endfor %}
+    </select>
+  </label>
+
+  <br><br>
+
+<label>
+  Plant:
+  <select name="plant" required>
+    {% for plant in plants %}
+      <option value="{{ plant[0] }}|{{ plant[1] }}">
+        {{ plant[0]|capitalize }} – {{ plant[1] }}
+      </option>
+    {% endfor %}
+  </select>
+</label>
+
+
+  <br><br>
+
+  <label>
+    Quantity:
+    <input type="number" name="quantity" min="1" value="1">
+  </label>
+
+  <br><br>
+
+  <button type="submit">Assign plant</button>
+</form>
+
+<hr>
+
+<!-- ================= EXISTING PLANTS ================= -->
+
+<h3>Existing plants</h3>
+
+<ul>
+  {% for p in plants %}
+    <li>
+      <strong>{{ p[0]|capitalize }}</strong>
+      – {{ p[1] }}
+      <span style="color:#666;">
+        ({{ p[2] }}–{{ p[3] }})
+      </span>
+    </li>
+  {% endfor %}
+</ul>
+
+<hr>
+
+<!-- ================= CURRENT STATE ================= -->
+
+<h3>Current bed status (today)</h3>
+
+<ul>
+{% for bed in beds %}
+  <li>
+    <strong>{{ bed.bed_id }}</strong>
+    —
+    {% if bed.plant %}
+      🌱 {{ bed.plant }}
+    {% else %}
+      (no plant)
+    {% endif %}
+    <br>
+
+    <strong>Overall status:</strong>
+    <span class="status {{ bed.summary|lower|replace(' ', '-') }}">
+      {{ bed.summary }}
+    </span>
+    <br>
+
+    <strong>Avg moisture today:</strong>
+    {% if bed.avg_moisture %}
+      {{ bed.avg_moisture }}
+    {% else %}
+      n/a
+    {% endif %}
+    <br>
+
+    {# ===== WATERING DECISION ===== #}
+    {% if bed.watering %}
+      <strong>Recommended watering:</strong>
+      {{ bed.watering.minutes }} min
+      <br>
+      <small>
+        Soil ×{{ "%.2f"|format(bed.watering.soil_factor) }},
+        Temp ×{{ "%.2f"|format(bed.watering.temp_factor) }},
+        Rain ×{{ "%.2f"|format(bed.watering.rain_factor) }}
+      </small>
+      <br>
+    {% else %}
+      <em>No watering decision yet</em>
+      <br>
+    {% endif %}
+
+    {# ===== WATER NOW ===== #}
+    <form method="post" action="/water_now" style="margin-top:6px;">
+      <input type="hidden" name="bed_id" value="{{ bed.bed_id }}">
+      <label>
+        Water now (min):
+        <input type="number" name="minutes" min="1" required style="width:60px;">
+      </label>
+      <button type="submit">💧 Water now</button>
+    </form>
+
+    <br>
+
+    {# ===== SLOTS ===== #}
+    {% for slot in range(1, 7) %}
+      {% set s = bed.slots[slot] %}
+      [{{ slot }}:
+        {% if s.value is not none %}
+          {{ s.value }} / {{ s.pct }}% ({{ s.status }})
+        {% else %}
+          n/a
+        {% endif %}
+
+      ]
+    {% endfor %}
+  </li>
+{% endfor %}
+</ul>
+
+{% endblock %}

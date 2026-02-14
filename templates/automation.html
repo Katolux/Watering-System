@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>🤖 Automation & Plant Status</h2>
+
+<ul>
+  <li><a href="/automation/beds">🪴 Manage Beds</a></li>
+  <li><a href="/automation/plants">🌱 Manage Plants</a></li>
+  <li><a href="/automation/sensors">🔧 Sensors</a></li>
+
+  
+</ul>
+
+<hr>
+
+<ul>
+  <li>
+    <a href="/automation/run_watering_engine">
+      💧 Calculate watering decisions (dry run)
+    </a>
+  </li>
+</ul>
+<hr>
+
+<h3>⚠️ System events (recent)</h3>
+
+{% if system_events %}
+  <ul>
+    {% for e in system_events %}
+      <li>
+        <strong>{{ e.level }}</strong>
+        [{{ e.source }}]
+        {% if e.bed_id %}(bed {{ e.bed_id }}){% endif %}
+        – {{ e.message }}
+      </li>
+    {% endfor %}
+  </ul>
+{% else %}
+  <p><em>No system events recorded.</em></p>
+{% endif %}
+
+
+<a href="/">⬅ Back</a>
+{% endblock %}
