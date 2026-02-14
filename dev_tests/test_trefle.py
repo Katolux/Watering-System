@@ -5,7 +5,8 @@ import json
 print("PYTHON SEES:", os.environ.get("TREFLE_API_KEY"))
 
 BASE_URL = "https://trefle.io/api/v1"
-API_KEY = os.getenv("usr-Nmg_DjNbByPs1CnLW7VIV_eFW5q3Lej86O1Kt7-wefU")
+API_KEY = os.getenv("TREFLE_API_KEY")
+
 
 
 def test_trefle_search(query: str):
