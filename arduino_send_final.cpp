@@ -11,7 +11,7 @@ const char* password = WIFI_PASSWORD;
 
 
 // ---------------- SERVER ----------------
-// Flask endpoint in your zip expects POST /sensor_data with JSON keys: bed, sensor, moisture
+
 const char* serverURL = "http://192.168.1.99:5000/sensor_data";
 
 // ---------------- IDS ----------------
@@ -19,12 +19,12 @@ const char* BED_ID    = "bed_1";
 const char* SENSOR_ID = "soil_1";
 
 // ---------------- SENSOR ----------------
-const int SENSOR_PIN = A0;
+const int SENSOR_PIN = A0;   
 
 // ---------------- TIME (NTP) ----------------
 const char* ntpServer = "pool.ntp.org";
 const long  gmtOffset_sec      = 3600; // CET
-const int   daylightOffset_sec = 3600; // DST
+const int   daylightOffset_sec = 3600; // DST 
 
 // ---------------- SCHEDULE ----------------
 struct RunTime { int hour; int minute; bool done; };
@@ -40,7 +40,7 @@ RunTime runs[] = {
 const int RUNS_COUNT = sizeof(runs) / sizeof(runs[0]);
 
 // ---------------- SAMPLING ----------------
-// Simple average
+
 const int SAMPLES = 80;
 const int SAMPLE_DELAY_MS = 10;
 
@@ -59,15 +59,23 @@ void setup() {
   Serial.begin(115200);
   delay(800);
 
-  // ADC resolution only
+  
   analogReadResolution(12); // 0..4095 on ESP32 family
 
-  WiFi.begin(ssid, password);
-  Serial.print("Connecting WiFi");
-  while (WiFi.status() != WL_CONNECTED) {
-    delay(400);
-    Serial.print(".");
-  }
+WiFi.begin(ssid, password);
+Serial.print("Connecting WiFi");
+
+unsigned long start = millis();
+while (WiFi.status() != WL_CONNECTED && millis() - start < 15000) {  // 15s timeout
+  delay(400);
+  Serial.print(".");
+}
+
+if (WiFi.status() != WL_CONNECTED) {
+  Serial.println("\n[WIFI] Failed to connect. Sleeping 300s.");
+  sleepForSeconds(300);
+}
+
   Serial.println("\nWiFi connected");
   Serial.print("IP: ");
   Serial.println(WiFi.localIP());
@@ -229,3 +237,4 @@ static bool postReading(int moisture) {
 
   return (code >= 200 && code < 300);
 }
+
