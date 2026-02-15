@@ -19,12 +19,12 @@ const char* BED_ID    = "bed_1";
 const char* SENSOR_ID = "soil_1";
 
 // ---------------- SENSOR ----------------
-const int SENSOR_PIN = A0;   // Nano ESP32: you said A0
+const int SENSOR_PIN = A0;
 
 // ---------------- TIME (NTP) ----------------
 const char* ntpServer = "pool.ntp.org";
 const long  gmtOffset_sec      = 3600; // CET
-const int   daylightOffset_sec = 3600; // DST (keep as-is if you already use it)
+const int   daylightOffset_sec = 3600; // DST
 
 // ---------------- SCHEDULE ----------------
 struct RunTime { int hour; int minute; bool done; };
@@ -40,7 +40,7 @@ RunTime runs[] = {
 const int RUNS_COUNT = sizeof(runs) / sizeof(runs[0]);
 
 // ---------------- SAMPLING ----------------
-// Simple average (no attenuation tuning yet, as requested)
+// Simple average
 const int SAMPLES = 80;
 const int SAMPLE_DELAY_MS = 10;
 
@@ -59,7 +59,7 @@ void setup() {
   Serial.begin(115200);
   delay(800);
 
-  // ADC resolution only (leaving attenuation out for now as requested)
+  // ADC resolution only
   analogReadResolution(12); // 0..4095 on ESP32 family
 
   WiFi.begin(ssid, password);
