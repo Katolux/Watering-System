@@ -153,7 +153,7 @@ Future: ML pipeline for predictive irrigation
 ---
 
 📁 Repository Structure
-
+```
 .
 ├── app.py                  # Flask entrypoint
 ├── db.py                   # SQLite connection handler
@@ -171,7 +171,7 @@ Future: ML pipeline for predictive irrigation
 ├── static/                 # CSS
 ├── dev_tests/              # Experimental scripts (no secrets)
 └── arduino_secrets.example.h
-
+```
 
 ---
 
@@ -180,15 +180,15 @@ Future: ML pipeline for predictive irrigation
 Secrets are not stored in the repository.
 
 Arduino credentials go in:
-
+```
 arduino_secrets.h
-
+```
 (ignored via .gitignore)
 
 Template provided:
-
+```
 arduino_secrets.example.h
-
+```
 Python API keys should be stored in environment variables (.env not committed).
 
 
@@ -197,29 +197,29 @@ Python API keys should be stored in environment variables (.env not committed).
 🚀 Quick Start (Raspberry Pi)
 
 1️⃣ Install system dependencies
-
+```
 sudo apt update
 sudo apt install -y git python3-venv python3-pip sqlite3
-
+```
 2️⃣ Clone the repository
-
+```
 git clone https://github.com/Katolux/Watering-System.git
 cd Watering-System
-
+```
 3️⃣ Create virtual environment
-
+```
 python3 -m venv .venv
 source .venv/bin/activate
 pip install -r requirements.txt
-
+```
 4️⃣ Run the application
-
+```
 python3 app.py
-
+```
 Access from another device on the same network:
-
+```
 http://<RASPBERRY_PI_IP>:5000
-
+```
 
 ---
 
