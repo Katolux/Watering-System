@@ -1,5 +1,5 @@
-🌱 GardenHUB – Autonomous IoT Watering System
-
+#🌱 GardenHUB – Autonomous IoT Watering System
+---
 A real-world IoT automation system designed to manage irrigation for a ~70 m² home garden using sensor-driven logic, weather integration, and a Raspberry Pi backend.
 
 This project combines:
@@ -20,12 +20,12 @@ It is both a functional irrigation system and a structured engineering project.
 
 ---
 
-🌍 Context
+## 🌍 Context
 
-Location: Engelburg, St. Gallen, Switzerland
+**Location**: Engelburg, St. Gallen, Switzerland
 Garden size: ~70 m²
 
-Infrastructure:
+**Infrastructure**:
 
 7 raised beds
 
@@ -43,9 +43,9 @@ The system supports seasonal vegetable production (salads, tomatoes, onions, gar
 
 ---
 
-🎯 Project Goals
+## 🎯 Project Goals
 
-Phase 1 – Functional Automation (Current)
+### Phase 1 – Functional Automation (Current)
 
 Sensor-based moisture monitoring
 
@@ -60,7 +60,7 @@ Historical logging in SQLite
 Reliable data ingest from ESP32 nodes
 
 
-Phase 2 – Robust IoT Architecture
+### Phase 2 – Robust IoT Architecture
 
 Improve communication reliability
 
@@ -71,7 +71,7 @@ Better scheduling & fault tolerance
 Expand to 6 watering zones
 
 
-Phase 3 – ML-Assisted Irrigation
+### Phase 3 – ML-Assisted Irrigation
 
 Use historical moisture, weather, and watering events
 
@@ -85,9 +85,9 @@ Extend architecture to controlled environments (e.g., mushroom chambers)
 
 ---
 
-🏗 System Architecture
+## 🏗 System Architecture
 
-🧠 Central Controller
+### 🧠 Central Controller
 
 Raspberry Pi 4B
 
@@ -100,7 +100,7 @@ Flask backend
 SQLite database
 
 
-📡 Sensor Nodes
+### 📡 Sensor Nodes
 
 Arduino Nano ESP32
 
@@ -109,7 +109,7 @@ Wi-Fi communication (HTTP POST → Flask)
 DFRobot Waterproof Soil Moisture Sensor v2.0 (capacitive)
 
 
-💧 Irrigation Control
+### 💧 Irrigation Control
 
 24V AC solenoid valves (Hunter / RainBird – TBD)
 
@@ -120,7 +120,7 @@ Planned expansion: up to 6 zones
 Current test stage: 2–3 zones, 4–6 sensors
 
 
-🔌 Power System
+### 🔌 Power System
 
 Mains → 24V AC for valves
 
@@ -132,7 +132,7 @@ Relay isolation for valve actuation
 
 ---
 
-🖥 Software Stack
+### 🖥 Software Stack
 
 Backend: Python + Flask
 
@@ -152,7 +152,7 @@ Future: ML pipeline for predictive irrigation
 
 ---
 
-📁 Repository Structure
+### 📁 Repository Structure
 ```
 .
 ├── app.py                  # Flask entrypoint
@@ -175,7 +175,7 @@ Future: ML pipeline for predictive irrigation
 
 ---
 
-🔐 Security & Configuration
+### 🔐 Security & Configuration
 
 Secrets are not stored in the repository.
 
@@ -194,25 +194,25 @@ Python API keys should be stored in environment variables (.env not committed).
 
 ---
 
-🚀 Quick Start (Raspberry Pi)
+### 🚀 Quick Start (Raspberry Pi)
 
-1️⃣ Install system dependencies
+**1️⃣ Install system dependencies**
 ```
 sudo apt update
 sudo apt install -y git python3-venv python3-pip sqlite3
 ```
-2️⃣ Clone the repository
+**2️⃣ Clone the repository**
 ```
 git clone https://github.com/Katolux/Watering-System.git
 cd Watering-System
 ```
-3️⃣ Create virtual environment
+**3️⃣ Create virtual environment**
 ```
 python3 -m venv .venv
 source .venv/bin/activate
 pip install -r requirements.txt
 ```
-4️⃣ Run the application
+**4️⃣ Run the application**
 ```
 python3 app.py
 ```
@@ -223,7 +223,7 @@ http://<RASPBERRY_PI_IP>:5000
 
 ---
 
-🧠 Project Scope
+## 🧠 Project Scope
 
 This is a physical irrigation system deployed in a real garden environment.
 
@@ -245,7 +245,7 @@ The project focuses on backend systems, automation logic, and applied IoT engine
 
 ---
 
-📌 Roadmap
+## 📌 Roadmap
 
 [x] Basic sensor ingest
 
@@ -269,7 +269,7 @@ The project focuses on backend systems, automation logic, and applied IoT engine
 
 ---
 
-👨‍💻 Author
+## 👨‍💻 Author
 
 Alfonso Gómez-Jordana
 Switzerland 🇨🇭
