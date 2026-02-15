@@ -1,4 +1,4 @@
-#🌱 GardenHUB – Autonomous IoT Watering System
+🌱 GardenHUB – Autonomous IoT Watering System
 ---
 A real-world IoT automation system designed to manage irrigation for a ~70 m² home garden using sensor-driven logic, weather integration, and a Raspberry Pi backend.
 
@@ -148,7 +148,18 @@ Automation engine: custom watering logic module
 
 Future: ML pipeline for predictive irrigation
 
+## 📊 Data & Observability
+GardenHUB logs time-series events in SQLite to support traceability and future analytics:
 
+- sensor_readings (timestamp, node_id, zone, moisture, temp/humidity optional)
+- watering_events (timestamp, zone, duration, reason/manual/auto)
+- weather_snapshots (timestamp, forecast/rain probability/temp)
+- system_health (node last_seen, error counts — planned)
+
+This data model supports:
+- historical trend analysis
+- watering effectiveness evaluation
+- future ML features (predictive duration / anomaly detection)
 
 ---
 
