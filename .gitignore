@@ -7,3 +7,7 @@ garden_system.db
 .vscode/
 .idea/
 arduino_secrets.h
+
+.cache.sqlite
+*.sqlite
+
