@@ -1,2 +1,7 @@
 Flask>=3.0
 requests>=2.31
+openmeteo-requests
+pandas
+requests-cache
+retry-requests
+gunicorn

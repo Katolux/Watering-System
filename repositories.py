@@ -236,6 +236,17 @@ def get_today_moisture_slots():
 
     return result
 
+def get_recent_sensor_readings(limit=200):
+    with get_conn() as conn:
+        cur = conn.cursor()
+        cur.execute("""
+            SELECT timestamp, date, bed_id, sensor_id, slot, moisture_raw
+            FROM sensor_readings
+            ORDER BY timestamp DESC
+            LIMIT ?
+        """, (limit,))
+        return cur.fetchall()
+
 
 
 # -----------------------------
@@ -381,3 +392,15 @@ def log_watering_event(
                 note
             )
         )
+
+def get_recent_watering_events(limit=100):
+    with get_conn() as conn:
+        cur = conn.cursor()
+        cur.execute("""
+            SELECT timestamp, bed_id, minutes, mode, source_decision_id, note
+            FROM watering_events
+            ORDER BY timestamp DESC
+            LIMIT ?
+        """, (limit,))
+        return cur.fetchall()
+

@@ -9,15 +9,33 @@ from system_events_repo import log_system_event
 
 
 def daily_average_moisture_from_slots(bed_slots: dict):
+    """
+    bed_slots values can be either:
+      - {"raw": int, "pct": int}
+      - or raw int (fallback)
+    Returns average RAW value as int.
+    """
     if not bed_slots:
         return None
 
-    values = [v for v in bed_slots.values() if v is not None]
+    values = []
+    for v in bed_slots.values():
+        if v is None:
+            continue
+
+        if isinstance(v, dict):
+            raw = v.get("raw")
+        else:
+            raw = v
+
+        if raw is not None:
+            values.append(raw)
 
     if not values:
         return None
 
     return round(sum(values) / len(values))
+
 
 
 def run_watering_engine():

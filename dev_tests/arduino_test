@@ -1,0 +1,48 @@
+// --- SIMPLE SOIL SENSOR TEST ---
+// Board: Arduino Nano ESP32
+// Sensor: DF Robot Gravity IP65 Capacitive Soil Moisture
+// Pin: A0
+
+const int SENSOR_PIN = A0;
+const int NUM_SAMPLES = 20;
+
+void setup() {
+  Serial.begin(115200);
+  delay(1000);
+
+  // Set ADC resolution to 12-bit (0–4095)
+  analogReadResolution(12);
+
+  Serial.println("=== Soil Sensor Test ===");
+  Serial.println("Reading raw + averaged values...");
+  Serial.println();
+}
+
+void loop() {
+  long sum = 0;
+  int minVal = 99999;
+  int maxVal = -1;
+
+  for (int i = 0; i < NUM_SAMPLES; i++) {
+    int value = analogRead(SENSOR_PIN);
+
+    sum += value;
+    if (value < minVal) minVal = value;
+    if (value > maxVal) maxVal = value;
+
+    delay(10);
+  }
+
+  int average = sum / NUM_SAMPLES;
+
+  Serial.print("Raw Avg: ");
+  Serial.print(average);
+
+  Serial.print(" | Min: ");
+  Serial.print(minVal);
+
+  Serial.print(" | Max: ");
+  Serial.println(maxVal);
+
+  delay(1000);
+}

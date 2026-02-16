@@ -7,7 +7,49 @@
   <button>Water now</button>
 </form>
 
-<p>(More watering options will go here)</p>
+<hr>
+<h3>🧠 Latest decision per bed</h3>
+
+<ul>
+{% for bed in beds %}
+  {% set bed_id = bed[0] %}
+  {% set d = latest_by_bed.get(bed_id) %}
+  <li>
+    <strong>{{ bed_id }}</strong>
+    {% if d %}
+      — {{ d[0] }} min
+      (soil ×{{ "%.2f"|format(d[1]) }}, temp ×{{ "%.2f"|format(d[2]) }}, rain ×{{ "%.2f"|format(d[3]) }})
+      <small style="color:#666;">{{ d[4][:10] }} {{ d[4][11:16] }}</small>
+    {% else %}
+      — <em>No decision yet</em>
+    {% endif %}
+  </li>
+{% endfor %}
+</ul>
+
+<hr>
+<h3>🚿 Watering events (recent)</h3>
+
+{% if events %}
+<table border="1" cellpadding="5">
+  <tr>
+    <th>Time</th><th>Bed</th><th>Minutes</th><th>Mode</th><th>Decision</th><th>Note</th>
+  </tr>
+  {% for e in events %}
+  <tr>
+    <td>{{ e[0][:10] }} {{ e[0][11:16] }}</td>
+    <td>{{ e[1] }}</td>
+    <td><strong>{{ e[2] }}</strong></td>
+    <td>{{ e[3] }}</td>
+    <td>{{ e[4] }}</td>
+    <td>{{ e[5] }}</td>
+  </tr>
+  {% endfor %}
+</table>
+{% else %}
+  <p><em>No watering events yet.</em></p>
+{% endif %}
+
 
 <a href="/">⬅ Back</a>
 {% endblock %}

@@ -29,6 +29,34 @@
   </tr>
   {% endfor %}
 </table>
+<hr>
+
+<h2>🌡️ Recent Sensor Readings</h2>
+
+{% if readings %}
+  <table border="1" cellpadding="5">
+    <tr>
+      <th>Timestamp</th>
+      <th>Date</th>
+      <th>Bed</th>
+      <th>Sensor</th>
+      <th>Slot</th>
+      <th>Moisture (raw)</th>
+    </tr>
+    {% for r in readings %}
+      <tr>
+        <td>{{ r[0][:10] }} {{ r[0][11:16] }}</td>
+        <td>{{ r[1] }}</td>
+        <td>{{ r[2] }}</td>
+        <td>{{ r[3] }}</td>
+        <td>{{ r[4] }}</td>
+        <td>{{ r[5] }}</td>
+      </tr>
+    {% endfor %}
+  </table>
+{% else %}
+  <p><em>No sensor readings recorded.</em></p>
+{% endif %}
 
 <a href="/">⬅ Back</a>
 {% endblock %}

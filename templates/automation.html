@@ -28,16 +28,18 @@
   <ul>
     {% for e in system_events %}
       <li>
-        <strong>{{ e.level }}</strong>
-        [{{ e.source }}]
-        {% if e.bed_id %}(bed {{ e.bed_id }}){% endif %}
-        – {{ e.message }}
+        <strong>{{ e[1] }}</strong>
+        [{{ e[2] }}]
+        {% if e[3] %}(bed {{ e[3] }}){% endif %}
+        – {{ e[4] }}
+        <br><small style="color:#666;">{{ e[0] }}</small>
       </li>
     {% endfor %}
   </ul>
 {% else %}
   <p><em>No system events recorded.</em></p>
 {% endif %}
+
 
 
 <a href="/">⬅ Back</a>

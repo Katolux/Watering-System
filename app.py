@@ -22,6 +22,10 @@ from repositories import (
     assign_sensor_to_bed,
     log_watering_event,
     should_refresh_weather,
+    get_recent_sensor_readings,
+    get_recent_watering_events,
+    get_latest_watering_decision,
+
 )
 
 from garden_logic import (
@@ -61,14 +65,28 @@ def refresh_weather_route():
 
 @app.route("/watering")
 def watering():
-    return render_template("watering.html")
+    beds = get_beds_with_plants()
+    latest_by_bed = {}
+    for bed_id, active, plant_name, min_m, max_m, base_minutes in beds:
+        latest_by_bed[bed_id] = get_latest_watering_decision(bed_id)
+
+    events = get_recent_watering_events(limit=100)
+
+    return render_template(
+        "watering.html",
+        beds=beds,
+        latest_by_bed=latest_by_bed,
+        events=events
+    )
 
 
 
 @app.route("/history")
 def history():
     weather = get_last_days_weather(days=10)
-    return render_template("history.html", weather=weather)
+    readings = get_recent_sensor_readings(limit=200)
+    return render_template("history.html", weather=weather, readings=readings)
+
 
 
 @app.route("/automation")
@@ -86,24 +104,33 @@ def automation_beds():
 
     enriched_beds = []
 
-    for bed_id, active, plant_name, min_m, max_m in beds_with_plants:
+    for bed_id, active, plant_name, min_m, max_m, base_minutes in beds_with_plants:
         bed_slots = slots_data.get(bed_id, {})
         slot_statuses = {}
-        watering_info =  None
+        watering_info = None  # optional: load latest decision if you want
 
         for slot in range(1, 7):
-            value = bed_slots.get(slot)
-            status = moisture_status(value, min_m, max_m)
-            slot_statuses[slot] = {
-            "value": value,
-            "pct": raw_to_pct(value) if value is not None else None,
-            "status": status
-}
+            entry = bed_slots.get(slot)
 
-        
+            raw_value = None
+            if isinstance(entry, dict):
+                raw_value = entry.get("raw")
+            elif isinstance(entry, int):
+                raw_value = entry
+
+            if raw_value is not None and min_m is not None and max_m is not None:
+                status = moisture_status(raw_value, min_m, max_m)
+            else:
+                status = "unknown"
+
+            slot_statuses[slot] = {
+                "value": raw_value,
+                "pct": raw_to_pct(raw_value) if raw_value is not None else None,
+                "status": status
+            }
+
         summary = overall_bed_status(slot_statuses)
         avg_moisture = daily_average_moisture_from_slots(bed_slots)
-
 
         enriched_beds.append({
             "bed_id": bed_id,
@@ -113,7 +140,6 @@ def automation_beds():
             "summary": summary,
             "avg_moisture": avg_moisture,
             "watering": watering_info,
-
         })
 
     return render_template(
@@ -121,6 +147,7 @@ def automation_beds():
         beds=enriched_beds,
         plants=get_all_plants()
     )
+
 
 @app.route("/automation/beds/add", methods=["POST"])
 def automation_beds_add():
@@ -205,6 +232,7 @@ def automation_sensors_assign():
         assign_sensor_to_bed(sensor_id, bed_id)
 
     return redirect(url_for("automation_sensors"))
+
 @app.route("/water_now", methods=["POST"])
 def water_now():
     bed_id = request.form.get("bed_id")
