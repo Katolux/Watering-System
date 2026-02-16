@@ -165,25 +165,31 @@ def automation_plants():
     return render_template("automation_plants.html", plants=plants)
 
 
-@app.route("/automation/plants/add", methods=["POST"])
-
-def automation_plants_add():
+@app.route("/automation/beds/assign", methods=["POST"])
+def automation_beds_assign():
+    bed_id = request.form.get("bed_id")
     plant_id = request.form.get("plant_id")
-    name = request.form.get("name")
-    min_m = request.form.get("min_moisture")
-    max_m = request.form.get("max_moisture")
-    base_minutes = request.form.get("base_minutes")
+    quantity = request.form.get("quantity")
 
-    if plant_id and name:
-        add_plant(
-            plant_id,
-            name,
-            int(min_m) if min_m else None,
-            int(max_m) if max_m else None,
-            int(base_minutes) if base_minutes else None
-        )
+    if bed_id and plant_id:
+        # get plant name from DB
+        plants = get_all_plants()
+        plant_name = None
+        for pid, name, *_ in plants:
+            if pid == plant_id:
+                plant_name = name
+                break
 
-    return redirect(url_for("automation_plants"))
+        if plant_name:
+            assign_plant_to_bed(
+                bed_id,
+                plant_id,
+                plant_name,
+                int(quantity) if quantity else 1
+            )
+
+    return redirect(url_for("automation_beds"))
+
 
 @app.route("/automation/beds/assign", methods=["POST"])
 def automation_beds_assign():

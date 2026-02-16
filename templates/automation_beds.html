@@ -47,13 +47,14 @@
 
 <label>
   Plant:
-  <select name="plant" required>
+  <select name="plant_id" required>
     {% for plant in plants %}
-      <option value="{{ plant[0] }}|{{ plant[1] }}">
-        {{ plant[0]|capitalize }} – {{ plant[1] }}
+      <option value="{{ plant[0] }}">
+        {{ plant[1] }}
       </option>
     {% endfor %}
   </select>
+
 </label>
 
 
