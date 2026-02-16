@@ -191,23 +191,6 @@ def automation_beds_assign():
     return redirect(url_for("automation_beds"))
 
 
-@app.route("/automation/beds/assign", methods=["POST"])
-def automation_beds_assign():
-    bed_id = request.form.get("bed_id")
-    plant_id = request.form.get("plant_id")
-    plant_name = request.form.get("plant_name")
-    quantity = request.form.get("quantity")
-
-    if bed_id and plant_id and plant_name:
-        assign_plant_to_bed(
-            bed_id,
-            plant_id,
-            plant_name,
-            int(quantity) if quantity else 1
-        )
-
-    return redirect(url_for("automation_beds"))
-
 
 @app.route("/automation/sensors")
 def automation_sensors():
