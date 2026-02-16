@@ -264,5 +264,5 @@ def automation_run_watering_engine():
 
 if __name__ == "__main__":
     init_all_tables()  # create ALL tables first
-    app.run(host="0.0.0.0", port=5000, debug=True)
+    app.run(host="0.0.0.0", port=5000, debug=False)
 
