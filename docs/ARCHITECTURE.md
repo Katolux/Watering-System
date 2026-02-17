@@ -1,11 +1,3 @@
-Got it. Below is an updated **`docs/ARCHITECTURE.md`** with:
-
-* An **ASCII diagram** (in a fenced code block you can paste directly).
-* Clear note that **minutes are an interim proxy**, and the long-term model is **water volume (L/day or mm/day)** with flow-based runtime conversion.
-* A couple of wording tweaks to keep it portfolio-accurate without locking you into today’s implementation.
-
----
-
 # GardenHUB Architecture
 
 GardenHUB is a small IoT system for garden monitoring and irrigation automation. It ingests sensor readings from Arduino/ESP nodes, stores them in SQLite, combines them with weather signals, and produces daily watering recommendations. A lightweight Flask UI provides monitoring and configuration.
