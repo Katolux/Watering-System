@@ -10,7 +10,7 @@ This project combines:
 
 📡 IoT communication
 
-📊 Data logging & ML experimentation
+📊 Data logging & future ML experimentation
 
 🧠 Automation logic design
 
@@ -20,10 +20,9 @@ It is both a functional irrigation system and a structured engineering project.
 
 ---
 
-## 🌍 Context
+## Context
 
-**Location**: Engelburg, St. Gallen, Switzerland
-Garden size: ~70 m²
+**Location**: Designed for a ~70 m² residential garden in Central Europe.
 
 **Infrastructure**:
 
@@ -43,7 +42,7 @@ The system supports seasonal vegetable production (salads, tomatoes, onions, gar
 
 ---
 
-## 🎯 Project Goals
+## Project Goals
 
 ### Phase 1 – Functional Automation (Current)
 
@@ -85,9 +84,9 @@ Extend architecture to controlled environments (e.g., mushroom chambers)
 
 ---
 
-## 🏗 System Architecture
+## System Architecture
 
-### 🧠 Central Controller
+### Central Controller
 
 Raspberry Pi 4B
 
@@ -100,7 +99,7 @@ Flask backend
 SQLite database
 
 
-### 📡 Sensor Nodes
+### Sensor Nodes
 
 Arduino Nano ESP32
 
@@ -109,7 +108,7 @@ Wi-Fi communication (HTTP POST → Flask)
 DFRobot Waterproof Soil Moisture Sensor v2.0 (capacitive)
 
 
-### 💧 Irrigation Control
+### Irrigation Control
 
 24V AC solenoid valves (Hunter / RainBird – TBD)
 
@@ -120,7 +119,7 @@ Planned expansion: up to 6 zones
 Current test stage: 2–3 zones, 4–6 sensors
 
 
-### 🔌 Power System
+### Power System
 
 Mains → 24V AC for valves
 
@@ -132,7 +131,7 @@ Relay isolation for valve actuation
 
 ---
 
-### 🖥 Software Stack
+### Software Stack
 
 Backend: Python + Flask
 
@@ -142,13 +141,16 @@ Communication: HTTP POST (future: MQTT)
 
 Weather API: Open-Meteo
 
+Scheduler: standalone Python process (morning execution window)
+
+
 Plant configuration: JSON-based profiles
 
 Automation engine: custom watering logic module
 
 Future: ML pipeline for predictive irrigation
 
-## 📊 Data & Observability
+## Data & Observability
 GardenHUB logs time-series events in SQLite to support traceability and future analytics:
 
 - sensor_readings (timestamp, node_id, zone, moisture, temp/humidity optional)
@@ -163,7 +165,7 @@ This data model supports:
 
 ---
 
-### 📁 Repository Structure
+### Repository Structure
 ```
 .
 ├── app.py                  # Flask entrypoint
@@ -186,7 +188,7 @@ This data model supports:
 
 ---
 
-### 🔐 Security & Configuration
+### Security & Configuration
 
 Secrets are not stored in the repository.
 
@@ -205,7 +207,7 @@ Python API keys should be stored in environment variables (.env not committed).
 
 ---
 
-### 🚀 Quick Start (Raspberry Pi)
+### Quick Start (Raspberry Pi)
 
 **1️⃣ Install system dependencies**
 ```
@@ -234,7 +236,7 @@ http://<RASPBERRY_PI_IP>:5000
 
 ---
 
-## 🧠 Project Scope
+## Project Scope
 
 This is a physical irrigation system deployed in a real garden environment.
 
@@ -256,31 +258,31 @@ The project focuses on backend systems, automation logic, and applied IoT engine
 
 ---
 
-## 📌 Roadmap
+## Roadmap
 
-[x] Basic sensor ingest
+- [x] Basic sensor ingest
 
-[x] Database logging
+- [x] Database logging
 
-[x] Web UI for monitoring
+- [x] Web UI for monitoring
 
-[x] Manual watering trigger
+- [x] Manual watering trigger
 
-[ ] Valve control integration
+- [ ] Valve control integration
 
-[ ] MQTT-based communication
+- [ ] MQTT-based communication
 
-[ ] Node health monitoring
+- [ ] Node health monitoring
 
-[ ] Predictive ML irrigation model
+- [ ] Predictive ML irrigation model
 
-[ ] Mushroom growth chamber integration
+- [ ] Mushroom growth chamber integration
 
 
 
 ---
 
-## 👨‍💻 Author
+## Author
 
 Alfonso Gómez-Jordana
 Switzerland 🇨🇭
