@@ -1,51 +1,107 @@
-{% extends "base.html" %}
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Plant Encyclopedia</title>
+</head>
+<body>
+  <h1>🌿 Plant Encyclopedia</h1>
 
-{% block content %}
-<h2>🌱 Plants Management</h2>
+  <p><a href="/automation">← Back to Automation</a></p>
 
-<h3>Add new plant</h3>
+  <h2>Plant Management</h2>
 
-<form method="post" action="/automation/plants/add">
-  <label>Plant ID:
-    <input type="text" name="plant_id" required>
-  </label><br><br>
+  <p>
+    <a href="/automation/plants/add">Add new plant</a> |
+    <a href="/automation/plants/add-variety">Add variety</a>
+  </p>
 
-  <label>Name:
-    <input type="text" name="name" required>
-  </label><br><br>
+  <form method="post" action="/automation/plants/edit-select">
+    <label>Edit plant:
+      <select name="plant_id" required>
+        {% for p in plants %}
+          <option value="{{ p.plant_id }}">{{ p.name }}</option>
+        {% endfor %}
+      </select>
+    </label>
+    <button type="submit">Edit selected plant</button>
+  </form>
 
-  <label>Min moisture:
-    <input type="number" name="min_moisture">
-  </label><br><br>
+  <br>
 
-  <label>Max moisture:
-    <input type="number" name="max_moisture">
-  </label><br><br>
+  <form method="post" action="/automation/plants/delete-select">
+    <label>Delete plant:
+      <select name="plant_id" required>
+        {% for p in plants %}
+          <option value="{{ p.plant_id }}">{{ p.name }}</option>
+        {% endfor %}
+      </select>
+    </label>
+    <button type="submit">Delete selected plant</button>
+  </form>
 
-  <label>
-  Base watering (min):
-  <input type="number" name="base_minutes" min="1" required>
-  </label><br><br>
+  <hr>
 
-  <button type="submit">Add plant</button>
-</form>
+  {% if plants %}
+    <table border="1" cellpadding="6" cellspacing="0">
+      <tr>
+        <th>Plant</th>
+        <th>Type</th>
+        <th>Water need</th>
+        <th>Sow indoors</th>
+        <th>Sow outdoors</th>
+        <th>Transplant out</th>
+        <th>Harvest</th>
+        <th>Details</th>
+      </tr>
 
-<hr>
-
-<h3>Existing plants</h3>
-<ul>
-  {% set current_family = None %}
-  {% for p in plants %}
-    {% if p[0] != current_family %}
-      <li><strong>{{ p[0]|capitalize }}</strong></li>
-      {% set current_family = p[0] %}
-    {% endif %}
-    <li style="margin-left: 20px;">
-      {{ p[1] }} — {{ p[2] }}–{{ p[3] }}
-    </li>
-  {% endfor %}
-</ul>
-
-
-<a href="/automation">⬅ Back</a>
-{% endblock %}
+      {% for p in plants %}
+      <tr>
+        <td>
+          {% if p.emoji %}{{ p.emoji }} {% endif %}
+          {{ p.name }}
+        </td>
+        <td>
+          {{ p.category or "" }}
+          {% if p.family %}<br><small>{{ p.family }}</small>{% endif %}
+        </td>
+        <td>{{ p.water_need or "" }}</td>
+        <td>
+          {% if p.sow_indoors %}
+            {{ p.sow_indoors | join(", ") }}
+          {% else %}
+            -
+          {% endif %}
+        </td>
+        <td>
+          {% if p.sow_outdoors %}
+            {{ p.sow_outdoors | join(", ") }}
+          {% else %}
+            -
+          {% endif %}
+        </td>
+        <td>
+          {% if p.transplant_out %}
+            {{ p.transplant_out | join(", ") }}
+          {% else %}
+            -
+          {% endif %}
+        </td>
+        <td>
+          {% if p.harvest %}
+            {{ p.harvest | join(", ") }}
+          {% else %}
+            -
+          {% endif %}
+        </td>
+        <td>
+          <a href="/automation/plants/{{ p.plant_id }}">View</a>
+        </td>
+      </tr>
+      {% endfor %}
+    </table>
+  {% else %}
+    <p><em>No plants found.</em></p>
+  {% endif %}
+</body>
+</html>

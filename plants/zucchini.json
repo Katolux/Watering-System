@@ -1,80 +1,69 @@
 {
-  "plant_id": "zucchini",
-  "common_name": "Zucchini",
-  "scientific_name": "Cucurbita pepo",
+  "schema_version": 1,
+  "id": "zucchini",
+  "names": { "common": "Zucchini (Courgette)", "scientific": "Cucurbita pepo", "de": "Zucchini" },
+  "category": "vegetable",
+  "family": "Cucurbitaceae",
 
-  "defaults": {
-    "watering": {
-      "water_need": "high",
-      "moisture_targets": {
-        "min_moisture": 45,
-        "max_moisture": 65
-      },
-      "base_minutes": 30,
-      "mulch_recommended": true
-    },
+  "ui": { "icon_key": "zucchini", "emoji": "🥒", "photo_key": "zucchini_01" },
 
-    "tolerances": {
-      "drought": "low",
-      "heat": "medium",
-      "waterlogging": "low"
-    },
+  "spacing_cm": { "in_row": 80, "between_rows": 100 },
+  "support": { "needs_trellis": false, "height_cm_range": [40, 80], "notes": "Bush plant with very large footprint." },
 
-    "root_depth_class": "shallow_to_medium",
+  "roots": { "depth_cm_range": [20, 60], "type": "fibrous" },
 
-    "calendar": {
-      "weeks": {
-        "sow_indoor": [14, 18],
-        "sow_outdoor": [18, 22],
-        "transplant_outdoor": [20, 24],
-        "harvest": [26, 40]
-      },
-      "months": {
-        "sow_indoor": [4],
-        "sow_outdoor": [5],
-        "transplant_outdoor": [5, 6],
-        "harvest": [6, 10]
-      }
-    },
+  "soil": {
+    "preferred_textures": ["loam", "humus_rich"],
+    "drainage": "good",
+    "pH_range": [6.0, 7.2],
+    "organic_matter": "likes_high",
+    "notes": "High organic matter and steady moisture = best yields."
+  },
 
-    "spacing_cm": {
-      "between_rows": [80, 120],
-      "in_row": [60, 100]
-    },
-
-    "germination": {
-      "days": [7, 10],
-      "temp_c": [18, 25]
-    },
-
-    "nutrition": {
-      "need": "high",
-      "stage_plan": [
-        { "stage": "vegetative", "focus": "balanced" },
-        { "stage": "flowering", "focus": "higher_k" },
-        { "stage": "fruiting", "focus": "higher_k" }
-      ]
-    },
-
-    "actions": [
-      "direct_sow_or_transplant",
-      "ensure_pollination",
-      "harvest_regularly",
-      "fertilize_during_production"
-    ],
-
-    "resistance": {
-      "HR": [],
-      "IR": []
+  "water_need": {
+    "overall": "high",
+    "stage_profile": {
+      "establishment": "high",
+      "vegetative": "medium",
+      "flowering_fruiting": "high",
+      "finish": "medium"
     }
   },
-  
 
+  "irrigation": { "sensitivity": "drought_sensitive", "mulch_helpful": true },
 
-    "meta": {
-    "region_basis": "CH",
-    "sources": ["Landi/UFA voucher", "Samen Mauser"],
-    "calendar_policy": "months are source-of-truth; weeks are derived for planning and may be approximate"
-  }
+  "calendar": {
+    "base": {
+      "sow_indoors": { "weeks_relative_to_last_frost": [-4, -2], "months": [4], "notes": "Start in larger pots; avoid root disturbance." },
+      "sow_outdoors": { "weeks_relative_to_last_frost": [2, 6], "months": [5, 6], "notes": "Soil must be warm." },
+      "transplant_out": { "weeks_relative_to_last_frost": [3, 6], "months": [5, 6] },
+      "harvest": { "weeks_relative_to_last_frost": [10, 18], "months": [7, 8, 9], "notes": "Pick small and often for continuous production." }
+    },
+    "days_to_maturity_range": [45, 65]
+  },
 
+  "nutrition": {
+    "feeder": "heavy",
+    "emphasis": "balanced",
+    "schedule_hint": "every_14_days",
+    "notes": "Top-dress compost; regular feeding once flowering starts."
+  },
+
+  "care": {
+    "pruning": { "required": false, "method": "thin", "notes": "Remove damaged/mildewed leaves to improve airflow." },
+    "pollination": { "type": "insect", "aid_notes": "If fruit aborts, hand-pollinate: male flower → female flower." }
+  },
+
+  "companions": {
+    "good": [
+      { "plant_id": "calendula", "reason": "Supports beneficial insects and general garden health.", "confidence": "medium", "mechanism": "pollinator" },
+      { "plant_id": "onion", "reason": "Alliums may help deter some pests; works on bed edges.", "confidence": "low", "mechanism": "pest" },
+      { "plant_id": "garlic", "reason": "Similar benefit to onion; good border plant.", "confidence": "low", "mechanism": "pest" }
+    ],
+    "avoid": [
+      { "plant_id": "cucumber", "reason": "Too many cucurbits together in small beds increases mildew and crowding.", "confidence": "medium", "mechanism": "disease" }
+    ]
+  },
+
+  "varieties": []
 }

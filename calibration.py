@@ -1,7 +1,7 @@
 # calibration.py
 
-WET_REF_RAW = 2323     # wet soil after 5–10 min drain (your pot test)
-DRY_REF_RAW = 3500     # dry soil in your pot mix
+WET_REF_RAW = 1200     # wet soil after 5–10 min drain (your pot test)
+DRY_REF_RAW = 2000     # dry soil in your pot mix
 OUT_OF_SOIL_RAW = 3600 # air/unplugged range
 
 def raw_to_pct(raw: int, wet: int = WET_REF_RAW, dry: int = DRY_REF_RAW) -> int:

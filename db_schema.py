@@ -8,41 +8,108 @@ def init_beds_and_sensors_tables():
         cur.execute("""
             CREATE TABLE IF NOT EXISTS beds (
                 bed_id TEXT PRIMARY KEY,
+                zone_id TEXT NOT NULL,
+                active INTEGER DEFAULT 1,
+                FOREIGN KEY (zone_id) REFERENCES zones(zone_id)
+            )
+            """)
+        cur.execute("""
+            CREATE TABLE IF NOT EXISTS zones (
+                zone_id TEXT PRIMARY KEY,
+                name TEXT,
                 active INTEGER DEFAULT 1
             )
-        """)
-
+            """)
         cur.execute("""
             CREATE TABLE IF NOT EXISTS sensors (
                 sensor_id TEXT PRIMARY KEY,
-                bed_id TEXT,
+                bed_id TEXT NOT NULL,
+                sensor_type TEXT DEFAULT 'moisture',
+                depth_cm INTEGER,
                 active INTEGER DEFAULT 1,
                 FOREIGN KEY (bed_id) REFERENCES beds(bed_id)
-            )
-        """)
+)
+""")
 
         cur.execute("""
             CREATE TABLE IF NOT EXISTS plants (
                 plant_id TEXT PRIMARY KEY,
                 name TEXT NOT NULL,
+                scientific_name TEXT,
+                category TEXT,
+                family TEXT,
+
+                icon_key TEXT,
+                emoji TEXT,
+                photo_key TEXT,
+
+                spacing_in_row_cm INTEGER,
+                spacing_between_rows_cm INTEGER,
+
+                root_depth_min_cm INTEGER,
+                root_depth_max_cm INTEGER,
+                root_type TEXT,
+
+                water_need_overall TEXT,
+                irrigation_sensitivity TEXT,
+                mulch_helpful INTEGER,
+
                 min_moisture INTEGER,
                 max_moisture INTEGER,
-                base_minutes INTEGER
+                base_minutes INTEGER,
+
+                soil_json TEXT,
+                calendar_json TEXT,
+                nutrition_json TEXT,
+                care_json TEXT,
+
+                plant_json TEXT,
+                schema_version INTEGER DEFAULT 1
             )
-        """)
+            """)
+        cur.execute("""
+            CREATE TABLE IF NOT EXISTS plant_varieties (
+                plant_id TEXT NOT NULL,
+                variety_id TEXT NOT NULL,
+                name TEXT NOT NULL,
+                notes TEXT,
+                overrides_json TEXT NOT NULL,
+                resolved_json TEXT,
+                PRIMARY KEY (plant_id, variety_id),
+                FOREIGN KEY (plant_id) REFERENCES plants(plant_id)
+            )
+            """)
 
 
+        cur.execute("""
+            CREATE TABLE IF NOT EXISTS plant_companions (
+                plant_id TEXT NOT NULL,
+                other_plant_id TEXT NOT NULL,
+                relation TEXT NOT NULL,
+                reason TEXT,
+                confidence TEXT,
+                mechanism TEXT,
+                PRIMARY KEY (plant_id, other_plant_id, relation),
+                FOREIGN KEY (plant_id) REFERENCES plants(plant_id),
+                FOREIGN KEY (other_plant_id) REFERENCES plants(plant_id)
+            )
+            """)
+        
         cur.execute("""
             CREATE TABLE IF NOT EXISTS bed_plantings (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 bed_id TEXT NOT NULL,
                 plant_id TEXT NOT NULL,
-                plant_name TEXT NOT NULL,
+                variety_id TEXT,
                 quantity INTEGER DEFAULT 1,
+                planted_at TEXT,
+                removed_at TEXT,
+                overrides_json TEXT,
+                notes TEXT,
                 FOREIGN KEY (bed_id) REFERENCES beds(bed_id),
                 FOREIGN KEY (plant_id) REFERENCES plants(plant_id)
             )
-        """)
+            """)
 
         cur.execute("""
             CREATE TABLE IF NOT EXISTS system_events (
@@ -66,6 +133,7 @@ def init_watering_events_table():
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 timestamp TEXT,
                 date TEXT,
+                zone_id TEXT,
                 bed_id TEXT,
                 minutes INTEGER,
                 mode TEXT,
@@ -84,10 +152,10 @@ def init_watering_decisions_table():
         cur.execute("""
             CREATE TABLE IF NOT EXISTS watering_decisions (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
-                timestamp TEXT,
+               timestamp TEXT,
                 date TEXT,
+                zone_id TEXT,
                 bed_id TEXT,
-                plant_name TEXT,
                 avg_moisture INTEGER,
                 temp_max REAL,
                 precipitation REAL,
@@ -112,6 +180,7 @@ def init_sensor_readings_table():
                 sensor_id TEXT NOT NULL,
                 slot INTEGER NOT NULL,
                 moisture_raw INTEGER NOT NULL,
+                moisture_pct INTEGER NOT NULL,
                 UNIQUE (sensor_id, date, slot)
             )
         """)

@@ -113,10 +113,10 @@
     <br>
 
     <strong>Avg moisture today:</strong>
-    {% if bed.avg_moisture %}
-      {{ bed.avg_moisture }}
+    {% if bed.avg_moisture is not none %}
+      {{ bed.avg_moisture }}%
     {% else %}
-      n/a
+      no data
     {% endif %}
     <br>
 

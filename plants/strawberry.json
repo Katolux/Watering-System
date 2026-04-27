@@ -1,0 +1,60 @@
+{
+  "schema_version": 1,
+  "id": "strawberry",
+  "names": { "common": "Strawberry", "scientific": "Fragaria × ananassa", "de": "Erdbeere" },
+  "category": "fruit",
+  "family": "Rosaceae",
+
+  "ui": { "icon_key": "strawberry", "emoji": "🍓", "photo_key": "strawberry_01" },
+
+  "spacing_cm": { "in_row": 30, "between_rows": 40 },
+
+  "roots": { "depth_cm_range": [15, 30], "type": "fibrous" },
+
+  "soil": {
+    "preferred_textures": ["loam", "humus_rich"],
+    "drainage": "good",
+    "pH_range": [5.5, 6.5],
+    "organic_matter": "likes_high",
+    "notes": "Mulch helps keep fruit clean and reduces rot; avoid waterlogging."
+  },
+
+  "water_need": {
+    "overall": "medium",
+    "stage_profile": { "establishment": "high", "vegetative": "medium", "flowering_fruiting": "high", "finish": "medium" }
+  },
+
+  "irrigation": { "sensitivity": "balanced", "mulch_helpful": true },
+
+  "calendar": {
+    "base": {
+      "transplant_out": { "weeks_relative_to_last_frost": [-4, 10], "weeks_of_year": null, "months": [3, 4, 5, 6], "notes": "Plant crowns at soil level; avoid burying the crown." },
+      "harvest": { "weeks_relative_to_last_frost": [8, 20], "weeks_of_year": null, "months": [5, 6, 7, 8], "notes": "Main harvest depends on variety (June-bearing vs everbearing)." }
+    }
+  },
+
+  "nutrition": {
+    "feeder": "medium",
+    "emphasis": "K",
+    "schedule_hint": "monthly",
+    "notes": "Avoid heavy nitrogen during flowering; potassium supports fruiting."
+  },
+
+  "care": {
+    "pruning": { "required": false, "method": "cut_back", "notes": "Remove runners if you want more fruit; remove old leaves after harvest if needed. Mulch to reduce rot." },
+    "pollination": { "type": "insect", "aid_notes": "Pollinators improve fruit shape; encourage insects nearby." }
+  },
+
+  "companions": {
+    "good": [
+      { "plant_id": "onion", "reason": "Alliums can help deter some pests; practical border companion.", "confidence": "low", "mechanism": "pest" },
+      { "plant_id": "calendula", "reason": "Supports beneficial insects and biodiversity.", "confidence": "medium", "mechanism": "pollinator" },
+      { "plant_id": "lettuce", "reason": "Can be used as a short-term filler between young plants.", "confidence": "low", "mechanism": "space" }
+    ],
+    "avoid": [
+      { "plant_id": "cabbage", "reason": "Different pest complexes and bed management; not ideal in tight mixed plantings.", "confidence": "low", "mechanism": "unknown" }
+    ]
+  },
+
+  "varieties": []
+}

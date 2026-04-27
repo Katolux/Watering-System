@@ -1,0 +1,61 @@
+{
+  "schema_version": 1,
+  "id": "borage",
+  "names": { "common": "Borage", "scientific": "Borago officinalis", "de": "Borretsch" },
+  "category": "flower",
+  "family": "Boraginaceae",
+
+  "ui": { "icon_key": "borage", "emoji": "💠", "photo_key": "borage_01" },
+
+  "spacing_cm": { "in_row": 40, "between_rows": 50 },
+  "support": { "needs_trellis": false, "height_cm_range": [50, 90], "notes": "Can get large; best at bed edges. Self-seeds readily." },
+
+  "roots": { "depth_cm_range": [20, 50], "type": "taproot" },
+
+  "soil": {
+    "preferred_textures": ["loam", "sandy"],
+    "drainage": "good",
+    "pH_range": [6.0, 7.8],
+    "organic_matter": "medium",
+    "notes": "Very good pollinator plant; avoid transplanting if possible due to taproot."
+  },
+
+  "water_need": {
+    "overall": "low",
+    "stage_profile": { "establishment": "medium", "vegetative": "low", "flowering_fruiting": "low", "finish": "low" }
+  },
+
+  "irrigation": { "sensitivity": "balanced", "mulch_helpful": false },
+
+  "calendar": {
+    "base": {
+      "sow_outdoors": { "weeks_relative_to_last_frost": [-2, 12], "weeks_of_year": null, "months": [3, 4, 5, 6, 7], "notes": "Direct sow; can self-seed year to year." },
+      "harvest": { "weeks_relative_to_last_frost": [8, 28], "weeks_of_year": null, "months": [6, 7, 8, 9, 10], "notes": "Edible flowers; attracts pollinators strongly." }
+    }
+  },
+
+  "nutrition": {
+    "feeder": "light",
+    "emphasis": "balanced",
+    "schedule_hint": "none",
+    "notes": "No special feeding needed; too rich soil makes it floppy."
+  },
+
+  "care": {
+    "pruning": { "required": false, "method": "cut_back", "notes": "Stake if it flops; deadhead to reduce self-seeding if desired." },
+    "pollination": { "type": "insect", "aid_notes": "Excellent pollinator plant; increases insect activity in the garden." }
+  },
+
+  "companions": {
+    "good": [
+      { "plant_id": "strawberry", "reason": "Often grown nearby for pollinator support (traditional).", "confidence": "low", "mechanism": "pollinator" },
+      { "plant_id": "tomato", "reason": "Boosts pollinator/beneficial insect activity in the area.", "confidence": "low", "mechanism": "pollinator" },
+      { "plant_id": "cucumber", "reason": "Supports pollination for cucurbits.", "confidence": "low", "mechanism": "pollinator" }
+    ],
+    "avoid": [
+      { "plant_id": "lettuce", "reason": "Can shade/overcrowd lettuce in small beds if placed too close.", "confidence": "medium", "mechanism": "space" }
+    ]
+  },
+
+  "varieties": []
+}

@@ -1,0 +1,64 @@
+{
+  "schema_version": 1,
+  "id": "cucumber_pickling",
+  "names": { "common": "Cucumber (Pickling Type)", "scientific": "Cucumis sativus", "de": "Einlegegurke" },
+  "category": "vegetable",
+  "family": "Cucurbitaceae",
+
+  "ui": { "icon_key": "cucumber_pickling", "emoji": "🥒", "photo_key": "cucumber_pickling_01" },
+
+  "spacing_cm": { "in_row": 35, "between_rows": 90 },
+  "support": { "needs_trellis": true, "height_cm_range": [120, 220], "notes": "Trellis improves airflow and easier harvesting." },
+
+  "roots": { "depth_cm_range": [20, 60], "type": "fibrous" },
+
+  "soil": {
+    "preferred_textures": ["loam", "humus_rich"],
+    "drainage": "good",
+    "pH_range": [6.0, 7.0],
+    "organic_matter": "likes_high",
+    "notes": "Warm soil; steady moisture improves fruit quality."
+  },
+
+  "water_need": {
+    "overall": "high",
+    "stage_profile": { "establishment": "high", "vegetative": "medium", "flowering_fruiting": "high", "finish": "medium" }
+  },
+
+  "irrigation": { "sensitivity": "drought_sensitive", "mulch_helpful": true },
+
+  "calendar": {
+    "base": {
+      "sow_indoors": { "weeks_relative_to_last_frost": [-4, -2], "weeks_of_year": null, "months": [4] },
+      "sow_outdoors": { "weeks_relative_to_last_frost": [2, 6], "weeks_of_year": null, "months": [5, 6], "notes": "Soil must be warm." },
+      "transplant_out": { "weeks_relative_to_last_frost": [3, 6], "weeks_of_year": null, "months": [5, 6] },
+      "harvest": { "weeks_relative_to_last_frost": [10, 18], "weeks_of_year": null, "months": [7, 8, 9], "notes": "Harvest frequently for best pickling size." }
+    },
+    "days_to_maturity_range": [45, 65]
+  },
+
+  "nutrition": {
+    "feeder": "heavy",
+    "emphasis": "balanced",
+    "schedule_hint": "every_14_days",
+    "notes": "Feed regularly once flowering starts; avoid excessive nitrogen late."
+  },
+
+  "care": {
+    "pruning": { "required": false, "method": "pinch", "notes": "Optional: pinch side shoots if excessive vegetative growth; remove diseased leaves." },
+    "pollination": { "type": "insect", "aid_notes": "Hand pollinate if fruit aborts; encourage pollinator flowers nearby." }
+  },
+
+  "companions": {
+    "good": [
+      { "plant_id": "calendula", "reason": "Pollinator support.", "confidence": "medium", "mechanism": "pollinator" },
+      { "plant_id": "onion", "reason": "Alliums may help deter pests.", "confidence": "low", "mechanism": "pest" },
+      { "plant_id": "lettuce", "reason": "Efficient layering early season.", "confidence": "medium", "mechanism": "space" }
+    ],
+    "avoid": [
+      { "plant_id": "zucchini", "reason": "Dense cucurbit block increases mildew pressure.", "confidence": "medium", "mechanism": "disease" }
+    ]
+  },
+
+  "varieties": []
+}

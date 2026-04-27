@@ -1,0 +1,62 @@
+{
+  "schema_version": 1,
+  "id": "pea",
+  "names": { "common": "Pea", "scientific": "Pisum sativum", "de": "Erbse" },
+  "category": "vegetable",
+  "family": "Fabaceae",
+
+  "ui": { "icon_key": "pea", "emoji": "🫛", "photo_key": "pea_01" },
+
+  "spacing_cm": { "in_row": 5, "between_rows": 40 },
+  "support": { "needs_trellis": true, "height_cm_range": [60, 180], "notes": "Most varieties benefit from net/trellis support." },
+
+  "roots": { "depth_cm_range": [20, 60], "type": "mixed" },
+
+  "soil": {
+    "preferred_textures": ["loam"],
+    "drainage": "good",
+    "pH_range": [6.0, 7.5],
+    "organic_matter": "medium",
+    "notes": "Cool-season crop; dislikes hot weather."
+  },
+
+  "water_need": {
+    "overall": "medium",
+    "stage_profile": { "establishment": "medium", "vegetative": "medium", "flowering_fruiting": "high", "finish": "low" }
+  },
+
+  "irrigation": { "sensitivity": "balanced", "mulch_helpful": true },
+
+  "calendar": {
+    "base": {
+      "sow_outdoors": { "weeks_relative_to_last_frost": [-6, 4], "weeks_of_year": null, "months": [2, 3, 4, 5], "notes": "Early sowing works well in cool climates; later sowings suffer in heat." },
+      "harvest": { "weeks_relative_to_last_frost": [6, 16], "weeks_of_year": null, "months": [5, 6, 7] }
+    },
+    "days_to_maturity_range": [55, 80]
+  },
+
+  "nutrition": {
+    "feeder": "light",
+    "emphasis": "balanced",
+    "schedule_hint": "none",
+    "notes": "Legume; avoid nitrogen-heavy feeding."
+  },
+
+  "care": {
+    "pruning": { "required": false, "method": "none", "notes": "Provide support; keep moist during flowering/pod fill." },
+    "pollination": { "type": "self", "aid_notes": "Self-pollinating." }
+  },
+
+  "companions": {
+    "good": [
+      { "plant_id": "carrot", "reason": "Different root zones; efficient bed use.", "confidence": "medium", "mechanism": "space" },
+      { "plant_id": "lettuce", "reason": "Works as understory in cool season.", "confidence": "medium", "mechanism": "space" },
+      { "plant_id": "calendula", "reason": "General beneficial insect support.", "confidence": "low", "mechanism": "pollinator" }
+    ],
+    "avoid": [
+      { "plant_id": "onion", "reason": "Alliums and legumes often cited as poor companions (mixed evidence).", "confidence": "low", "mechanism": "unknown" }
+    ]
+  },
+
+  "varieties": []
+}

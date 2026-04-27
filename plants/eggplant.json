@@ -1,0 +1,63 @@
+{
+  "schema_version": 1,
+  "id": "eggplant",
+  "names": { "common": "Eggplant (Aubergine)", "scientific": "Solanum melongena", "de": "Aubergine" },
+  "category": "vegetable",
+  "family": "Solanaceae",
+
+  "ui": { "icon_key": "eggplant", "emoji": "🍆", "photo_key": "eggplant_01" },
+
+  "spacing_cm": { "in_row": 50, "between_rows": 80 },
+  "support": { "needs_trellis": false, "height_cm_range": [60, 120], "notes": "Often needs staking due to heavy fruits." },
+
+  "roots": { "depth_cm_range": [30, 80], "type": "mixed" },
+
+  "soil": {
+    "preferred_textures": ["loam", "humus_rich"],
+    "drainage": "good",
+    "pH_range": [5.8, 6.8],
+    "organic_matter": "likes_high",
+    "notes": "Very warmth-loving; best in greenhouse or warm microclimate in CH."
+  },
+
+  "water_need": {
+    "overall": "medium",
+    "stage_profile": { "establishment": "high", "vegetative": "medium", "flowering_fruiting": "high", "finish": "medium" }
+  },
+
+  "irrigation": { "sensitivity": "balanced", "mulch_helpful": true },
+
+  "calendar": {
+    "base": {
+      "sow_indoors": { "weeks_relative_to_last_frost": [-12, -10], "weeks_of_year": null, "months": [2, 3], "notes": "Start early and warm." },
+      "transplant_out": { "weeks_relative_to_last_frost": [4, 8], "weeks_of_year": null, "months": [5, 6], "notes": "Prefer greenhouse; outdoors only in warm spots." },
+      "harvest": { "weeks_relative_to_last_frost": [16, 26], "weeks_of_year": null, "months": [7, 8, 9, 10] }
+    },
+    "days_to_maturity_range": [80, 120]
+  },
+
+  "nutrition": {
+    "feeder": "heavy",
+    "emphasis": "K",
+    "schedule_hint": "every_14_days",
+    "notes": "Rich soil + regular feeding once flowering starts; avoid letting plants dry out repeatedly."
+  },
+
+  "care": {
+    "pruning": { "required": false, "method": "thin", "notes": "Optional: remove weak shoots; support stems; remove heavily shaded leaves." },
+    "pollination": { "type": "self", "aid_notes": "In protected culture, gentle shaking can improve fruit set." }
+  },
+
+  "companions": {
+    "good": [
+      { "plant_id": "basil", "reason": "Pairs well in warm beds/greenhouse.", "confidence": "medium", "mechanism": "space" },
+      { "plant_id": "calendula", "reason": "Beneficial insects.", "confidence": "medium", "mechanism": "pollinator" },
+      { "plant_id": "onion", "reason": "Allium scent mixing may help pests.", "confidence": "low", "mechanism": "pest" }
+    ],
+    "avoid": [
+      { "plant_id": "potato", "reason": "Shared disease pressure (blight) and similar pests.", "confidence": "high", "mechanism": "disease" }
+    ]
+  },
+
+  "varieties": []
+}

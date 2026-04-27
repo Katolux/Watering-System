@@ -1,0 +1,62 @@
+{
+  "schema_version": 1,
+  "id": "leek",
+  "names": { "common": "Leek", "scientific": "Allium ampeloprasum var. porrum", "de": "Lauch" },
+  "category": "vegetable",
+  "family": "Amaryllidaceae",
+
+  "ui": { "icon_key": "leek", "emoji": "🥬", "photo_key": "leek_01" },
+
+  "spacing_cm": { "in_row": 15, "between_rows": 35 },
+
+  "roots": { "depth_cm_range": [20, 40], "type": "fibrous" },
+
+  "soil": {
+    "preferred_textures": ["loam", "silty"],
+    "drainage": "good",
+    "pH_range": [6.0, 7.5],
+    "organic_matter": "medium",
+    "notes": "Steady moisture supports thick stems; avoid waterlogging."
+  },
+
+  "water_need": {
+    "overall": "medium",
+    "stage_profile": { "establishment": "high", "vegetative": "medium", "flowering_fruiting": "low", "finish": "low" }
+  },
+
+  "irrigation": { "sensitivity": "balanced", "mulch_helpful": true },
+
+  "calendar": {
+    "base": {
+      "sow_indoors": { "weeks_relative_to_last_frost": [-14, -10], "weeks_of_year": null, "months": [1, 2], "notes": "Long season; start early." },
+      "transplant_out": { "weeks_relative_to_last_frost": [-2, 10], "weeks_of_year": null, "months": [3, 4, 5, 6] },
+      "harvest": { "weeks_relative_to_last_frost": [18, 40], "weeks_of_year": null, "months": [8, 9, 10, 11, 12, 1, 2] }
+    },
+    "days_to_maturity_range": [120, 180]
+  },
+
+  "nutrition": {
+    "feeder": "medium",
+    "emphasis": "N",
+    "schedule_hint": "monthly",
+    "notes": "Moderate nitrogen supports leaf/stem growth; stop heavy feeding late for better keeping."
+  },
+
+  "care": {
+    "pruning": { "required": true, "method": "cut_back", "notes": "Earth up (or plant deep) to blanch stems; keep weed pressure low." },
+    "pollination": { "type": "insect", "aid_notes": "Only relevant if letting plants flower for seed (biennial)." }
+  },
+
+  "companions": {
+    "good": [
+      { "plant_id": "carrot", "reason": "Allium/carrot pairing; scent mixing.", "confidence": "medium", "mechanism": "pest" },
+      { "plant_id": "lettuce", "reason": "Different root zones; tidy interplant.", "confidence": "medium", "mechanism": "space" },
+      { "plant_id": "calendula", "reason": "Beneficial insects.", "confidence": "low", "mechanism": "pollinator" }
+    ],
+    "avoid": [
+      { "plant_id": "bush_bean", "reason": "Alliums and legumes often cited as poor companions (mixed evidence).", "confidence": "low", "mechanism": "unknown" }
+    ]
+  },
+
+  "varieties": []
+}

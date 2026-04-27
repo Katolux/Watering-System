@@ -1,0 +1,61 @@
+{
+  "schema_version": 1,
+  "id": "rocket",
+  "names": { "common": "Rocket (Arugula)", "scientific": "Eruca sativa", "de": "Rucola" },
+  "category": "vegetable",
+  "family": "Brassicaceae",
+
+  "ui": { "icon_key": "rocket", "emoji": "🥬", "photo_key": "rocket_01" },
+
+  "spacing_cm": { "in_row": 10, "between_rows": 20 },
+
+  "roots": { "depth_cm_range": [10, 25], "type": "fibrous" },
+
+  "soil": {
+    "preferred_textures": ["loam", "humus_rich"],
+    "drainage": "medium",
+    "pH_range": [6.0, 7.5],
+    "organic_matter": "medium",
+    "notes": "Fast leaf crop; bolts in heat. Partial shade helps in summer."
+  },
+
+  "water_need": {
+    "overall": "medium",
+    "stage_profile": { "establishment": "high", "vegetative": "medium", "flowering_fruiting": "low", "finish": "low" }
+  },
+
+  "irrigation": { "sensitivity": "drought_sensitive", "mulch_helpful": true },
+
+  "calendar": {
+    "base": {
+      "sow_outdoors": { "weeks_relative_to_last_frost": [-6, 18], "weeks_of_year": null, "months": [2, 3, 4, 5, 6, 7, 8, 9], "notes": "Succession sow every 2–3 weeks." },
+      "harvest": { "weeks_relative_to_last_frost": [-2, 22], "weeks_of_year": null, "months": [3, 4, 5, 6, 7, 8, 9, 10], "notes": "Harvest young leaves for best texture." }
+    },
+    "days_to_maturity_range": [20, 45]
+  },
+
+  "nutrition": {
+    "feeder": "light",
+    "emphasis": "N",
+    "schedule_hint": "none",
+    "notes": "Light feeder; compost-rich soil is enough."
+  },
+
+  "care": {
+    "pruning": { "required": false, "method": "none", "notes": "Cut-and-come-again harvest; keep evenly moist to reduce bitterness." },
+    "pollination": { "type": "insect", "aid_notes": "Only relevant if letting it flower for seed." }
+  },
+
+  "companions": {
+    "good": [
+      { "plant_id": "lettuce", "reason": "Similar management; good for mixed salad beds.", "confidence": "medium", "mechanism": "space" },
+      { "plant_id": "radish", "reason": "Same fast cycle; good succession companions.", "confidence": "medium", "mechanism": "space" },
+      { "plant_id": "calendula", "reason": "Biodiversity and beneficial insects.", "confidence": "low", "mechanism": "pollinator" }
+    ],
+    "avoid": [
+      { "plant_id": "cabbage", "reason": "Not harmful, but concentrates brassicas in one bed (rotation/pest clustering).", "confidence": "low", "mechanism": "pest" }
+    ]
+  },
+
+  "varieties": []
+}

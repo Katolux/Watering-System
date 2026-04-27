@@ -1,0 +1,66 @@
+{
+  "schema_version": 1,
+  "id": "calendula",
+  "names": { "common": "Calendula (Pot Marigold)", "scientific": "Calendula officinalis", "de": "Ringelblume" },
+  "category": "flower",
+  "family": "Asteraceae",
+
+  "ui": { "icon_key": "calendula", "emoji": "🌼", "photo_key": "calendula_01" },
+
+  "spacing_cm": { "in_row": 25, "between_rows": 30 },
+
+  "support": { "needs_trellis": false, "height_cm_range": [30, 60], "notes": "Hardy annual; excellent for bed edges and beneficial insects." },
+
+  "roots": { "depth_cm_range": [15, 30], "type": "fibrous" },
+
+  "soil": {
+    "preferred_textures": ["loam", "sandy"],
+    "drainage": "medium",
+    "pH_range": [6.0, 7.5],
+    "organic_matter": "medium",
+    "notes": "Tolerant and easy; deadheading prolongs flowering."
+  },
+
+  "water_need": {
+    "overall": "low",
+    "stage_profile": {
+      "establishment": "medium",
+      "vegetative": "low",
+      "flowering_fruiting": "low",
+      "finish": "low"
+    }
+  },
+
+  "irrigation": { "sensitivity": "balanced", "mulch_helpful": false },
+
+  "calendar": {
+    "base": {
+      "sow_indoors": { "weeks_relative_to_last_frost": [-6, -2], "weeks_of_year": null, "months": [3, 4], "notes": "Optional; direct sow works very well." },
+      "sow_outdoors": { "weeks_relative_to_last_frost": [-2, 10], "weeks_of_year": null, "months": [3, 4, 5, 6] },
+      "harvest": { "weeks_relative_to_last_frost": [8, 24], "weeks_of_year": null, "months": [6, 7, 8, 9, 10], "notes": "Harvest flowers regularly; deadhead to extend bloom." }
+    }
+  },
+
+  "nutrition": {
+    "feeder": "light",
+    "emphasis": "balanced",
+    "schedule_hint": "none",
+    "notes": "Usually thrives with normal bed fertility; overfeeding makes soft growth."
+  },
+
+  "care": {
+    "pruning": { "required": false, "method": "cut_back", "notes": "Deadhead spent flowers to extend bloom; cut back if leggy." },
+    "pollination": { "type": "insect", "aid_notes": "Strong pollinator support; great for beneficial insects." }
+  },
+
+  "companions": {
+    "good": [
+      { "plant_id": "tomato", "reason": "Encourages beneficial insects in the tomato zone.", "confidence": "medium", "mechanism": "pollinator" },
+      { "plant_id": "cucumber", "reason": "Supports insect activity for cucumber pollination.", "confidence": "medium", "mechanism": "pollinator" },
+      { "plant_id": "lettuce", "reason": "Bed edge flower; supports biodiversity.", "confidence": "low", "mechanism": "pollinator" }
+    ],
+    "avoid": []
+  },
+
+  "varieties": []
+}

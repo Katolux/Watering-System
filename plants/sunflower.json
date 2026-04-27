@@ -1,0 +1,62 @@
+{
+  "schema_version": 1,
+  "id": "sunflower",
+  "names": { "common": "Sunflower", "scientific": "Helianthus annuus", "de": "Sonnenblume" },
+  "category": "flower",
+  "family": "Asteraceae",
+
+  "ui": { "icon_key": "sunflower", "emoji": "🌻", "photo_key": "sunflower_01" },
+
+  "spacing_cm": { "in_row": 35, "between_rows": 50 },
+  "support": { "needs_trellis": false, "height_cm_range": [80, 300], "notes": "Tall types may need staking in wind." },
+
+  "roots": { "depth_cm_range": [30, 150], "type": "taproot" },
+
+  "soil": {
+    "preferred_textures": ["loam"],
+    "drainage": "good",
+    "pH_range": [6.0, 7.8],
+    "organic_matter": "medium",
+    "notes": "Strong root; can tolerate some drought once established."
+  },
+
+  "water_need": {
+    "overall": "medium",
+    "stage_profile": { "establishment": "high", "vegetative": "medium", "flowering_fruiting": "medium", "finish": "low" }
+  },
+
+  "irrigation": { "sensitivity": "balanced", "mulch_helpful": false },
+
+  "calendar": {
+    "base": {
+      "sow_outdoors": { "weeks_relative_to_last_frost": [0, 8], "weeks_of_year": null, "months": [4, 5, 6], "notes": "Direct sow after frost danger; dislikes root disturbance." },
+      "harvest": { "weeks_relative_to_last_frost": [16, 28], "weeks_of_year": null, "months": [8, 9, 10], "notes": "Harvest heads when backs turn yellow and seeds harden." }
+    },
+    "days_to_maturity_range": [70, 120]
+  },
+
+  "nutrition": {
+    "feeder": "medium",
+    "emphasis": "balanced",
+    "schedule_hint": "monthly",
+    "notes": "Moderate feeder; too much N makes weak stems."
+  },
+
+  "care": {
+    "pruning": { "required": false, "method": "none", "notes": "Stake tall types; protect seedlings from slugs/birds." },
+    "pollination": { "type": "insect", "aid_notes": "Very good for pollinators; boosts insect activity." }
+  },
+
+  "companions": {
+    "good": [
+      { "plant_id": "cucumber", "reason": "Pollinator support and partial windbreak potential.", "confidence": "low", "mechanism": "pollinator" },
+      { "plant_id": "sweetcorn", "reason": "Can be used as windbreak/edge structure in large beds.", "confidence": "low", "mechanism": "space" },
+      { "plant_id": "calendula", "reason": "More pollinators and beneficial insects.", "confidence": "low", "mechanism": "pollinator" }
+    ],
+    "avoid": [
+      { "plant_id": "lettuce", "reason": "Tall sunflowers can shade lettuce easily in small beds.", "confidence": "medium", "mechanism": "space" }
+    ]
+  },
+
+  "varieties": []
+}

@@ -1,0 +1,62 @@
+{
+  "schema_version": 1,
+  "id": "kale",
+  "names": { "common": "Kale", "scientific": "Brassica oleracea var. sabellica", "de": "Grünkohl" },
+  "category": "vegetable",
+  "family": "Brassicaceae",
+
+  "ui": { "icon_key": "kale", "emoji": "🥬", "photo_key": "kale_01" },
+
+  "spacing_cm": { "in_row": 45, "between_rows": 60 },
+
+  "roots": { "depth_cm_range": [30, 60], "type": "mixed" },
+
+  "soil": {
+    "preferred_textures": ["loam", "humus_rich"],
+    "drainage": "good",
+    "pH_range": [6.5, 7.5],
+    "organic_matter": "likes_high",
+    "notes": "Hardy crop; flavor improves after cool weather."
+  },
+
+  "water_need": {
+    "overall": "medium",
+    "stage_profile": { "establishment": "high", "vegetative": "medium", "flowering_fruiting": "low", "finish": "low" }
+  },
+
+  "irrigation": { "sensitivity": "balanced", "mulch_helpful": true },
+
+  "calendar": {
+    "base": {
+      "sow_indoors": { "weeks_relative_to_last_frost": [-10, -4], "weeks_of_year": null, "months": [2, 3, 4] },
+      "transplant_out": { "weeks_relative_to_last_frost": [-2, 10], "weeks_of_year": null, "months": [3, 4, 5, 6], "notes": "Tolerates cool planting well." },
+      "harvest": { "weeks_relative_to_last_frost": [10, 32], "weeks_of_year": null, "months": [6, 7, 8, 9, 10, 11, 12] }
+    },
+    "days_to_maturity_range": [60, 120]
+  },
+
+  "nutrition": {
+    "feeder": "heavy",
+    "emphasis": "N",
+    "schedule_hint": "monthly",
+    "notes": "Nitrogen supports leafy growth; avoid letting soil run dry repeatedly."
+  },
+
+  "care": {
+    "pruning": { "required": false, "method": "none", "notes": "Harvest lower leaves first; keep growing tip intact." },
+    "pollination": { "type": "insect", "aid_notes": "Only relevant if overwintering for seed (biennial)." }
+  },
+
+  "companions": {
+    "good": [
+      { "plant_id": "onion", "reason": "Alliums can help deter pests in brassica beds.", "confidence": "medium", "mechanism": "pest" },
+      { "plant_id": "calendula", "reason": "Beneficial insects; biodiversity.", "confidence": "medium", "mechanism": "pollinator" },
+      { "plant_id": "radish", "reason": "Fast filler/trap crop in brassica areas.", "confidence": "low", "mechanism": "pest" }
+    ],
+    "avoid": [
+      { "plant_id": "tomato", "reason": "Different seasonal management; not ideal in tight beds.", "confidence": "low", "mechanism": "unknown" }
+    ]
+  },
+
+  "varieties": []
+}

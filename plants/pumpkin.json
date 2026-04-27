@@ -1,0 +1,64 @@
+{
+  "schema_version": 1,
+  "id": "pumpkin",
+  "names": { "common": "Pumpkin / Winter Squash", "scientific": "Cucurbita maxima", "de": "Kürbis" },
+  "category": "vegetable",
+  "family": "Cucurbitaceae",
+
+  "ui": { "icon_key": "pumpkin", "emoji": "🎃", "photo_key": "pumpkin_01" },
+
+  "spacing_cm": { "in_row": 120, "between_rows": 150 },
+  "support": { "needs_trellis": false, "height_cm_range": [30, 60], "notes": "Vining plant; needs lots of horizontal space." },
+
+  "roots": { "depth_cm_range": [20, 80], "type": "fibrous" },
+
+  "soil": {
+    "preferred_textures": ["loam", "humus_rich"],
+    "drainage": "good",
+    "pH_range": [6.0, 7.2],
+    "organic_matter": "likes_high",
+    "notes": "Very heavy feeder; thrives on compost-rich beds."
+  },
+
+  "water_need": {
+    "overall": "high",
+    "stage_profile": { "establishment": "high", "vegetative": "medium", "flowering_fruiting": "high", "finish": "medium" }
+  },
+
+  "irrigation": { "sensitivity": "drought_sensitive", "mulch_helpful": true },
+
+  "calendar": {
+    "base": {
+      "sow_indoors": { "weeks_relative_to_last_frost": [-4, -2], "weeks_of_year": null, "months": [4], "notes": "Start in large pots; avoid transplant shock." },
+      "sow_outdoors": { "weeks_relative_to_last_frost": [2, 6], "weeks_of_year": null, "months": [5, 6], "notes": "Soil must be warm." },
+      "transplant_out": { "weeks_relative_to_last_frost": [3, 6], "weeks_of_year": null, "months": [5, 6] },
+      "harvest": { "weeks_relative_to_last_frost": [18, 30], "weeks_of_year": null, "months": [9, 10, 11], "notes": "Harvest when skins harden; cure for storage." }
+    },
+    "days_to_maturity_range": [90, 140]
+  },
+
+  "nutrition": {
+    "feeder": "heavy",
+    "emphasis": "balanced",
+    "schedule_hint": "every_14_days",
+    "notes": "Top-dress compost; feed during flowering/fruit development."
+  },
+
+  "care": {
+    "pruning": { "required": false, "method": "pinch", "notes": "Optional: pinch vines after 2–4 fruits set to focus ripening. Keep fruit off wet soil if possible." },
+    "pollination": { "type": "insect", "aid_notes": "If fruit aborts, hand-pollinate male → female flower in the morning." }
+  },
+
+  "companions": {
+    "good": [
+      { "plant_id": "calendula", "reason": "Supports beneficial insects and pollinators.", "confidence": "medium", "mechanism": "pollinator" },
+      { "plant_id": "onion", "reason": "Alliums can be used at bed edges; minor pest confusion.", "confidence": "low", "mechanism": "pest" },
+      { "plant_id": "radish", "reason": "Fast filler early before vines run.", "confidence": "low", "mechanism": "space" }
+    ],
+    "avoid": [
+      { "plant_id": "cucumber", "reason": "Too many cucurbits together increases mildew and crowding in small spaces.", "confidence": "medium", "mechanism": "disease" }
+    ]
+  },
+
+  "varieties": []
+}

@@ -1,0 +1,63 @@
+{
+  "schema_version": 1,
+  "id": "pepper",
+  "names": { "common": "Sweet Pepper (Bell Pepper)", "scientific": "Capsicum annuum", "de": "Paprika" },
+  "category": "vegetable",
+  "family": "Solanaceae",
+
+  "ui": { "icon_key": "pepper", "emoji": "🫑", "photo_key": "pepper_01" },
+
+  "spacing_cm": { "in_row": 40, "between_rows": 60 },
+  "support": { "needs_trellis": false, "height_cm_range": [40, 90], "notes": "Stake if heavily loaded with fruit." },
+
+  "roots": { "depth_cm_range": [20, 60], "type": "fibrous" },
+
+  "soil": {
+    "preferred_textures": ["loam", "humus_rich"],
+    "drainage": "good",
+    "pH_range": [6.0, 6.8],
+    "organic_matter": "likes_high",
+    "notes": "Warm soil and steady moisture. Sensitive to cold nights."
+  },
+
+  "water_need": {
+    "overall": "medium",
+    "stage_profile": { "establishment": "high", "vegetative": "medium", "flowering_fruiting": "high", "finish": "medium" }
+  },
+
+  "irrigation": { "sensitivity": "balanced", "mulch_helpful": true },
+
+  "calendar": {
+    "base": {
+      "sow_indoors": { "weeks_relative_to_last_frost": [-12, -8], "weeks_of_year": null, "months": [2, 3], "notes": "Needs longer indoor start than tomato in cool climates." },
+      "transplant_out": { "weeks_relative_to_last_frost": [3, 7], "weeks_of_year": null, "months": [5, 6], "notes": "Only when nights are consistently mild." },
+      "harvest": { "weeks_relative_to_last_frost": [14, 24], "weeks_of_year": null, "months": [7, 8, 9, 10] }
+    },
+    "days_to_maturity_range": [70, 110]
+  },
+
+  "nutrition": {
+    "feeder": "heavy",
+    "emphasis": "K",
+    "schedule_hint": "every_14_days",
+    "notes": "Balanced early; higher K during fruiting. Avoid excessive N (leafy growth, fewer fruits)."
+  },
+
+  "care": {
+    "pruning": { "required": false, "method": "thin", "notes": "Optional: remove crowded interior shoots/leaves; support branches as fruit loads increase." },
+    "pollination": { "type": "self", "aid_notes": "In greenhouse, gentle shaking can improve fruit set." }
+  },
+
+  "companions": {
+    "good": [
+      { "plant_id": "basil", "reason": "Works well in warm-season beds; good space use.", "confidence": "medium", "mechanism": "space" },
+      { "plant_id": "calendula", "reason": "Beneficial insects and biodiversity.", "confidence": "medium", "mechanism": "pollinator" },
+      { "plant_id": "onion", "reason": "Alliums may help with pest confusion.", "confidence": "low", "mechanism": "pest" }
+    ],
+    "avoid": [
+      { "plant_id": "cabbage", "reason": "Very different cultural needs; cabbage attracts pests and can complicate management nearby.", "confidence": "low", "mechanism": "unknown" }
+    ]
+  },
+
+  "varieties": []
+}

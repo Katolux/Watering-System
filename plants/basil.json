@@ -1,0 +1,66 @@
+{
+  "schema_version": 1,
+  "id": "basil",
+  "names": { "common": "Basil", "scientific": "Ocimum basilicum", "de": "Basilikum" },
+  "category": "herb",
+  "family": "Lamiaceae",
+
+  "ui": { "icon_key": "basil", "emoji": "🌿", "photo_key": "basil_01" },
+
+  "spacing_cm": { "in_row": 20, "between_rows": 25 },
+
+  "roots": { "depth_cm_range": [15, 30], "type": "fibrous" },
+
+  "soil": {
+    "preferred_textures": ["loam", "humus_rich"],
+    "drainage": "good",
+    "pH_range": [6.0, 7.5],
+    "organic_matter": "medium",
+    "notes": "Warm-season herb; dislikes cold, wet soil."
+  },
+
+  "water_need": {
+    "overall": "medium",
+    "stage_profile": {
+      "establishment": "medium",
+      "vegetative": "medium",
+      "flowering_fruiting": "medium",
+      "finish": "low"
+    }
+  },
+
+  "irrigation": { "sensitivity": "balanced", "mulch_helpful": true },
+
+  "calendar": {
+    "base": {
+      "sow_indoors": { "weeks_relative_to_last_frost": [-8, -4], "weeks_of_year": null, "months": [3, 4], "notes": "Start warm; pot-up if crowded." },
+      "sow_outdoors": { "weeks_relative_to_last_frost": [4, 10], "weeks_of_year": null, "months": [5, 6, 7], "notes": "Only when nights are warm." },
+      "harvest": { "weeks_relative_to_last_frost": [10, 22], "weeks_of_year": null, "months": [6, 7, 8, 9], "notes": "Harvest tops often for bushy growth." }
+    }
+  },
+
+  "nutrition": {
+    "feeder": "light",
+    "emphasis": "N",
+    "schedule_hint": "monthly",
+    "notes": "Too much feeding can reduce aroma; pinch regularly."
+  },
+
+  "care": {
+    "pruning": { "required": true, "method": "pinch", "notes": "Pinch above a node to force branching; remove flower buds for leaf production." },
+    "pollination": { "type": "insect", "aid_notes": "If allowed to flower, it strongly attracts pollinators." }
+  },
+
+  "companions": {
+    "good": [
+      { "plant_id": "tomato", "reason": "Classic pairing; fits at base if light allows.", "confidence": "medium", "mechanism": "space" },
+      { "plant_id": "cucumber", "reason": "Can work as underplanting if not shaded heavily.", "confidence": "low", "mechanism": "space" },
+      { "plant_id": "calendula", "reason": "Adds beneficial insects and biodiversity.", "confidence": "low", "mechanism": "pollinator" }
+    ],
+    "avoid": [
+      { "plant_id": "spinach", "reason": "Season mismatch: spinach prefers cool weather; basil thrives later.", "confidence": "medium", "mechanism": "space" }
+    ]
+  },
+
+  "varieties": []
+}

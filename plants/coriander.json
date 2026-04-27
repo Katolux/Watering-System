@@ -1,0 +1,60 @@
+{
+  "schema_version": 1,
+  "id": "coriander",
+  "names": { "common": "Coriander (Cilantro)", "scientific": "Coriandrum sativum", "de": "Koriander" },
+  "category": "herb",
+  "family": "Apiaceae",
+
+  "ui": { "icon_key": "coriander", "emoji": "🌿", "photo_key": "coriander_01" },
+
+  "spacing_cm": { "in_row": 10, "between_rows": 20 },
+
+  "roots": { "depth_cm_range": [15, 35], "type": "taproot" },
+
+  "soil": {
+    "preferred_textures": ["loam"],
+    "drainage": "good",
+    "pH_range": [6.0, 7.5],
+    "organic_matter": "medium",
+    "notes": "Bolts quickly in heat; best as cool-season or partial shade crop."
+  },
+
+  "water_need": {
+    "overall": "medium",
+    "stage_profile": { "establishment": "medium", "vegetative": "medium", "flowering_fruiting": "low", "finish": "low" }
+  },
+
+  "irrigation": { "sensitivity": "balanced", "mulch_helpful": true },
+
+  "calendar": {
+    "base": {
+      "sow_outdoors": { "weeks_relative_to_last_frost": [-6, 12], "weeks_of_year": null, "months": [2, 3, 4, 5, 6, 7], "notes": "Succession sow; partial shade helps in summer." },
+      "harvest": { "weeks_relative_to_last_frost": [4, 20], "weeks_of_year": null, "months": [4, 5, 6, 7, 8, 9] }
+    }
+  },
+
+  "nutrition": {
+    "feeder": "light",
+    "emphasis": "balanced",
+    "schedule_hint": "none",
+    "notes": "Minimal feeding needed; focus on moisture to delay bolting."
+  },
+
+  "care": {
+    "pruning": { "required": false, "method": "none", "notes": "Harvest regularly; let some bolt for coriander seeds if desired." },
+    "pollination": { "type": "insect", "aid_notes": "Flowering coriander attracts beneficial insects strongly." }
+  },
+
+  "companions": {
+    "good": [
+      { "plant_id": "tomato", "reason": "Can attract beneficial insects when flowering; fits at edges.", "confidence": "low", "mechanism": "pollinator" },
+      { "plant_id": "cabbage", "reason": "Flowering attracts beneficial insects; can help pest balance.", "confidence": "low", "mechanism": "pollinator" },
+      { "plant_id": "calendula", "reason": "Biodiversity and beneficial insects.", "confidence": "low", "mechanism": "pollinator" }
+    ],
+    "avoid": [
+      { "plant_id": "spinach", "reason": "Season/timing often overlaps poorly in tight beds (space management).", "confidence": "low", "mechanism": "space" }
+    ]
+  },
+
+  "varieties": []
+}

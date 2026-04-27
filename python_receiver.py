@@ -1,6 +1,6 @@
 from flask import Blueprint, request, jsonify
 from repositories import next_slot_for_today, save_reading
-from calibration import OUT_OF_SOIL_RAW
+from calibration import OUT_OF_SOIL_RAW, raw_to_pct
 
 receiver_bp = Blueprint("receiver", __name__)
 
@@ -31,6 +31,8 @@ def receive_soil():
     if moisture >= OUT_OF_SOIL_RAW:
         print(f"[SENSOR] ignored (out_of_soil) | bed={bed_id} | sensor={sensor_id} | raw={moisture}")
         return jsonify({"status": "ignored", "reason": "out_of_soil"}), 202
+    
+    moisture_pct = raw_to_pct(moisture)
 
     
 
@@ -47,7 +49,8 @@ def receive_soil():
         bed_id=bed_id,
         sensor_id=sensor_id,
         slot=slot,
-        moisture_raw=moisture
+        moisture_raw=moisture,
+        moisture_pct=moisture_pct
     )
 
     # --- debug log ---
@@ -56,7 +59,8 @@ def receive_soil():
         f"bed={bed_id} | "
         f"sensor={sensor_id} | "
         f"slot={slot} | "
-        f"moisture={moisture}"
+        f"moisture={moisture} |"
+        f" ({moisture_pct}%)"
     )
 
     return jsonify({"status": "ok"}), 200

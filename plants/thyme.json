@@ -1,0 +1,61 @@
+{
+  "schema_version": 1,
+  "id": "thyme",
+  "names": { "common": "Thyme", "scientific": "Thymus vulgaris", "de": "Thymian" },
+  "category": "herb",
+  "family": "Lamiaceae",
+
+  "ui": { "icon_key": "thyme", "emoji": "🌿", "photo_key": "thyme_01" },
+
+  "spacing_cm": { "in_row": 25, "between_rows": 30 },
+
+  "roots": { "depth_cm_range": [15, 40], "type": "fibrous" },
+
+  "soil": {
+    "preferred_textures": ["sandy", "loam"],
+    "drainage": "good",
+    "pH_range": [6.0, 8.0],
+    "organic_matter": "low_ok",
+    "notes": "Mediterranean perennial; prefers lean, well-drained soil."
+  },
+
+  "water_need": {
+    "overall": "low",
+    "stage_profile": { "establishment": "medium", "vegetative": "low", "flowering_fruiting": "low", "finish": "low" }
+  },
+
+  "irrigation": { "sensitivity": "wet_sensitive", "mulch_helpful": false },
+
+  "calendar": {
+    "base": {
+      "sow_indoors": { "weeks_relative_to_last_frost": [-10, -6], "weeks_of_year": null, "months": [2, 3], "notes": "Often easier from seedlings/cuttings." },
+      "transplant_out": { "weeks_relative_to_last_frost": [2, 10], "weeks_of_year": null, "months": [5, 6, 7] },
+      "harvest": { "weeks_relative_to_last_frost": [10, 32], "weeks_of_year": null, "months": [6, 7, 8, 9, 10, 11] }
+    }
+  },
+
+  "nutrition": {
+    "feeder": "light",
+    "emphasis": "balanced",
+    "schedule_hint": "none",
+    "notes": "Avoid heavy feeding; too rich soil reduces aroma."
+  },
+
+  "care": {
+    "pruning": { "required": false, "method": "cut_back", "notes": "Light trim after flowering to keep compact; avoid cutting into old wood too hard." },
+    "pollination": { "type": "insect", "aid_notes": "Flowers attract pollinators strongly." }
+  },
+
+  "companions": {
+    "good": [
+      { "plant_id": "cabbage", "reason": "Aromatic herb; can support biodiversity in brassica beds.", "confidence": "low", "mechanism": "pest" },
+      { "plant_id": "strawberry", "reason": "Good border herb; low water demand once established.", "confidence": "low", "mechanism": "space" },
+      { "plant_id": "calendula", "reason": "More beneficial insects and biodiversity.", "confidence": "low", "mechanism": "pollinator" }
+    ],
+    "avoid": [
+      { "plant_id": "celery", "reason": "Very different water needs; thyme dislikes consistently wet soil.", "confidence": "medium", "mechanism": "space" }
+    ]
+  },
+
+  "varieties": []
+}

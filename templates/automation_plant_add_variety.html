@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Add Variety</title>
+</head>
+<body>
+  <p><a href="/automation/plants">← Back to Plant Encyclopedia</a></p>
+
+  <h1>Add Variety</h1>
+
+  <p><em>Only the fields you fill in will become overrides.</em></p>
+
+  {% if error %}
+    <p style="color:red;"><strong>{{ error }}</strong></p>
+  {% endif %}
+
+  <form method="post">
+    <h2>Identity</h2>
+
+    <p>
+      <label>Parent plant<br>
+        <select name="plant_id" required>
+          {% for p in plants %}
+            <option value="{{ p[0] }}">{{ p[1] }}</option>
+          {% endfor %}
+        </select>
+      </label>
+    </p>
+
+    <p><label>Variety ID<br><input type="text" name="variety_id" required></label></p>
+    <p><label>Variety name<br><input type="text" name="name" required></label></p>
+    <p><label>Notes<br><textarea name="notes" rows="4" cols="60"></textarea></label></p>
+
+    <h2>Override fields (all optional)</h2>
+
+    <p><label>Sow indoors months (comma separated)<br><input type="text" name="sow_indoors_months"></label></p>
+    <p><label>Sow outdoors months (comma separated)<br><input type="text" name="sow_outdoors_months"></label></p>
+    <p><label>Transplant out months (comma separated)<br><input type="text" name="transplant_out_months"></label></p>
+    <p><label>Harvest months (comma separated)<br><input type="text" name="harvest_months"></label></p>
+
+    <p><label>Days to maturity min<br><input type="number" name="days_to_maturity_min"></label></p>
+    <p><label>Days to maturity max<br><input type="number" name="days_to_maturity_max"></label></p>
+
+    <p><label>Spacing in row (cm)<br><input type="number" name="spacing_in_row_cm"></label></p>
+    <p><label>Spacing between rows (cm)<br><input type="number" name="spacing_between_rows_cm"></label></p>
+
+    <p>
+      <label>
+        <input type="checkbox" name="support_needed" value="1">
+        Needs support
+      </label>
+    </p>
+    <p><label>Support notes<br><textarea name="support_notes" rows="3" cols="60"></textarea></label></p>
+
+    <p>
+      <label>
+        <input type="checkbox" name="pruning_required" value="1">
+        Pruning required
+      </label>
+    </p>
+    <p><label>Pruning method<br><input type="text" name="pruning_method"></label></p>
+    <p><label>Pruning notes<br><textarea name="pruning_notes" rows="3" cols="60"></textarea></label></p>
+
+    <p><button type="submit">Add variety</button></p>
+  </form>
+</body>
+</html>

@@ -1,0 +1,62 @@
+{
+  "schema_version": 1,
+  "id": "fennel_bulb",
+  "names": { "common": "Bulb Fennel", "scientific": "Foeniculum vulgare var. azoricum", "de": "Fenchel (Knollenfenchel)" },
+  "category": "vegetable",
+  "family": "Apiaceae",
+
+  "ui": { "icon_key": "fennel_bulb", "emoji": "🌿", "photo_key": "fennel_bulb_01" },
+
+  "spacing_cm": { "in_row": 25, "between_rows": 40 },
+
+  "roots": { "depth_cm_range": [20, 50], "type": "taproot" },
+
+  "soil": {
+    "preferred_textures": ["loam", "humus_rich"],
+    "drainage": "good",
+    "pH_range": [6.0, 7.5],
+    "organic_matter": "medium",
+    "notes": "Very sensitive to drought stress and heat spikes; consistent moisture is key for good bulbs."
+  },
+
+  "water_need": {
+    "overall": "high",
+    "stage_profile": { "establishment": "high", "vegetative": "high", "flowering_fruiting": "medium", "finish": "medium" }
+  },
+
+  "irrigation": { "sensitivity": "drought_sensitive", "mulch_helpful": true },
+
+  "calendar": {
+    "base": {
+      "sow_indoors": { "weeks_relative_to_last_frost": [-6, -2], "weeks_of_year": null, "months": [3, 4], "notes": "Transplant gently; avoid root disturbance." },
+      "sow_outdoors": { "weeks_relative_to_last_frost": [2, 14], "weeks_of_year": null, "months": [5, 6, 7], "notes": "Best for late-summer sowing to avoid bolting." },
+      "harvest": { "weeks_relative_to_last_frost": [14, 26], "weeks_of_year": null, "months": [7, 8, 9, 10] }
+    },
+    "days_to_maturity_range": [70, 110]
+  },
+
+  "nutrition": {
+    "feeder": "medium",
+    "emphasis": "balanced",
+    "schedule_hint": "monthly",
+    "notes": "Moderate feeding; consistent moisture matters more than heavy fertilizing."
+  },
+
+  "care": {
+    "pruning": { "required": false, "method": "none", "notes": "Keep evenly watered; drought stress encourages bolting and poor bulb formation." },
+    "pollination": { "type": "insect", "aid_notes": "If allowed to flower, attracts beneficial insects strongly." }
+  },
+
+  "companions": {
+    "good": [
+      { "plant_id": "lettuce", "reason": "Similar moisture needs; can be used as a short-term understory crop.", "confidence": "low", "mechanism": "space" },
+      { "plant_id": "calendula", "reason": "Beneficial insects and biodiversity.", "confidence": "low", "mechanism": "pollinator" },
+      { "plant_id": "radish", "reason": "Fast filler early, before fennel bulks up.", "confidence": "low", "mechanism": "space" }
+    ],
+    "avoid": [
+      { "plant_id": "tomato", "reason": "Competing space/water management in small beds; fennel is finicky.", "confidence": "low", "mechanism": "space" }
+    ]
+  },
+
+  "varieties": []
+}

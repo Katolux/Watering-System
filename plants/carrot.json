@@ -1,0 +1,66 @@
+{
+  "schema_version": 1,
+  "id": "carrot",
+  "names": { "common": "Carrot", "scientific": "Daucus carota subsp. sativus", "de": "Karotte" },
+  "category": "vegetable",
+  "family": "Apiaceae",
+
+  "ui": { "icon_key": "carrot", "emoji": "🥕", "photo_key": "carrot_01" },
+
+  "spacing_cm": { "in_row": 5, "between_rows": 25 },
+
+  "roots": { "depth_cm_range": [20, 40], "type": "taproot" },
+
+  "soil": {
+    "preferred_textures": ["sandy", "loam"],
+    "drainage": "good",
+    "pH_range": [6.0, 6.8],
+    "organic_matter": "medium",
+    "notes": "Loose, stone-free soil prevents forked roots. Avoid fresh manure."
+  },
+
+  "water_need": {
+    "overall": "medium",
+    "stage_profile": {
+      "establishment": "high",
+      "vegetative": "medium",
+      "flowering_fruiting": "low",
+      "finish": "low"
+    }
+  },
+
+  "irrigation": { "sensitivity": "balanced", "mulch_helpful": true },
+
+  "calendar": {
+    "base": {
+      "sow_outdoors": { "weeks_relative_to_last_frost": [-4, 10], "months": [3, 4, 5, 6], "notes": "Direct sow; keep seedbed consistently moist until emergence." },
+      "harvest": { "weeks_relative_to_last_frost": [10, 26], "months": [6, 7, 8, 9, 10], "notes": "Late sowings store better; harvest before hard frost." }
+    },
+    "days_to_maturity_range": [60, 110]
+  },
+
+  "nutrition": {
+    "feeder": "light",
+    "emphasis": "balanced",
+    "schedule_hint": "none",
+    "notes": "Too much nitrogen makes hairy roots and weak storage."
+  },
+
+  "care": {
+    "pruning": { "required": true, "method": "thin", "notes": "Thin gradually to final spacing for straight roots and good size." },
+    "pollination": { "type": "insect", "aid_notes": "Only relevant if growing for seed (biennial)." }
+  },
+
+  "companions": {
+    "good": [
+      { "plant_id": "onion", "reason": "Scent mixing; classic pairing.", "confidence": "medium", "mechanism": "pest" },
+      { "plant_id": "garlic", "reason": "Allium scent mixing; similar benefit to onions.", "confidence": "low", "mechanism": "pest" },
+      { "plant_id": "lettuce", "reason": "Different root zones; efficient bed use.", "confidence": "medium", "mechanism": "space" }
+    ],
+    "avoid": [
+      { "plant_id": "dill", "reason": "Can attract similar pests and may reduce growth when crowded (often debated).", "confidence": "low", "mechanism": "unknown" }
+    ]
+  },
+
+  "varieties": []
+}

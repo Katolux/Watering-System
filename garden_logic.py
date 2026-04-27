@@ -1,7 +1,7 @@
-
-
-
 def moisture_status(value, min_m, max_m):
+    """
+    value, min_m, max_m are moisture percentages.
+    """
     if value is None:
         return "N/A"
     if min_m is None or max_m is None:
@@ -11,6 +11,7 @@ def moisture_status(value, min_m, max_m):
     if value > max_m:
         return "HIGH"
     return "OK"
+
 
 def overall_bed_status(slot_statuses):
     statuses = [s["status"] for s in slot_statuses.values()]
@@ -26,6 +27,7 @@ def overall_bed_status(slot_statuses):
 
     return "OK"
 
+
 def daily_average_moisture(slot_statuses):
     values = [
         s["value"]
@@ -37,4 +39,3 @@ def daily_average_moisture(slot_statuses):
         return None
 
     return round(sum(values) / len(values))
-

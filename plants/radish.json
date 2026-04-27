@@ -1,0 +1,61 @@
+{
+  "schema_version": 1,
+  "id": "radish",
+  "names": { "common": "Radish", "scientific": "Raphanus sativus", "de": "Radieschen" },
+  "category": "vegetable",
+  "family": "Brassicaceae",
+
+  "ui": { "icon_key": "radish", "emoji": "🫜", "photo_key": "radish_01" },
+
+  "spacing_cm": { "in_row": 3, "between_rows": 15 },
+
+  "roots": { "depth_cm_range": [10, 20], "type": "taproot" },
+
+  "soil": {
+    "preferred_textures": ["sandy", "loam"],
+    "drainage": "good",
+    "pH_range": [6.0, 7.5],
+    "organic_matter": "medium",
+    "notes": "Fast crop; consistent moisture prevents pithy roots."
+  },
+
+  "water_need": {
+    "overall": "medium",
+    "stage_profile": { "establishment": "high", "vegetative": "medium", "flowering_fruiting": "low", "finish": "low" }
+  },
+
+  "irrigation": { "sensitivity": "drought_sensitive", "mulch_helpful": true },
+
+  "calendar": {
+    "base": {
+      "sow_outdoors": { "weeks_relative_to_last_frost": [-6, 16], "weeks_of_year": null, "months": [2, 3, 4, 5, 6, 7, 8], "notes": "Succession sow every 1–2 weeks." },
+      "harvest": { "weeks_relative_to_last_frost": [-2, 20], "weeks_of_year": null, "months": [3, 4, 5, 6, 7, 8, 9], "notes": "Harvest promptly for best texture." }
+    },
+    "days_to_maturity_range": [20, 40]
+  },
+
+  "nutrition": {
+    "feeder": "light",
+    "emphasis": "balanced",
+    "schedule_hint": "none",
+    "notes": "Too much nitrogen = leafy growth and poor roots."
+  },
+
+  "care": {
+    "pruning": { "required": false, "method": "thin", "notes": "Thin if crowded; keep evenly moist." },
+    "pollination": { "type": "insect", "aid_notes": "Only relevant if letting plants bolt for seed." }
+  },
+
+  "companions": {
+    "good": [
+      { "plant_id": "lettuce", "reason": "Fast filler crop between slower plants.", "confidence": "high", "mechanism": "space" },
+      { "plant_id": "carrot", "reason": "Radish can mark rows; different growth speeds.", "confidence": "medium", "mechanism": "space" },
+      { "plant_id": "cabbage", "reason": "Often used as a trap/decoy crop or filler in brassica beds.", "confidence": "low", "mechanism": "pest" }
+    ],
+    "avoid": [
+      { "plant_id": "beetroot", "reason": "Not harmful, but often competes for early bed space (timing/spacing issue).", "confidence": "low", "mechanism": "space" }
+    ]
+  },
+
+  "varieties": []
+}

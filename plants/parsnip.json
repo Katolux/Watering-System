@@ -1,0 +1,61 @@
+{
+  "schema_version": 1,
+  "id": "parsnip",
+  "names": { "common": "Parsnip", "scientific": "Pastinaca sativa", "de": "Pastinake" },
+  "category": "vegetable",
+  "family": "Apiaceae",
+
+  "ui": { "icon_key": "parsnip", "emoji": "🥕", "photo_key": "parsnip_01" },
+
+  "spacing_cm": { "in_row": 10, "between_rows": 30 },
+
+  "roots": { "depth_cm_range": [30, 60], "type": "taproot" },
+
+  "soil": {
+    "preferred_textures": ["sandy", "loam"],
+    "drainage": "good",
+    "pH_range": [6.0, 7.5],
+    "organic_matter": "medium",
+    "notes": "Long season; prefers deep, loose soil. Avoid fresh manure."
+  },
+
+  "water_need": {
+    "overall": "medium",
+    "stage_profile": { "establishment": "high", "vegetative": "medium", "flowering_fruiting": "low", "finish": "low" }
+  },
+
+  "irrigation": { "sensitivity": "balanced", "mulch_helpful": true },
+
+  "calendar": {
+    "base": {
+      "sow_outdoors": { "weeks_relative_to_last_frost": [-6, 6], "weeks_of_year": null, "months": [2, 3, 4, 5], "notes": "Slow germination; keep seedbed consistently moist." },
+      "harvest": { "weeks_relative_to_last_frost": [18, 40], "weeks_of_year": null, "months": [9, 10, 11, 12, 1, 2], "notes": "Flavor improves after cold; can overwinter in ground." }
+    },
+    "days_to_maturity_range": [120, 180]
+  },
+
+  "nutrition": {
+    "feeder": "light",
+    "emphasis": "balanced",
+    "schedule_hint": "none",
+    "notes": "Too much nitrogen gives lots of tops and forked roots."
+  },
+
+  "care": {
+    "pruning": { "required": false, "method": "thin", "notes": "Thin seedlings; keep weed pressure low early." },
+    "pollination": { "type": "insect", "aid_notes": "Only relevant if growing seed (biennial)." }
+  },
+
+  "companions": {
+    "good": [
+      { "plant_id": "onion", "reason": "Allium scent mixing; similar to carrot pairing.", "confidence": "low", "mechanism": "pest" },
+      { "plant_id": "lettuce", "reason": "Efficient bed use early season.", "confidence": "low", "mechanism": "space" },
+      { "plant_id": "calendula", "reason": "Biodiversity and beneficial insects.", "confidence": "low", "mechanism": "pollinator" }
+    ],
+    "avoid": [
+      { "plant_id": "dill", "reason": "Can attract similar pests in crowded beds (evidence mixed).", "confidence": "low", "mechanism": "unknown" }
+    ]
+  },
+
+  "varieties": []
+}

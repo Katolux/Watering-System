@@ -1,0 +1,60 @@
+{
+  "schema_version": 1,
+  "id": "zinnia",
+  "names": { "common": "Zinnia", "scientific": "Zinnia elegans", "de": "Zinnie" },
+  "category": "flower",
+  "family": "Asteraceae",
+
+  "ui": { "icon_key": "zinnia", "emoji": "🌺", "photo_key": "zinnia_01" },
+
+  "spacing_cm": { "in_row": 25, "between_rows": 35 },
+  "support": { "needs_trellis": false, "height_cm_range": [30, 90], "notes": "Great cut flower; airflow reduces powdery mildew." },
+
+  "roots": { "depth_cm_range": [15, 40], "type": "fibrous" },
+
+  "soil": {
+    "preferred_textures": ["loam"],
+    "drainage": "good",
+    "pH_range": [6.0, 7.5],
+    "organic_matter": "medium",
+    "notes": "Warm-season annual; avoid overhead watering to reduce mildew."
+  },
+
+  "water_need": {
+    "overall": "low",
+    "stage_profile": { "establishment": "medium", "vegetative": "low", "flowering_fruiting": "low", "finish": "low" }
+  },
+
+  "irrigation": { "sensitivity": "balanced", "mulch_helpful": false },
+
+  "calendar": {
+    "base": {
+      "sow_indoors": { "weeks_relative_to_last_frost": [-6, -2], "weeks_of_year": null, "months": [3, 4] },
+      "sow_outdoors": { "weeks_relative_to_last_frost": [0, 10], "weeks_of_year": null, "months": [4, 5, 6] },
+      "harvest": { "weeks_relative_to_last_frost": [8, 28], "weeks_of_year": null, "months": [6, 7, 8, 9, 10], "notes": "Deadhead for continuous flowering; harvest for cut flowers." }
+    }
+  },
+
+  "nutrition": {
+    "feeder": "light",
+    "emphasis": "balanced",
+    "schedule_hint": "none",
+    "notes": "Too much nitrogen reduces flowering."
+  },
+
+  "care": {
+    "pruning": { "required": false, "method": "pinch", "notes": "Pinch young plants for bushier growth; deadhead regularly." },
+    "pollination": { "type": "insect", "aid_notes": "Excellent pollinator and beneficial insect plant." }
+  },
+
+  "companions": {
+    "good": [
+      { "plant_id": "tomato", "reason": "Boosts beneficial insects and pollinators nearby.", "confidence": "low", "mechanism": "pollinator" },
+      { "plant_id": "cucumber", "reason": "Pollinator support around cucurbits.", "confidence": "low", "mechanism": "pollinator" },
+      { "plant_id": "strawberry", "reason": "Pollinator support; good border flower.", "confidence": "low", "mechanism": "pollinator" }
+    ],
+    "avoid": []
+  },
+
+  "varieties": []
+}

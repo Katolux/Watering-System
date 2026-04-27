@@ -1,0 +1,61 @@
+{
+  "schema_version": 1,
+  "id": "bush_bean",
+  "names": { "common": "Bush Bean", "scientific": "Phaseolus vulgaris", "de": "Buschbohne" },
+  "category": "vegetable",
+  "family": "Fabaceae",
+
+  "ui": { "icon_key": "bush_bean", "emoji": "🫘", "photo_key": "bush_bean_01" },
+
+  "spacing_cm": { "in_row": 10, "between_rows": 40 },
+
+  "roots": { "depth_cm_range": [20, 50], "type": "mixed" },
+
+  "soil": {
+    "preferred_textures": ["loam"],
+    "drainage": "good",
+    "pH_range": [6.0, 7.5],
+    "organic_matter": "medium",
+    "notes": "Warm soil for germination; dislikes cold wet conditions."
+  },
+
+  "water_need": {
+    "overall": "medium",
+    "stage_profile": { "establishment": "medium", "vegetative": "medium", "flowering_fruiting": "high", "finish": "low" }
+  },
+
+  "irrigation": { "sensitivity": "balanced", "mulch_helpful": true },
+
+  "calendar": {
+    "base": {
+      "sow_outdoors": { "weeks_relative_to_last_frost": [2, 10], "weeks_of_year": null, "months": [5, 6, 7], "notes": "Direct sow after soil warms; sow in batches for succession." },
+      "harvest": { "weeks_relative_to_last_frost": [10, 20], "weeks_of_year": null, "months": [7, 8, 9] }
+    },
+    "days_to_maturity_range": [50, 70]
+  },
+
+  "nutrition": {
+    "feeder": "light",
+    "emphasis": "balanced",
+    "schedule_hint": "none",
+    "notes": "Legume; avoid heavy nitrogen feeding. Inoculation can help in new beds."
+  },
+
+  "care": {
+    "pruning": { "required": false, "method": "none", "notes": "Keep evenly moist during flowering/pod set." },
+    "pollination": { "type": "self", "aid_notes": "Self-pollinating; insects can still help activity in the garden." }
+  },
+
+  "companions": {
+    "good": [
+      { "plant_id": "sweetcorn", "reason": "Classic combination; corn can provide light wind shelter.", "confidence": "low", "mechanism": "space" },
+      { "plant_id": "cabbage", "reason": "Beans can fit between brassicas; mixed planting can disrupt pests.", "confidence": "low", "mechanism": "pest" },
+      { "plant_id": "calendula", "reason": "Beneficial insects and biodiversity.", "confidence": "low", "mechanism": "pollinator" }
+    ],
+    "avoid": [
+      { "plant_id": "onion", "reason": "Alliums and legumes often cited as poor companions (mixed evidence).", "confidence": "low", "mechanism": "unknown" }
+    ]
+  },
+
+  "varieties": []
+}

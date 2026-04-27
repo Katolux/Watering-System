@@ -1,0 +1,62 @@
+{
+  "schema_version": 1,
+  "id": "celery",
+  "names": { "common": "Celery", "scientific": "Apium graveolens", "de": "Sellerie (Stangensellerie)" },
+  "category": "vegetable",
+  "family": "Apiaceae",
+
+  "ui": { "icon_key": "celery", "emoji": "🥬", "photo_key": "celery_01" },
+
+  "spacing_cm": { "in_row": 25, "between_rows": 40 },
+
+  "roots": { "depth_cm_range": [20, 40], "type": "fibrous" },
+
+  "soil": {
+    "preferred_textures": ["loam", "humus_rich"],
+    "drainage": "medium",
+    "pH_range": [6.2, 7.5],
+    "organic_matter": "likes_high",
+    "notes": "High moisture demand; dislikes drying out. Rich soil needed for good stalks."
+  },
+
+  "water_need": {
+    "overall": "high",
+    "stage_profile": { "establishment": "high", "vegetative": "high", "flowering_fruiting": "medium", "finish": "medium" }
+  },
+
+  "irrigation": { "sensitivity": "drought_sensitive", "mulch_helpful": true },
+
+  "calendar": {
+    "base": {
+      "sow_indoors": { "weeks_relative_to_last_frost": [-12, -10], "weeks_of_year": null, "months": [2, 3], "notes": "Slow start; needs warmth and patience." },
+      "transplant_out": { "weeks_relative_to_last_frost": [2, 8], "weeks_of_year": null, "months": [5, 6], "notes": "Plant out after risk of strong cold nights." },
+      "harvest": { "weeks_relative_to_last_frost": [16, 30], "weeks_of_year": null, "months": [8, 9, 10, 11] }
+    },
+    "days_to_maturity_range": [100, 150]
+  },
+
+  "nutrition": {
+    "feeder": "heavy",
+    "emphasis": "N",
+    "schedule_hint": "every_14_days",
+    "notes": "Heavy feeder and thirsty; steady fertility prevents stringy stalks."
+  },
+
+  "care": {
+    "pruning": { "required": false, "method": "cut_back", "notes": "Optional blanching (wrap stems) for milder stalks; keep consistently moist." },
+    "pollination": { "type": "insect", "aid_notes": "Only relevant if flowering for seed (biennial in some climates)." }
+  },
+
+  "companions": {
+    "good": [
+      { "plant_id": "cabbage", "reason": "Common pairing; celery scent may help with some brassica pests (traditional).", "confidence": "low", "mechanism": "pest" },
+      { "plant_id": "onion", "reason": "Different canopy; practical interplanting.", "confidence": "low", "mechanism": "space" },
+      { "plant_id": "calendula", "reason": "Beneficial insects.", "confidence": "low", "mechanism": "pollinator" }
+    ],
+    "avoid": [
+      { "plant_id": "carrot", "reason": "Same family; may cluster pests/disease in tight beds (rotation concern).", "confidence": "low", "mechanism": "disease" }
+    ]
+  },
+
+  "varieties": []
+}

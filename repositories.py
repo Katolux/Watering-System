@@ -1,6 +1,8 @@
 from datetime import datetime, timezone, date, timedelta
 from db import get_conn
 from calibration import raw_to_pct
+import json
+
 
 
 
@@ -62,41 +64,19 @@ def list_beds_with_sensors():
 # PLANTS
 # -----------------------------
 
-def add_plant(plant_id, name, min_moisture, max_moisture, base_minutes):
-    with get_conn() as conn:
-        cur = conn.cursor()
-        cur.execute(
-            """
-            INSERT OR IGNORE INTO plants
-            (plant_id, name, min_moisture, max_moisture, base_minutes)
-            VALUES (?, ?, ?, ?, ?)
-            """,
-            (plant_id, name, min_moisture, max_moisture, base_minutes)
-        )
 
-
-def get_all_plants():
-    with get_conn() as conn:
-        cur = conn.cursor()
-        cur.execute(
-            "SELECT plant_id, name, min_moisture, max_moisture, base_minutes FROM plants"
-        )
-        rows = cur.fetchall()
-    return rows
-
-
-def assign_plant_to_bed(bed_id, plant_id, plant_name, quantity=1):
+def assign_plant_to_bed(bed_id, plant_id, variety_id=None, quantity=1, planted_at=None, notes=None):
     with get_conn() as conn:
         cur = conn.cursor()
         cur.execute(
             """
             INSERT INTO bed_plantings
-            (bed_id, plant_id, plant_name, quantity)
-            VALUES (?, ?, ?, ?)
+            (bed_id, plant_id, variety_id, quantity, planted_at, notes)
+            VALUES (?, ?, ?, ?, ?, ?)
             """,
-            (bed_id, plant_id, plant_name, quantity)
+            (bed_id, plant_id, variety_id, quantity, planted_at, notes)
         )
-
+        conn.commit()
 
 def get_beds_with_plants():
     with get_conn() as conn:
@@ -111,12 +91,285 @@ def get_beds_with_plants():
                 plants.max_moisture,
                 plants.base_minutes
             FROM beds
-            LEFT JOIN bed_plantings bp ON beds.bed_id = bp.bed_id
-            LEFT JOIN plants ON bp.plant_id = plants.plant_id
+            LEFT JOIN bed_plantings bp
+                ON beds.bed_id = bp.bed_id
+               AND bp.removed_at IS NULL
+            LEFT JOIN plants
+                ON bp.plant_id = plants.plant_id
             """
         )
         rows = cur.fetchall()
     return rows
+
+def get_all_plants_catalog():
+    with get_conn() as conn:
+        cur = conn.cursor()
+        cur.execute("""
+            SELECT
+                plant_id,
+                name,
+                category,
+                family,
+                emoji,
+                water_need_overall,
+                calendar_json
+            FROM plants
+            ORDER BY name COLLATE NOCASE
+        """)
+        return cur.fetchall()
+
+def get_plant_by_id(plant_id):
+    with get_conn() as conn:
+        cur = conn.cursor()
+        cur.execute("""
+            SELECT
+                plant_id,
+                name,
+                scientific_name,
+                category,
+                family,
+                icon_key,
+                emoji,
+                photo_key,
+                spacing_in_row_cm,
+                spacing_between_rows_cm,
+                root_depth_min_cm,
+                root_depth_max_cm,
+                root_type,
+                water_need_overall,
+                irrigation_sensitivity,
+                mulch_helpful,
+                min_moisture,
+                max_moisture,
+                base_minutes,
+                soil_json,
+                calendar_json,
+                nutrition_json,
+                care_json,
+                plant_json,
+                schema_version
+            FROM plants
+            WHERE plant_id = ?
+        """, (plant_id,))
+        return cur.fetchone()
+
+def get_plant_varieties(plant_id):
+    with get_conn() as conn:
+        cur = conn.cursor()
+        cur.execute("""
+            SELECT variety_id, name, notes
+            FROM plant_varieties
+            WHERE plant_id = ?
+            ORDER BY name COLLATE NOCASE
+        """, (plant_id,))
+        return cur.fetchall()
+
+def get_plant_companions(plant_id):
+    with get_conn() as conn:
+        cur = conn.cursor()
+        cur.execute("""
+            SELECT other_plant_id, relation, reason, confidence, mechanism
+            FROM plant_companions
+            WHERE plant_id = ?
+            ORDER BY relation, other_plant_id
+        """, (plant_id,))
+        return cur.fetchall()
+    
+
+def plant_exists(plant_id):
+    with get_conn() as conn:
+        cur = conn.cursor()
+        cur.execute(
+            "SELECT 1 FROM plants WHERE plant_id = ?",
+            (plant_id,)
+        )
+        return cur.fetchone() is not None
+    
+
+def variety_exists(plant_id, variety_id):
+    with get_conn() as conn:
+        cur = conn.cursor()
+        cur.execute(
+            """
+            SELECT 1
+            FROM plant_varieties
+            WHERE plant_id = ? AND variety_id = ?
+            """,
+            (plant_id, variety_id)
+        )
+        return cur.fetchone() is not None
+    
+
+def insert_rich_plant(plant_data):
+    with get_conn() as conn:
+        cur = conn.cursor()
+
+        cur.execute("""
+            INSERT INTO plants (
+                plant_id,
+                name,
+                scientific_name,
+                category,
+                family,
+                icon_key,
+                emoji,
+                photo_key,
+                spacing_in_row_cm,
+                spacing_between_rows_cm,
+                root_depth_min_cm,
+                root_depth_max_cm,
+                root_type,
+                water_need_overall,
+                irrigation_sensitivity,
+                mulch_helpful,
+                min_moisture,
+                max_moisture,
+                base_minutes,
+                soil_json,
+                calendar_json,
+                nutrition_json,
+                care_json,
+                plant_json,
+                schema_version
+            )
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        """, (
+            plant_data["plant_id"],
+            plant_data["name"],
+            plant_data.get("scientific_name"),
+            plant_data.get("category"),
+            plant_data.get("family"),
+            plant_data.get("icon_key"),
+            plant_data.get("emoji"),
+            plant_data.get("photo_key"),
+            plant_data.get("spacing_in_row_cm"),
+            plant_data.get("spacing_between_rows_cm"),
+            plant_data.get("root_depth_min_cm"),
+            plant_data.get("root_depth_max_cm"),
+            plant_data.get("root_type"),
+            plant_data.get("water_need_overall"),
+            plant_data.get("irrigation_sensitivity"),
+            1 if plant_data.get("mulch_helpful") else 0,
+            plant_data.get("min_moisture"),
+            plant_data.get("max_moisture"),
+            plant_data.get("base_minutes"),
+            json.dumps(plant_data.get("soil_json", {}), ensure_ascii=False),
+            json.dumps(plant_data.get("calendar_json", {}), ensure_ascii=False),
+            json.dumps(plant_data.get("nutrition_json", {}), ensure_ascii=False),
+            json.dumps(plant_data.get("care_json", {}), ensure_ascii=False),
+            json.dumps(plant_data.get("plant_json", {}), ensure_ascii=False),
+            plant_data.get("schema_version", 1),
+        ))
+
+        conn.commit()
+
+
+def insert_rich_variety(plant_id, variety_id, name, notes, overrides):
+    with get_conn() as conn:
+        cur = conn.cursor()
+        cur.execute("""
+            INSERT INTO plant_varieties (
+                plant_id,
+                variety_id,
+                name,
+                notes,
+                overrides_json,
+                resolved_json
+            )
+            VALUES (?, ?, ?, ?, ?, ?)
+        """, (
+            plant_id,
+            variety_id,
+            name,
+            notes,
+            json.dumps(overrides, ensure_ascii=False),
+            json.dumps(overrides, ensure_ascii=False)
+        ))
+        conn.commit()
+
+def update_rich_plant(plant_id, plant_data):
+    with get_conn() as conn:
+        cur = conn.cursor()
+
+        cur.execute("""
+            UPDATE plants
+            SET
+                name = ?,
+                scientific_name = ?,
+                category = ?,
+                family = ?,
+                icon_key = ?,
+                emoji = ?,
+                photo_key = ?,
+                spacing_in_row_cm = ?,
+                spacing_between_rows_cm = ?,
+                root_depth_min_cm = ?,
+                root_depth_max_cm = ?,
+                root_type = ?,
+                water_need_overall = ?,
+                irrigation_sensitivity = ?,
+                mulch_helpful = ?,
+                min_moisture = ?,
+                max_moisture = ?,
+                base_minutes = ?,
+                soil_json = ?,
+                calendar_json = ?,
+                nutrition_json = ?,
+                care_json = ?,
+                plant_json = ?,
+                schema_version = ?
+            WHERE plant_id = ?
+        """, (
+            plant_data["name"],
+            plant_data.get("scientific_name"),
+            plant_data.get("category"),
+            plant_data.get("family"),
+            plant_data.get("icon_key"),
+            plant_data.get("emoji"),
+            plant_data.get("photo_key"),
+            plant_data.get("spacing_in_row_cm"),
+            plant_data.get("spacing_between_rows_cm"),
+            plant_data.get("root_depth_min_cm"),
+            plant_data.get("root_depth_max_cm"),
+            plant_data.get("root_type"),
+            plant_data.get("water_need_overall"),
+            plant_data.get("irrigation_sensitivity"),
+            1 if plant_data.get("mulch_helpful") else 0,
+            plant_data.get("min_moisture"),
+            plant_data.get("max_moisture"),
+            plant_data.get("base_minutes"),
+            json.dumps(plant_data.get("soil_json", {}), ensure_ascii=False),
+            json.dumps(plant_data.get("calendar_json", {}), ensure_ascii=False),
+            json.dumps(plant_data.get("nutrition_json", {}), ensure_ascii=False),
+            json.dumps(plant_data.get("care_json", {}), ensure_ascii=False),
+            json.dumps(plant_data.get("plant_json", {}), ensure_ascii=False),
+            plant_data.get("schema_version", 1),
+            plant_id
+        ))
+
+        conn.commit()
+
+def delete_plant(plant_id):
+    with get_conn() as conn:
+        cur = conn.cursor()
+        cur.execute("DELETE FROM plant_companions WHERE plant_id = ?", (plant_id,))
+        cur.execute("DELETE FROM plant_varieties WHERE plant_id = ?", (plant_id,))
+        cur.execute("DELETE FROM bed_plantings WHERE plant_id = ?", (plant_id,))
+        cur.execute("DELETE FROM plants WHERE plant_id = ?", (plant_id,))
+        conn.commit()
+
+def delete_variety(plant_id, variety_id):
+    with get_conn() as conn:
+        cur = conn.cursor()
+        cur.execute(
+            """
+            DELETE FROM plant_varieties
+            WHERE plant_id = ? AND variety_id = ?
+            """,
+            (plant_id, variety_id)
+        )
+        conn.commit()
+
 
 
 # -----------------------------
@@ -186,7 +439,7 @@ def next_slot_for_today(bed_id):
 
 
 
-def save_reading(bed_id, sensor_id, slot, moisture_raw):
+def save_reading(bed_id, sensor_id, slot, moisture_raw, moisture_pct):
     now = datetime.now(timezone.utc)
     with get_conn() as conn:
         cur = conn.cursor()
@@ -198,9 +451,10 @@ def save_reading(bed_id, sensor_id, slot, moisture_raw):
                 bed_id,
                 sensor_id,
                 slot,
-                moisture_raw
+                moisture_raw,
+                moisture_pct
             )
-            VALUES (?, ?, ?, ?, ?, ?)
+            VALUES (?, ?, ?, ?, ?, ?, ?)
             """,
             (
                 now.isoformat(),
@@ -208,7 +462,8 @@ def save_reading(bed_id, sensor_id, slot, moisture_raw):
                 bed_id,
                 sensor_id,
                 slot,
-                moisture_raw
+                moisture_raw,
+                moisture_pct
             )
         )
 
@@ -219,7 +474,7 @@ def get_today_moisture_slots():
         cur = conn.cursor()
         cur.execute(
             """
-            SELECT bed_id, slot, moisture_raw
+            SELECT bed_id, slot, moisture_raw, moisture_pct
             FROM sensor_readings
             WHERE date = ?
             """,
@@ -228,10 +483,10 @@ def get_today_moisture_slots():
         rows = cur.fetchall()
 
     result = {}
-    for bed_id, slot, moisture in rows:
+    for bed_id, slot, moisture_raw, moisture_pct in rows:
         result.setdefault(bed_id, {})[slot] = {
-            "raw": moisture,
-            "pct": raw_to_pct(moisture)
+            "raw": moisture_raw,
+            "pct": moisture_pct
         }
 
     return result
@@ -240,7 +495,7 @@ def get_recent_sensor_readings(limit=200):
     with get_conn() as conn:
         cur = conn.cursor()
         cur.execute("""
-            SELECT timestamp, date, bed_id, sensor_id, slot, moisture_raw
+            SELECT timestamp, date, bed_id, sensor_id, slot, moisture_raw, moisture_pct
             FROM sensor_readings
             ORDER BY timestamp DESC
             LIMIT ?

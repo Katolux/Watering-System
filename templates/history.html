@@ -42,6 +42,7 @@
       <th>Sensor</th>
       <th>Slot</th>
       <th>Moisture (raw)</th>
+      <th>Moisture (%)</th>
     </tr>
     {% for r in readings %}
       <tr>
@@ -51,6 +52,7 @@
         <td>{{ r[3] }}</td>
         <td>{{ r[4] }}</td>
         <td>{{ r[5] }}</td>
+        <td>{{ r[6] }}%</td>
       </tr>
     {% endfor %}
   </table>

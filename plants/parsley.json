@@ -1,0 +1,60 @@
+{
+  "schema_version": 1,
+  "id": "parsley",
+  "names": { "common": "Parsley", "scientific": "Petroselinum crispum", "de": "Petersilie" },
+  "category": "herb",
+  "family": "Apiaceae",
+
+  "ui": { "icon_key": "parsley", "emoji": "🌿", "photo_key": "parsley_01" },
+
+  "spacing_cm": { "in_row": 20, "between_rows": 25 },
+
+  "roots": { "depth_cm_range": [20, 40], "type": "taproot" },
+
+  "soil": {
+    "preferred_textures": ["loam", "humus_rich"],
+    "drainage": "medium",
+    "pH_range": [6.0, 7.5],
+    "organic_matter": "likes_high",
+    "notes": "Slow germination; keep seedbed moist until emergence."
+  },
+
+  "water_need": {
+    "overall": "medium",
+    "stage_profile": { "establishment": "high", "vegetative": "medium", "flowering_fruiting": "low", "finish": "low" }
+  },
+
+  "irrigation": { "sensitivity": "balanced", "mulch_helpful": true },
+
+  "calendar": {
+    "base": {
+      "sow_outdoors": { "weeks_relative_to_last_frost": [-6, 10], "weeks_of_year": null, "months": [2, 3, 4, 5, 6], "notes": "Germination can take 2–4 weeks." },
+      "harvest": { "weeks_relative_to_last_frost": [6, 30], "weeks_of_year": null, "months": [5, 6, 7, 8, 9, 10, 11] }
+    }
+  },
+
+  "nutrition": {
+    "feeder": "light",
+    "emphasis": "balanced",
+    "schedule_hint": "none",
+    "notes": "Usually fine with normal bed fertility; top-dress compost if growth is slow."
+  },
+
+  "care": {
+    "pruning": { "required": false, "method": "none", "notes": "Harvest outer stems first; avoid cutting the crown." },
+    "pollination": { "type": "insect", "aid_notes": "If allowed to flower (year 2), attracts beneficial insects." }
+  },
+
+  "companions": {
+    "good": [
+      { "plant_id": "tomato", "reason": "Herb companion; fits at edges.", "confidence": "low", "mechanism": "space" },
+      { "plant_id": "onion", "reason": "Different root zones; tidy interplant.", "confidence": "low", "mechanism": "space" },
+      { "plant_id": "calendula", "reason": "Biodiversity and beneficial insects.", "confidence": "low", "mechanism": "pollinator" }
+    ],
+    "avoid": [
+      { "plant_id": "lettuce", "reason": "Not harmful, but can compete for similar shallow bed space if overcrowded.", "confidence": "low", "mechanism": "space" }
+    ]
+  },
+
+  "varieties": []
+}

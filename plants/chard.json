@@ -1,0 +1,61 @@
+{
+  "schema_version": 1,
+  "id": "chard",
+  "names": { "common": "Swiss Chard", "scientific": "Beta vulgaris subsp. vulgaris (Cicla Group)", "de": "Mangold" },
+  "category": "vegetable",
+  "family": "Amaranthaceae",
+
+  "ui": { "icon_key": "chard", "emoji": "🥬", "photo_key": "chard_01" },
+
+  "spacing_cm": { "in_row": 30, "between_rows": 40 },
+
+  "roots": { "depth_cm_range": [20, 50], "type": "mixed" },
+
+  "soil": {
+    "preferred_textures": ["loam", "humus_rich"],
+    "drainage": "medium",
+    "pH_range": [6.2, 7.8],
+    "organic_matter": "likes_high",
+    "notes": "Reliable leaf crop; consistent moisture improves tenderness."
+  },
+
+  "water_need": {
+    "overall": "medium",
+    "stage_profile": { "establishment": "high", "vegetative": "medium", "flowering_fruiting": "low", "finish": "low" }
+  },
+
+  "irrigation": { "sensitivity": "balanced", "mulch_helpful": true },
+
+  "calendar": {
+    "base": {
+      "sow_outdoors": { "weeks_relative_to_last_frost": [-2, 12], "weeks_of_year": null, "months": [3, 4, 5, 6, 7], "notes": "Direct sow; thin to final spacing." },
+      "harvest": { "weeks_relative_to_last_frost": [8, 32], "weeks_of_year": null, "months": [5, 6, 7, 8, 9, 10, 11], "notes": "Cut-and-come-again: harvest outer leaves repeatedly." }
+    },
+    "days_to_maturity_range": [55, 80]
+  },
+
+  "nutrition": {
+    "feeder": "medium",
+    "emphasis": "N",
+    "schedule_hint": "monthly",
+    "notes": "Moderate N supports leaf growth; top-dress compost mid-season if needed."
+  },
+
+  "care": {
+    "pruning": { "required": false, "method": "thin", "notes": "Thin seedlings; harvest outer leaves, keep crown intact." },
+    "pollination": { "type": "wind", "aid_notes": "Only relevant if letting plants bolt for seed." }
+  },
+
+  "companions": {
+    "good": [
+      { "plant_id": "onion", "reason": "Different root zones; practical interplant.", "confidence": "medium", "mechanism": "space" },
+      { "plant_id": "radish", "reason": "Fast filler crop early in the season.", "confidence": "medium", "mechanism": "space" },
+      { "plant_id": "calendula", "reason": "General beneficial insect support.", "confidence": "low", "mechanism": "pollinator" }
+    ],
+    "avoid": [
+      { "plant_id": "beetroot", "reason": "Same family; rotation clustering is not ideal.", "confidence": "low", "mechanism": "disease" }
+    ]
+  },
+
+  "varieties": []
+}
