@@ -79,6 +79,21 @@ def run_watering_engine():
         if avg_moisture is None:
             continue
 
+        if plant_name is None or min_m is None or max_m is None or base_minutes is None:
+            log_system_event(
+                level="WARNING",
+                source="watering_engine",
+                bed_id=bed_id,
+                message="Skipping bed because plant watering config is incomplete",
+                details=(
+                    f"plant_name={plant_name}, "
+                    f"min_moisture={min_m}, "
+                    f"max_moisture={max_m}, "
+                    f"base_minutes={base_minutes}"
+                )
+            )
+            continue
+
         inputs = WateringInputs(
             base_minutes=base_minutes,
             avg_moisture=avg_moisture,
