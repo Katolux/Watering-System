@@ -278,7 +278,6 @@ def insert_rich_plant(plant_data):
 
         conn.commit()
 
-
 def insert_rich_variety(plant_id, variety_id, name, notes, overrides):
     with get_conn() as conn:
         cur = conn.cursor()
@@ -298,7 +297,7 @@ def insert_rich_variety(plant_id, variety_id, name, notes, overrides):
             name,
             notes,
             json.dumps(overrides, ensure_ascii=False),
-            json.dumps(overrides, ensure_ascii=False)
+            None
         ))
         conn.commit()
 
@@ -367,10 +366,18 @@ def update_rich_plant(plant_id, plant_data):
 def delete_plant(plant_id):
     with get_conn() as conn:
         cur = conn.cursor()
+
         cur.execute("DELETE FROM plant_companions WHERE plant_id = ?", (plant_id,))
         cur.execute("DELETE FROM plant_varieties WHERE plant_id = ?", (plant_id,))
-        cur.execute("DELETE FROM bed_plantings WHERE plant_id = ?", (plant_id,))
+
+        cur.execute("""
+            UPDATE bed_plantings
+            SET removed_at = ?
+            WHERE plant_id = ? AND removed_at IS NULL
+        """, (datetime.now(timezone.utc).isoformat(), plant_id))
+
         cur.execute("DELETE FROM plants WHERE plant_id = ?", (plant_id,))
+
         conn.commit()
 
 def delete_variety(plant_id, variety_id):
