@@ -1,10 +1,11 @@
+import json
+
 from flask import (
     Flask,
     render_template,
     redirect,
     url_for,
     request,
-    json
 )
 from datetime import datetime, timezone
 
@@ -36,7 +37,6 @@ from repositories import (
     update_rich_plant,
     delete_plant,
     delete_variety,
-    insert_rich_variety,
 )
 
 
@@ -61,6 +61,8 @@ from db_init import init_all_tables
 
 app = Flask(__name__)
 app.register_blueprint(receiver_bp)
+
+init_all_tables()
 
 if should_refresh_weather():
     refresh_weather()
@@ -840,6 +842,16 @@ def automation_variety_delete_select(plant_id):
         variety=selected
     )
 
+@app.route("/automation/plants/<plant_id>/varieties/<variety_id>/delete-confirm", methods=["POST"])
+def automation_variety_delete_confirm(plant_id, variety_id):
+    if not plant_exists(plant_id):
+        return "Plant not found.", 404
+
+    if not variety_exists(plant_id, variety_id):
+        return "Variety not found.", 404
+
+    delete_variety(plant_id, variety_id)
+    return redirect(f"/automation/plants/{plant_id}")
 
 @app.route("/automation/beds/assign", methods=["POST"])
 def automation_beds_assign():
@@ -1032,6 +1044,5 @@ def automation_run_watering_engine():
 
 
 if __name__ == "__main__":
-    init_all_tables()  # create ALL tables first
-    app.run(host="0.0.0.0", port=5000, debug=False)
+    app.run(host="0.0.0.0", port=5000, debug=False) 
 

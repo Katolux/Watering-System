@@ -152,10 +152,11 @@ def init_watering_decisions_table():
         cur.execute("""
             CREATE TABLE IF NOT EXISTS watering_decisions (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
-               timestamp TEXT,
+                timestamp TEXT,
                 date TEXT,
                 zone_id TEXT,
                 bed_id TEXT,
+                plant_name TEXT,
                 avg_moisture INTEGER,
                 temp_max REAL,
                 precipitation REAL,
