@@ -64,8 +64,11 @@ app.register_blueprint(receiver_bp)
 
 init_all_tables()
 
-if should_refresh_weather():
-    refresh_weather()
+try:
+    if should_refresh_weather():
+        refresh_weather()
+except Exception as e:
+    print(f"Startup weather refresh skipped: {e}")
 
 def parse_months(raw_value):
     if not raw_value:
@@ -1031,12 +1034,12 @@ def water_now():
 
     return redirect(url_for("automation_beds"))
 
-@app.route("/admin/run_watering_engine")
+@app.route("/admin/run_watering_engine", methods=["POST"])
 def run_engine_now():
     run_watering_engine()
     return "Watering decisions calculated"
 
-@app.route("/automation/run_watering_engine")
+@app.route("/automation/run_watering_engine", methods=["POST"])
 def automation_run_watering_engine():
     run_watering_engine()
     return redirect(url_for("automation"))
