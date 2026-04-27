@@ -10,22 +10,37 @@ import json
 # BEDS
 # -----------------------------
 
-def add_bed(bed_id, active=True):
+def add_bed(bed_id, active=True, zone_id="default"):
     with get_conn() as conn:
         cur = conn.cursor()
+
         cur.execute(
             """
-            INSERT OR IGNORE INTO beds (bed_id, active)
-            VALUES (?, ?)
+            INSERT OR IGNORE INTO zones (zone_id, name, active)
+            VALUES (?, ?, ?)
             """,
-            (bed_id, 1 if active else 0)
+            (zone_id, "Default zone", 1)
         )
+
+        cur.execute(
+            """
+            INSERT OR IGNORE INTO beds (bed_id, zone_id, active)
+            VALUES (?, ?, ?)
+            """,
+            (bed_id, zone_id, 1 if active else 0)
+        )
+
+        conn.commit()
 
 
 def get_all_beds():
     with get_conn() as conn:
         cur = conn.cursor()
-        cur.execute("SELECT bed_id, active FROM beds")
+        cur.execute("""
+            SELECT bed_id, active
+            FROM beds
+            ORDER BY bed_id
+        """)
         rows = cur.fetchall()
     return rows
 
@@ -390,21 +405,48 @@ def get_all_sensors():
     return rows
 
 
-def add_sensor(sensor_id, active=True):
+def add_sensor(sensor_id, active=True, bed_id="unassigned"):
     with get_conn() as conn:
         cur = conn.cursor()
+
         cur.execute(
             """
-            INSERT OR IGNORE INTO sensors (sensor_id, active)
-            VALUES (?, ?)
+            INSERT OR IGNORE INTO zones (zone_id, name, active)
+            VALUES (?, ?, ?)
             """,
-            (sensor_id, 1 if active else 0)
+            ("default", "Default zone", 1)
         )
 
+        cur.execute(
+            """
+            INSERT OR IGNORE INTO beds (bed_id, zone_id, active)
+            VALUES (?, ?, ?)
+            """,
+            (bed_id, "default", 0)
+        )
+
+        cur.execute(
+            """
+            INSERT OR IGNORE INTO sensors (sensor_id, bed_id, active)
+            VALUES (?, ?, ?)
+            """,
+            (sensor_id, bed_id, 1 if active else 0)
+        )
+
+        conn.commit()
 
 def assign_sensor_to_bed(sensor_id, bed_id):
     with get_conn() as conn:
         cur = conn.cursor()
+
+        cur.execute("SELECT 1 FROM beds WHERE bed_id = ?", (bed_id,))
+        if cur.fetchone() is None:
+            return False
+
+        cur.execute("SELECT 1 FROM sensors WHERE sensor_id = ?", (sensor_id,))
+        if cur.fetchone() is None:
+            return False
+
         cur.execute(
             """
             UPDATE sensors
@@ -414,6 +456,8 @@ def assign_sensor_to_bed(sensor_id, bed_id):
             (bed_id, sensor_id)
         )
 
+        conn.commit()
+        return cur.rowcount > 0
 
 # -----------------------------
 # SENSOR READINGS
