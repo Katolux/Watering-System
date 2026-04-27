@@ -78,7 +78,7 @@ To view latest readings:
 
 ```bash
 sqlite3 garden_system.db "
-SELECT bed_id, sensor_id, slot, moisture_raw, timestamp
+SELECT bed_id, sensor_id, slot, moisture_raw, moisture_pct, timestamp
 FROM sensor_readings
 ORDER BY timestamp DESC
 LIMIT 10;"

@@ -2,7 +2,7 @@
 
 ---
 
-## 📌 Current Status
+## Current Status
 
 * Raspberry Pi deployment running
 * Arduino → WiFi → Flask → SQLite pipeline working
@@ -15,7 +15,7 @@ System is stable enough for iteration, but not yet production-safe.
 
 ---
 
-## 🧱 Version 1.2 – Plant System & Backend Cleanup (Current Work)
+## Version 1.2 – Plant System & Backend Cleanup (Current Work)
 
 **Branch:** `v1.2-plants-seeding-cleanup`
 
@@ -58,12 +58,12 @@ Watering still uses simplified values derived from JSON:
 
 ### Status
 
-⚠️ Transitional phase (mixed old + new logic)
-🎯 Goal: stable enough to merge into `main`
+Transitional phase (mixed old + new logic)
+Goal: stable enough to merge into `main`
 
 ---
 
-## 🔧 Version 1.1 – Calibration & Reliability (Next Step)
+## Reliability & Calibration Workstream
 
 ### 1️⃣ Sensor Calibration System
 
@@ -230,12 +230,12 @@ This does not reflect real garden conditions.
 
 Move from:
 
-👉 simple rule engine
+simple rule engine
 → **context-aware irrigation system**
 
 ---
 
-## 🌿 Plant JSON System (Current Design)
+## Plant JSON System (Current Design)
 
 Current JSON structure includes:
 
@@ -267,7 +267,7 @@ Full JSON is stored for future logic (v1.3+)
 
 ---
 
-## 🌍 Version 2 – Climate & Portability
+## Version 2 – Climate & Portability
 
 ### 7️⃣ Location Configuration in UI
 
@@ -293,7 +293,7 @@ Remove hardcoded weather location.
 
 ---
 
-## 🚿 Version 2 – Irrigation Planner Module
+## Version 2 – Irrigation Planner Module
 
 ### 8️⃣ Water Flow Calculator
 
@@ -345,7 +345,7 @@ Calculate:
 
 ---
 
-## 🎨 Version 2 – UI Enhancements
+## Version 2 – UI Enhancements
 
 * Clean dashboard
 * Graphs:
@@ -364,7 +364,7 @@ Calculate:
 
 ---
 
-## 🔐 Version 2 – System Monitoring
+## Version 2 – System Monitoring
 
 * Scheduler heartbeat
 * Last engine run
@@ -374,7 +374,7 @@ Calculate:
 
 ---
 
-## 🚨 Safety Rules (Critical)
+## Safety Rules (Critical)
 
 Before enabling valves:
 
@@ -390,7 +390,7 @@ Before enabling valves:
 
 ---
 
-## 🧠 Long-Term Vision
+## Long-Term Vision
 
 GardenHUB becomes:
 
@@ -403,7 +403,7 @@ GardenHUB becomes:
 
 ---
 
-## 🧪 Current Priority Order
+## Current Priority Order
 
 1. Stabilize v1.2 branch
 2. Merge v1.2 into `main`

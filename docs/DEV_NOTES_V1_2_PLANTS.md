@@ -76,6 +76,6 @@ This update moves the plant system from a minimal plant list into a richer plant
 ## Remaining follow-up items
 - Improve plant encyclopedia UI styling.
 - Update bed assignment flow to support plant + variety selection directly from bed pages.
-- Add manual edit/delete for plants and varieties.
+- Manual edit/delete for plants and varieties added; further validation and UI polish still needed.
 - Implement plant interpreter layer to derive irrigation behavior from DB/JSON traits instead of relying only on seeded defaults.
 - Later refactor project structure into clearer modules (routes/services/repositories) once testing is stable.

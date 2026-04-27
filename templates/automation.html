@@ -13,14 +13,11 @@
 
 <hr>
 
-<ul>
-  <li>
-    <a href="/automation/run_watering_engine">
-      💧 Calculate watering decisions (dry run)
-    </a>
-  </li>
-</ul>
-<hr>
+<form method="POST" action="{{ url_for('automation_run_watering_engine') }}">
+  <button type="submit">
+    💧 Calculate watering decisions (dry run)
+  </button>
+</form>
 
 <h3>⚠️ System events (recent)</h3>
 

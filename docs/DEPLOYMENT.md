@@ -37,7 +37,9 @@ pip install -r requirements.txt
 
 ---
 
-# 4. Initialize the Database
+# 4. Initialize the Database (Optional / Manual)
+
+The Flask app also initializes required tables on startup. This manual command is useful for verification or first-time setup.
 
 ```bash
 python3 -c "from db_init import init_all_tables; init_all_tables(); print('Database initialized')"
@@ -79,7 +81,7 @@ Example:
 Ensure the Arduino posts sensor readings to:
 
 ```
-http://<raspberry-pi-ip>:5000/<receiver-endpoint>
+http://<raspberry-pi-ip>:5000//sensor_data
 ```
 
 ---

@@ -130,7 +130,7 @@ Stores plant configuration used by the engine.
 
 * `plant_id` (TEXT PK)
 * `name`
-* moisture targets *(interim: raw or % depending on calibration stage)*
+* moisture targets are currently stored and interpreted as percentage values*
 * **water requirement targets (future)** *(e.g., L/day or mm/day)*
 * base reference for scheduling *(interim: minutes; future: volume)*
 
@@ -222,7 +222,7 @@ Primary UI areas:
 
 * **Automation dashboard**: bed statuses, slots, summaries, events
 * **Beds management**: create beds, assign plants, view current state
-* **Plants management**: create/edit plant configuration *(delete/edit planned)*
+* **Plants management**: create/edit/delete plant configuration
 * **Sensors management**: create/assign sensors *(unassigned discovery planned)*
 * **History**: weather history and (future) sensor/decision history
 
