@@ -12,6 +12,8 @@ from datetime import datetime, timezone
 from get_weather_new import refresh_weather
 from historic_weather import get_last_days_weather
 
+from gardenhub.routes.automation_routes import automation_bp
+
 from repositories import (
     add_bed,
     get_all_beds,
@@ -61,6 +63,7 @@ from db_init import init_all_tables
 
 app = Flask(__name__)
 app.register_blueprint(receiver_bp)
+app.register_blueprint(automation_bp)
 
 init_all_tables()
 
@@ -216,14 +219,6 @@ def history():
     readings = get_recent_sensor_readings(limit=200)
     return render_template("history.html", weather=weather, readings=readings)
 
-
-
-@app.route("/automation")
-def automation():
-    return render_template(
-        "automation.html",
-        system_events=get_recent_system_events(20)
-    )
 
 
 @app.route("/automation/beds")
@@ -1033,17 +1028,6 @@ def water_now():
         print(f"WATER NOW → {bed_id} for {minutes} min")
 
     return redirect(url_for("automation_beds"))
-
-@app.route("/admin/run_watering_engine", methods=["POST"])
-def run_engine_now():
-    run_watering_engine()
-    return "Watering decisions calculated"
-
-@app.route("/automation/run_watering_engine", methods=["POST"])
-def automation_run_watering_engine():
-    run_watering_engine()
-    return redirect(url_for("automation"))
-
 
 
 if __name__ == "__main__":
