@@ -1,23 +1,32 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Garden System</title>
+  <meta charset="UTF-8">
+  <title>{% block title %}GardenHUB{% endblock %}</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
 </head>
+
 <body>
+  <header class="app-header">
+    <div class="app-header__inner">
+      <a class="app-logo" href="{{ url_for('index') }}">🌱 GardenHUB</a>
 
-<h1>🌱 Garden System</h1>
+      <nav class="app-nav">
+        <a href="{{ url_for('index') }}">Home</a>
+        <a href="{{ url_for('automation.automation') }}">Dashboard</a>
+        <a href="{{ url_for('automation.automation_beds') }}">Beds</a>
+        <a href="{{ url_for('plant.automation_plants') }}">Plants</a>
+        <a href="{{ url_for('sensor.automation_sensors') }}">Sensors</a>
+        <a href="{{ url_for('watering.watering') }}">Watering</a>
+        <a href="{{ url_for('history') }}">History</a>
+      </nav>
+    </div>
+  </header>
 
-<nav>
-  <a href="/">Home</a> |
-  <a href="/watering">Watering</a> |
-  <a href="/history">History</a> |
-  <a href="/automation">Automation</a>
-</nav>
-
-<hr>
-
-{% block content %}{% endblock %}
-
+  <main class="app-main">
+    {% block content %}{% endblock %}
+  </main>
 </body>
 </html>

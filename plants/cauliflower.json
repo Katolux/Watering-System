@@ -1,0 +1,62 @@
+{
+  "schema_version": 1,
+  "id": "cauliflower",
+  "names": { "common": "Cauliflower", "scientific": "Brassica oleracea var. botrytis", "de": "Blumenkohl" },
+  "category": "vegetable",
+  "family": "Brassicaceae",
+
+  "ui": { "icon_key": "cauliflower", "emoji": "🥦", "photo_key": "cauliflower_01" },
+
+  "spacing_cm": { "in_row": 55, "between_rows": 65 },
+
+  "roots": { "depth_cm_range": [30, 60], "type": "mixed" },
+
+  "soil": {
+    "preferred_textures": ["loam", "humus_rich"],
+    "drainage": "good",
+    "pH_range": [6.5, 7.5],
+    "organic_matter": "likes_high",
+    "notes": "Very sensitive to stress (irregular watering/feeding). Needs steady moisture for good curd formation."
+  },
+
+  "water_need": {
+    "overall": "high",
+    "stage_profile": { "establishment": "high", "vegetative": "high", "flowering_fruiting": "medium", "finish": "medium" }
+  },
+
+  "irrigation": { "sensitivity": "drought_sensitive", "mulch_helpful": true },
+
+  "calendar": {
+    "base": {
+      "sow_indoors": { "weeks_relative_to_last_frost": [-10, -6], "weeks_of_year": null, "months": [2, 3] },
+      "transplant_out": { "weeks_relative_to_last_frost": [-2, 6], "weeks_of_year": null, "months": [3, 4, 5] },
+      "harvest": { "weeks_relative_to_last_frost": [12, 24], "weeks_of_year": null, "months": [6, 7, 8, 9, 10] }
+    },
+    "days_to_maturity_range": [70, 120]
+  },
+
+  "nutrition": {
+    "feeder": "heavy",
+    "emphasis": "N",
+    "schedule_hint": "every_14_days",
+    "notes": "Steady feeding is critical; avoid big swings in water and nitrogen."
+  },
+
+  "care": {
+    "pruning": { "required": false, "method": "none", "notes": "Some types benefit from tying leaves over the curd to blanch/protect from sun." },
+    "pollination": { "type": "insect", "aid_notes": "Only relevant if letting plants flower for seed." }
+  },
+
+  "companions": {
+    "good": [
+      { "plant_id": "onion", "reason": "Alliums often used in brassica beds to reduce pests.", "confidence": "medium", "mechanism": "pest" },
+      { "plant_id": "calendula", "reason": "Beneficial insects; overall biodiversity.", "confidence": "medium", "mechanism": "pollinator" },
+      { "plant_id": "lettuce", "reason": "Quick understory crop while cauliflower establishes.", "confidence": "medium", "mechanism": "space" }
+    ],
+    "avoid": [
+      { "plant_id": "tomato", "reason": "Not a strict avoid, but different seasonal/pest strategies make tight-bed mixing awkward.", "confidence": "low", "mechanism": "unknown" }
+    ]
+  },
+
+  "varieties": []
+}

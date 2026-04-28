@@ -1,0 +1,62 @@
+{
+  "schema_version": 1,
+  "id": "kohlrabi",
+  "names": { "common": "Kohlrabi", "scientific": "Brassica oleracea var. gongylodes", "de": "Kohlrabi" },
+  "category": "vegetable",
+  "family": "Brassicaceae",
+
+  "ui": { "icon_key": "kohlrabi", "emoji": "🥬", "photo_key": "kohlrabi_01" },
+
+  "spacing_cm": { "in_row": 25, "between_rows": 35 },
+
+  "roots": { "depth_cm_range": [20, 40], "type": "mixed" },
+
+  "soil": {
+    "preferred_textures": ["loam"],
+    "drainage": "good",
+    "pH_range": [6.5, 7.5],
+    "organic_matter": "medium",
+    "notes": "Fast crop; consistent water prevents woody bulbs."
+  },
+
+  "water_need": {
+    "overall": "medium",
+    "stage_profile": { "establishment": "high", "vegetative": "medium", "flowering_fruiting": "low", "finish": "low" }
+  },
+
+  "irrigation": { "sensitivity": "drought_sensitive", "mulch_helpful": true },
+
+  "calendar": {
+    "base": {
+      "sow_indoors": { "weeks_relative_to_last_frost": [-8, -4], "weeks_of_year": null, "months": [2, 3, 4] },
+      "transplant_out": { "weeks_relative_to_last_frost": [-2, 10], "weeks_of_year": null, "months": [3, 4, 5, 6] },
+      "harvest": { "weeks_relative_to_last_frost": [8, 18], "weeks_of_year": null, "months": [5, 6, 7, 8, 9] }
+    },
+    "days_to_maturity_range": [45, 70]
+  },
+
+  "nutrition": {
+    "feeder": "medium",
+    "emphasis": "balanced",
+    "schedule_hint": "monthly",
+    "notes": "Moderate feeding; avoid excess nitrogen (too much leaf, less bulb)."
+  },
+
+  "care": {
+    "pruning": { "required": false, "method": "none", "notes": "Harvest before bulbs get too large for best texture." },
+    "pollination": { "type": "insect", "aid_notes": "Only relevant if letting plants flower for seed." }
+  },
+
+  "companions": {
+    "good": [
+      { "plant_id": "lettuce", "reason": "Good layering: lettuce grows while kohlrabi bulks up.", "confidence": "medium", "mechanism": "space" },
+      { "plant_id": "onion", "reason": "Allium scent mixing may reduce pests.", "confidence": "low", "mechanism": "pest" },
+      { "plant_id": "calendula", "reason": "Beneficial insects.", "confidence": "low", "mechanism": "pollinator" }
+    ],
+    "avoid": [
+      { "plant_id": "tomato", "reason": "Not a strict avoid; mostly inconvenient mixed management in small beds.", "confidence": "low", "mechanism": "unknown" }
+    ]
+  },
+
+  "varieties": []
+}

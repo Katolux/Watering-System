@@ -1,0 +1,60 @@
+{
+  "schema_version": 1,
+  "id": "lavender",
+  "names": { "common": "Lavender", "scientific": "Lavandula angustifolia", "de": "Lavendel" },
+  "category": "flower",
+  "family": "Lamiaceae",
+
+  "ui": { "icon_key": "lavender", "emoji": "💜", "photo_key": "lavender_01" },
+
+  "spacing_cm": { "in_row": 50, "between_rows": 60 },
+
+  "roots": { "depth_cm_range": [30, 80], "type": "mixed" },
+
+  "soil": {
+    "preferred_textures": ["sandy", "loam"],
+    "drainage": "good",
+    "pH_range": [6.5, 8.2],
+    "organic_matter": "low_ok",
+    "notes": "Perennial; requires very good drainage. Poor in wet heavy soils."
+  },
+
+  "water_need": {
+    "overall": "low",
+    "stage_profile": { "establishment": "medium", "vegetative": "low", "flowering_fruiting": "low", "finish": "low" }
+  },
+
+  "irrigation": { "sensitivity": "wet_sensitive", "mulch_helpful": false },
+
+  "calendar": {
+    "base": {
+      "transplant_out": { "weeks_relative_to_last_frost": [2, 10], "weeks_of_year": null, "months": [5, 6, 7], "notes": "Usually planted as a young plant; best in sun and drainage." },
+      "harvest": { "weeks_relative_to_last_frost": [12, 28], "weeks_of_year": null, "months": [6, 7, 8], "notes": "Harvest flowers when just opening for drying." }
+    }
+  },
+
+  "nutrition": {
+    "feeder": "light",
+    "emphasis": "balanced",
+    "schedule_hint": "none",
+    "notes": "Avoid rich feeding; too much fertility reduces aroma and winter hardiness."
+  },
+
+  "care": {
+    "pruning": { "required": true, "method": "cut_back", "notes": "Prune after flowering; avoid cutting too hard into old wood." },
+    "pollination": { "type": "insect", "aid_notes": "Excellent pollinator plant." }
+  },
+
+  "companions": {
+    "good": [
+      { "plant_id": "strawberry", "reason": "Supports pollinators nearby; border planting in dry spots.", "confidence": "low", "mechanism": "pollinator" },
+      { "plant_id": "tomato", "reason": "Pollinator support in the area (placement depends on water needs).", "confidence": "low", "mechanism": "pollinator" },
+      { "plant_id": "calendula", "reason": "Biodiversity and beneficial insects.", "confidence": "low", "mechanism": "pollinator" }
+    ],
+    "avoid": [
+      { "plant_id": "celery", "reason": "Lavender hates constant moisture; celery is very thirsty.", "confidence": "high", "mechanism": "space" }
+    ]
+  },
+
+  "varieties": []
+}

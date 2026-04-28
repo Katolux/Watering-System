@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block content %}
+<p><a href="{{ url_for('plant.automation_plants') }}">← Back to Plant Encyclopedia</a></p>
+
+<h1>Confirm Plant Deletion</h1>
+
+<p>You selected this plant for deletion:</p>
+
+<ul>
+  <li><strong>ID:</strong> {{ plant[0] }}</li>
+  <li><strong>Name:</strong> {{ plant[1] }}</li>
+  <li><strong>Scientific name:</strong> {{ plant[2] or "-" }}</li>
+</ul>
+
+<p><strong>This will remove the plant, its varieties, and its plantings.</strong></p>
+
+<form method="POST" action="{{ url_for('plant.automation_plant_delete_confirm', plant_id=plant[0]) }}">
+  <button type="submit">Yes, delete this plant</button>
+</form>
+
+{% endblock %}

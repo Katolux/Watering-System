@@ -1,0 +1,66 @@
+{
+  "schema_version": 1,
+  "id": "spinach",
+  "names": { "common": "Spinach", "scientific": "Spinacia oleracea", "de": "Spinat" },
+  "category": "vegetable",
+  "family": "Amaranthaceae",
+
+  "ui": { "icon_key": "spinach", "emoji": "🥬", "photo_key": "spinach_01" },
+
+  "spacing_cm": { "in_row": 10, "between_rows": 25 },
+
+  "roots": { "depth_cm_range": [20, 40], "type": "fibrous" },
+
+  "soil": {
+    "preferred_textures": ["loam", "humus_rich"],
+    "drainage": "medium",
+    "pH_range": [6.5, 7.5],
+    "organic_matter": "likes_high",
+    "notes": "Cool-season crop; bolts in heat/long days. Keep evenly moist."
+  },
+
+  "water_need": {
+    "overall": "medium",
+    "stage_profile": {
+      "establishment": "high",
+      "vegetative": "medium",
+      "flowering_fruiting": "low",
+      "finish": "low"
+    }
+  },
+
+  "irrigation": { "sensitivity": "drought_sensitive", "mulch_helpful": true },
+
+  "calendar": {
+    "base": {
+      "sow_outdoors": { "weeks_relative_to_last_frost": [-6, 4], "weeks_of_year": null, "months": [2, 3, 4, 5], "notes": "Best in cool weather; succession sow for steady harvest." },
+      "harvest": { "weeks_relative_to_last_frost": [2, 10], "weeks_of_year": null, "months": [4, 5, 6] }
+    },
+    "days_to_maturity_range": [35, 55]
+  },
+
+  "nutrition": {
+    "feeder": "medium",
+    "emphasis": "N",
+    "schedule_hint": "monthly",
+    "notes": "Responds to moderate nitrogen; avoid letting soil dry out."
+  },
+
+  "care": {
+    "pruning": { "required": false, "method": "thin", "notes": "Thin for airflow; harvest outer leaves repeatedly." },
+    "pollination": { "type": "wind", "aid_notes": "Only relevant if allowing plants to bolt for seed." }
+  },
+
+  "companions": {
+    "good": [
+      { "plant_id": "onion", "reason": "Different canopy/root zones; practical interplant.", "confidence": "medium", "mechanism": "space" },
+      { "plant_id": "garlic", "reason": "Similar to onion; good at bed edges.", "confidence": "low", "mechanism": "space" },
+      { "plant_id": "calendula", "reason": "General beneficial insect support.", "confidence": "low", "mechanism": "pollinator" }
+    ],
+    "avoid": [
+      { "plant_id": "basil", "reason": "Different seasonal preferences: basil likes warm nights; spinach prefers cool.", "confidence": "medium", "mechanism": "space" }
+    ]
+  },
+
+  "varieties": []
+}

@@ -1,0 +1,150 @@
+{% extends "base.html" %}
+
+{% block content %}
+<p><a href="{{ url_for('plant.automation_plants') }}">← Back to Plant Encyclopedia</a></p>
+
+<h1>{% if mode == "edit" %}Edit Plant{% else %}Add New Plant{% endif %}</h1>
+
+<p><em>Moisture targets and base minutes are auto-derived from water need + root depth.</em></p>
+
+{% if error %}
+  <p style="color:red;"><strong>{{ error }}</strong></p>
+{% endif %}
+
+<form method="POST" action="{% if mode == 'edit' %}{{ url_for('plant.automation_plants_edit', plant_id=plant_id_locked) }}{% else %}{{ url_for('plant.add_plant') }}{% endif %}">
+    <h2>Identity</h2>
+
+    <p>
+      <label>Plant ID<br>
+        {% if mode == "edit" %}
+          <input type="text" name="plant_id" value="{{ plant_id_locked }}" readonly>
+        {% else %}
+          <input type="text" name="plant_id" value="{{ form_data.get('plant_id', '') }}" required>
+        {% endif %}
+      </label>
+    </p>
+
+    <p><label>Name<br><input type="text" name="name" value="{{ form_data.get('name', '') }}" required></label></p>
+    <p><label>Scientific name<br><input type="text" name="scientific_name" value="{{ form_data.get('scientific_name', '') }}"></label></p>
+    <p><label>Category<br><input type="text" name="category" value="{{ form_data.get('category', '') }}"></label></p>
+    <p><label>Family<br><input type="text" name="family" value="{{ form_data.get('family', '') }}"></label></p>
+
+    <h2>UI</h2>
+
+    <p><label>Emoji<br><input type="text" name="emoji" value="{{ form_data.get('emoji', '') }}"></label></p>
+    <p><label>Icon key<br><input type="text" name="icon_key" value="{{ form_data.get('icon_key', '') }}"></label></p>
+    <p><label>Photo key<br><input type="text" name="photo_key" value="{{ form_data.get('photo_key', '') }}"></label></p>
+
+    <h2>Spacing and roots</h2>
+
+    <p><label>Spacing in row (cm)<br><input type="number" name="spacing_in_row_cm" value="{{ form_data.get('spacing_in_row_cm', '') }}"></label></p>
+    <p><label>Spacing between rows (cm)<br><input type="number" name="spacing_between_rows_cm" value="{{ form_data.get('spacing_between_rows_cm', '') }}"></label></p>
+    <p><label>Root depth min (cm)<br><input type="number" name="root_depth_min_cm" value="{{ form_data.get('root_depth_min_cm', '') }}"></label></p>
+    <p><label>Root depth max (cm)<br><input type="number" name="root_depth_max_cm" value="{{ form_data.get('root_depth_max_cm', '') }}"></label></p>
+
+    <p>
+      <label>Root type<br>
+        <select name="root_type">
+          <option value="" {% if not form_data.get('root_type') %}selected{% endif %}>--</option>
+          <option value="taproot" {% if form_data.get('root_type') == 'taproot' %}selected{% endif %}>taproot</option>
+          <option value="fibrous" {% if form_data.get('root_type') == 'fibrous' %}selected{% endif %}>fibrous</option>
+          <option value="mixed" {% if form_data.get('root_type') == 'mixed' %}selected{% endif %}>mixed</option>
+          <option value="shallow" {% if form_data.get('root_type') == 'shallow' %}selected{% endif %}>shallow</option>
+        </select>
+      </label>
+    </p>
+
+    <h2>Watering</h2>
+
+    <p>
+      <label>Water need<br>
+        <select name="water_need" required>
+          <option value="low" {% if form_data.get('water_need') == 'low' %}selected{% endif %}>low</option>
+          <option value="medium" {% if form_data.get('water_need', 'medium') == 'medium' %}selected{% endif %}>medium</option>
+          <option value="high" {% if form_data.get('water_need') == 'high' %}selected{% endif %}>high</option>
+        </select>
+      </label>
+    </p>
+
+    <p>
+      <label>Irrigation sensitivity<br>
+        <select name="irrigation_sensitivity">
+          <option value="sensitive" {% if form_data.get('irrigation_sensitivity') == 'sensitive' %}selected{% endif %}>sensitive</option>
+          <option value="balanced" {% if form_data.get('irrigation_sensitivity', 'balanced') == 'balanced' %}selected{% endif %}>balanced</option>
+          <option value="tolerant" {% if form_data.get('irrigation_sensitivity') == 'tolerant' %}selected{% endif %}>tolerant</option>
+        </select>
+      </label>
+    </p>
+
+    <p>
+      <label>
+        <input type="checkbox" name="mulch_helpful" value="1" {% if form_data.get('mulch_helpful') %}checked{% endif %}>
+        Mulch helpful
+      </label>
+    </p>
+
+    <h2>Soil</h2>
+
+    <p>
+      <label>Drainage<br>
+        <select name="soil_drainage">
+          <option value="" {% if not form_data.get('soil_drainage') %}selected{% endif %}>--</option>
+          <option value="poor" {% if form_data.get('soil_drainage') == 'poor' %}selected{% endif %}>poor</option>
+          <option value="medium" {% if form_data.get('soil_drainage') == 'medium' %}selected{% endif %}>medium</option>
+          <option value="good" {% if form_data.get('soil_drainage') == 'good' %}selected{% endif %}>good</option>
+        </select>
+      </label>
+    </p>
+
+    <p><label>pH min<br><input type="number" step="0.1" name="soil_ph_min" value="{{ form_data.get('soil_ph_min', '') }}"></label></p>
+    <p><label>pH max<br><input type="number" step="0.1" name="soil_ph_max" value="{{ form_data.get('soil_ph_max', '') }}"></label></p>
+    <p><label>Soil notes<br><textarea name="soil_notes" rows="4" cols="60">{{ form_data.get('soil_notes', '') }}</textarea></label></p>
+
+    <h2>Nutrition</h2>
+
+    <p>
+      <label>Feeder level<br>
+        <select name="feeder">
+          <option value="" {% if not form_data.get('feeder') %}selected{% endif %}>--</option>
+          <option value="light" {% if form_data.get('feeder') == 'light' %}selected{% endif %}>light</option>
+          <option value="medium" {% if form_data.get('feeder') == 'medium' %}selected{% endif %}>medium</option>
+          <option value="heavy" {% if form_data.get('feeder') == 'heavy' %}selected{% endif %}>heavy</option>
+        </select>
+      </label>
+    </p>
+
+    <p><label>Nutrition emphasis<br><input type="text" name="nutrition_emphasis" value="{{ form_data.get('nutrition_emphasis', '') }}"></label></p>
+    <p><label>Nutrition notes<br><textarea name="nutrition_notes" rows="4" cols="60">{{ form_data.get('nutrition_notes', '') }}</textarea></label></p>
+
+    <h2>Calendar / seed packet info</h2>
+
+    <p><label>Sow indoors months (comma separated)<br><input type="text" name="sow_indoors_months" value="{{ form_data.get('sow_indoors_months', '') }}"></label></p>
+    <p><label>Sow outdoors months (comma separated)<br><input type="text" name="sow_outdoors_months" value="{{ form_data.get('sow_outdoors_months', '') }}"></label></p>
+    <p><label>Transplant out months (comma separated)<br><input type="text" name="transplant_out_months" value="{{ form_data.get('transplant_out_months', '') }}"></label></p>
+    <p><label>Harvest months (comma separated)<br><input type="text" name="harvest_months" value="{{ form_data.get('harvest_months', '') }}" required></label></p>
+    <p><label>Days to maturity min<br><input type="number" name="days_to_maturity_min" value="{{ form_data.get('days_to_maturity_min', '') }}"></label></p>
+    <p><label>Days to maturity max<br><input type="number" name="days_to_maturity_max" value="{{ form_data.get('days_to_maturity_max', '') }}"></label></p>
+
+    <h2>Care</h2>
+
+    <p>
+      <label>
+        <input type="checkbox" name="support_needed" value="1" {% if form_data.get('support_needed') %}checked{% endif %}>
+        Needs support
+      </label>
+    </p>
+    <p><label>Support notes<br><textarea name="support_notes" rows="3" cols="60">{{ form_data.get('support_notes', '') }}</textarea></label></p>
+
+    <p>
+      <label>
+        <input type="checkbox" name="pruning_required" value="1" {% if form_data.get('pruning_required') %}checked{% endif %}>
+        Pruning required
+      </label>
+    </p>
+    <p><label>Pruning method<br><input type="text" name="pruning_method" value="{{ form_data.get('pruning_method', '') }}"></label></p>
+    <p><label>Pruning notes<br><textarea name="pruning_notes" rows="3" cols="60">{{ form_data.get('pruning_notes', '') }}</textarea></label></p>
+
+    <p><button type="submit">{% if mode == "edit" %}Save changes{% else %}Add plant{% endif %}</button></p>
+
+</form>
+{% endblock %}

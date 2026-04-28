@@ -7,7 +7,7 @@
 
 <h3>Add sensor</h3>
 
-<form method="post" action="/automation/sensors/add">
+<form method="POST" action="{{ url_for('sensor.automation_sensors_add') }}">
   <label>
     Sensor ID:
     <input type="text" name="sensor_id" required>
@@ -30,7 +30,7 @@
 
 <h3>Assign sensor to bed</h3>
 
-<form method="post" action="/automation/sensors/assign">
+<form method="POST" action="{{ url_for('sensor.automation_sensors_assign') }}">
   <label>
     Sensor:
     <select name="sensor_id" required>
@@ -73,6 +73,6 @@
 {% endfor %}
 </ul>
 
-<a href="/automation">⬅ Back to Automation</a>
+<a href="{{ url_for('automation.automation') }}">⬅ Back to Automation</a>
 
 {% endblock %}

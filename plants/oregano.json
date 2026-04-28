@@ -1,0 +1,60 @@
+{
+  "schema_version": 1,
+  "id": "oregano",
+  "names": { "common": "Oregano", "scientific": "Origanum vulgare", "de": "Oregano" },
+  "category": "herb",
+  "family": "Lamiaceae",
+
+  "ui": { "icon_key": "oregano", "emoji": "🌿", "photo_key": "oregano_01" },
+
+  "spacing_cm": { "in_row": 30, "between_rows": 40 },
+
+  "roots": { "depth_cm_range": [20, 50], "type": "fibrous" },
+
+  "soil": {
+    "preferred_textures": ["sandy", "loam"],
+    "drainage": "good",
+    "pH_range": [6.0, 8.0],
+    "organic_matter": "low_ok",
+    "notes": "Hardy perennial; prefers well-drained soil and sun."
+  },
+
+  "water_need": {
+    "overall": "low",
+    "stage_profile": { "establishment": "medium", "vegetative": "low", "flowering_fruiting": "low", "finish": "low" }
+  },
+
+  "irrigation": { "sensitivity": "wet_sensitive", "mulch_helpful": false },
+
+  "calendar": {
+    "base": {
+      "transplant_out": { "weeks_relative_to_last_frost": [2, 10], "weeks_of_year": null, "months": [5, 6, 7], "notes": "Often planted as a young plant/cutting." },
+      "harvest": { "weeks_relative_to_last_frost": [10, 32], "weeks_of_year": null, "months": [6, 7, 8, 9, 10, 11] }
+    }
+  },
+
+  "nutrition": {
+    "feeder": "light",
+    "emphasis": "balanced",
+    "schedule_hint": "none",
+    "notes": "Avoid heavy feeding; best aroma in leaner soils."
+  },
+
+  "care": {
+    "pruning": { "required": false, "method": "cut_back", "notes": "Cut back after flowering; can be divided every few years." },
+    "pollination": { "type": "insect", "aid_notes": "Flowers strongly attract pollinators." }
+  },
+
+  "companions": {
+    "good": [
+      { "plant_id": "tomato", "reason": "Works as edge herb; supports biodiversity.", "confidence": "low", "mechanism": "pollinator" },
+      { "plant_id": "cabbage", "reason": "Aromatic herb near brassicas (traditional).", "confidence": "low", "mechanism": "pest" },
+      { "plant_id": "calendula", "reason": "More beneficial insects and biodiversity.", "confidence": "low", "mechanism": "pollinator" }
+    ],
+    "avoid": [
+      { "plant_id": "celery", "reason": "Different water needs; oregano prefers drier conditions.", "confidence": "medium", "mechanism": "space" }
+    ]
+  },
+
+  "varieties": []
+}

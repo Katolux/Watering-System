@@ -1,0 +1,61 @@
+{
+  "schema_version": 1,
+  "id": "sage",
+  "names": { "common": "Sage", "scientific": "Salvia officinalis", "de": "Salbei" },
+  "category": "herb",
+  "family": "Lamiaceae",
+
+  "ui": { "icon_key": "sage", "emoji": "🌿", "photo_key": "sage_01" },
+
+  "spacing_cm": { "in_row": 40, "between_rows": 50 },
+
+  "roots": { "depth_cm_range": [20, 60], "type": "mixed" },
+
+  "soil": {
+    "preferred_textures": ["sandy", "loam"],
+    "drainage": "good",
+    "pH_range": [6.0, 8.0],
+    "organic_matter": "low_ok",
+    "notes": "Mediterranean perennial; hates waterlogged soil."
+  },
+
+  "water_need": {
+    "overall": "low",
+    "stage_profile": { "establishment": "medium", "vegetative": "low", "flowering_fruiting": "low", "finish": "low" }
+  },
+
+  "irrigation": { "sensitivity": "wet_sensitive", "mulch_helpful": false },
+
+  "calendar": {
+    "base": {
+      "sow_indoors": { "weeks_relative_to_last_frost": [-10, -6], "weeks_of_year": null, "months": [2, 3], "notes": "Often propagated by cuttings/seedlings." },
+      "transplant_out": { "weeks_relative_to_last_frost": [2, 10], "weeks_of_year": null, "months": [5, 6, 7] },
+      "harvest": { "weeks_relative_to_last_frost": [10, 32], "weeks_of_year": null, "months": [6, 7, 8, 9, 10, 11] }
+    }
+  },
+
+  "nutrition": {
+    "feeder": "light",
+    "emphasis": "balanced",
+    "schedule_hint": "none",
+    "notes": "Avoid heavy feeding; too rich soil can reduce aroma and increase disease."
+  },
+
+  "care": {
+    "pruning": { "required": false, "method": "cut_back", "notes": "Trim after flowering to keep compact; replace older plants if woody." },
+    "pollination": { "type": "insect", "aid_notes": "Excellent pollinator plant when flowering." }
+  },
+
+  "companions": {
+    "good": [
+      { "plant_id": "cabbage", "reason": "Aromatic herb; often used near brassicas.", "confidence": "low", "mechanism": "pest" },
+      { "plant_id": "strawberry", "reason": "Good border herb in well-drained beds.", "confidence": "low", "mechanism": "space" },
+      { "plant_id": "calendula", "reason": "Biodiversity and beneficial insects.", "confidence": "low", "mechanism": "pollinator" }
+    ],
+    "avoid": [
+      { "plant_id": "celery", "reason": "Sage dislikes constant moisture; celery is very thirsty.", "confidence": "medium", "mechanism": "space" }
+    ]
+  },
+
+  "varieties": []
+}

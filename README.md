@@ -4,19 +4,30 @@ A real-world IoT automation system designed to manage irrigation for a ~70 m² h
 
 This project combines:
 
-🌿 Software engineering
-
-🔌 Electronics & wiring
-
-📡 IoT communication
-
-📊 Data logging & future ML experimentation
-
-🧠 Automation logic design
+- Software engineering
+- Electronics & wiring
+- IoT communication
+- Data logging & future ML experimentation
+- Automation logic design
 
 
-It is both a functional irrigation system and a structured engineering project.
+It is both a functional irrigation system and an evolving engineering project.
 
+---
+
+## 📸 System Preview
+
+### Control Box (Arduino Nano ESP32 Node)
+
+![Control Box](docs/images/control_box.jpg)
+
+### Soil Moisture Sensor (Test Setup)
+
+![Sensor](docs/images/sensor_test.jpg)
+
+### Raspberry Pi Controller
+
+![Raspberry Pi](docs/images/raspberry_pi.jpg)
 
 ---
 
@@ -80,7 +91,25 @@ Improve water efficiency
 
 Extend architecture to controlled environments (e.g., mushroom chambers)
 
+---
 
+## 🚧 Current Status
+
+The system is currently in an active development and stabilization phase.
+
+Working components:
+- Sensor → Raspberry Pi data pipeline
+- SQLite data storage
+- Watering decision engine (dry-run mode)
+- Web UI for monitoring and manual triggering
+- Weather data integration
+
+Ongoing work:
+- Backend refactoring (modular architecture)
+- Improved reliability and error handling
+- Preparation for real valve control (currently disabled)
+
+The system has completed a multi-week real-world test cycle in a home garden environment.
 
 ---
 
@@ -127,7 +156,14 @@ Mains → 5V DC for Raspberry Pi & ESP32
 
 Relay isolation for valve actuation
 
+---
 
+### Design Principles
+
+- Reliability over complexity
+- Fail-safe behavior (no watering on missing data)
+- Incremental automation (manual → assisted → autonomous)
+- Real-world testing before full deployment
 
 ---
 
@@ -148,9 +184,10 @@ Plant configuration: JSON-based profiles
 
 Automation engine: custom watering logic module
 
-Future: ML pipeline for predictive irrigation
+Planned: ML pipeline for predictive irrigation
 
 ## Data & Observability
+
 GardenHUB logs time-series events in SQLite to support traceability and future analytics:
 
 - sensor_readings (timestamp, node_id, zone, moisture, temp/humidity optional)
@@ -165,7 +202,7 @@ This data model supports:
 
 ---
 
-### Repository Structure
+### Repository Structure (pre-refactor)
 ```
 .
 ├── app.py                  # Flask entrypoint
@@ -240,7 +277,7 @@ http://<RASPBERRY_PI_IP>:5000
 
 This is a physical irrigation system deployed in a real garden environment.
 
-It includes:
+The system includes:
 
 Live sensor ingestion
 
@@ -268,7 +305,7 @@ The project focuses on backend systems, automation logic, and applied IoT engine
 
 - [x] Manual watering trigger
 
-- [ ] Valve control integration
+- [ ] Hardware valve control integration
 
 - [ ] MQTT-based communication
 

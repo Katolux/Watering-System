@@ -1,0 +1,67 @@
+{
+  "schema_version": 1,
+  "id": "onion",
+  "names": { "common": "Onion", "scientific": "Allium cepa", "de": "Zwiebel" },
+  "category": "vegetable",
+  "family": "Amaryllidaceae",
+
+  "ui": { "icon_key": "onion", "emoji": "🧅", "photo_key": "onion_01" },
+
+  "spacing_cm": { "in_row": 10, "between_rows": 25 },
+
+  "roots": { "depth_cm_range": [15, 30], "type": "fibrous" },
+
+  "soil": {
+    "preferred_textures": ["loam", "silty"],
+    "drainage": "good",
+    "pH_range": [6.0, 7.0],
+    "organic_matter": "medium",
+    "notes": "Even moisture early; reduce water close to harvest for better curing."
+  },
+
+  "water_need": {
+    "overall": "medium",
+    "stage_profile": {
+      "establishment": "medium",
+      "vegetative": "medium",
+      "flowering_fruiting": "low",
+      "finish": "low"
+    }
+  },
+
+  "irrigation": { "sensitivity": "wet_sensitive", "mulch_helpful": false },
+
+  "calendar": {
+    "base": {
+      "sow_indoors": { "weeks_relative_to_last_frost": [-12, -8], "months": [1, 2], "notes": "Seed-grown onions are slow; sets are often easier." },
+      "sow_outdoors": { "weeks_relative_to_last_frost": [-2, 6], "months": [3, 4, 5] },
+      "harvest": { "weeks_relative_to_last_frost": [16, 26], "months": [7, 8, 9], "notes": "Harvest when tops fall; cure warm and airy." }
+    },
+    "days_to_maturity_range": [90, 150]
+  },
+
+  "nutrition": {
+    "feeder": "medium",
+    "emphasis": "N",
+    "schedule_hint": "monthly",
+    "notes": "Moderate N early for leaf growth; stop feeding later to improve storage."
+  },
+
+  "care": {
+    "pruning": { "required": false, "method": "none", "notes": "Keep weed-free: onions compete poorly early." },
+    "pollination": { "type": "insect", "aid_notes": "Only relevant if growing seed (biennial)." }
+  },
+
+  "companions": {
+    "good": [
+      { "plant_id": "carrot", "reason": "Classic pairing; scent mixing may deter pests.", "confidence": "medium", "mechanism": "pest" },
+      { "plant_id": "lettuce", "reason": "Different root depths; good interplant.", "confidence": "medium", "mechanism": "space" },
+      { "plant_id": "calendula", "reason": "General beneficial insect support.", "confidence": "low", "mechanism": "pollinator" }
+    ],
+    "avoid": [
+      { "plant_id": "beans", "reason": "Alliums and legumes are often considered poor companions (not always proven).", "confidence": "low", "mechanism": "unknown" }
+    ]
+  },
+
+  "varieties": []
+}

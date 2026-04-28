@@ -1,0 +1,61 @@
+{
+  "schema_version": 1,
+  "id": "lemon_balm",
+  "names": { "common": "Lemon Balm", "scientific": "Melissa officinalis", "de": "Zitronenmelisse" },
+  "category": "herb",
+  "family": "Lamiaceae",
+
+  "ui": { "icon_key": "lemon_balm", "emoji": "🌿", "photo_key": "lemon_balm_01" },
+
+  "spacing_cm": { "in_row": 35, "between_rows": 45 },
+
+  "roots": { "depth_cm_range": [20, 50], "type": "fibrous" },
+
+  "soil": {
+    "preferred_textures": ["loam", "humus_rich"],
+    "drainage": "medium",
+    "pH_range": [6.0, 7.8],
+    "organic_matter": "medium",
+    "notes": "Perennial; can spread. Grows well in partial shade."
+  },
+
+  "water_need": {
+    "overall": "medium",
+    "stage_profile": { "establishment": "medium", "vegetative": "medium", "flowering_fruiting": "low", "finish": "low" }
+  },
+
+  "irrigation": { "sensitivity": "balanced", "mulch_helpful": true },
+
+  "calendar": {
+    "base": {
+      "sow_indoors": { "weeks_relative_to_last_frost": [-10, -6], "weeks_of_year": null, "months": [2, 3], "notes": "Often propagated by division; seedlings also work." },
+      "transplant_out": { "weeks_relative_to_last_frost": [0, 10], "weeks_of_year": null, "months": [4, 5, 6] },
+      "harvest": { "weeks_relative_to_last_frost": [8, 32], "weeks_of_year": null, "months": [6, 7, 8, 9, 10, 11] }
+    }
+  },
+
+  "nutrition": {
+    "feeder": "light",
+    "emphasis": "balanced",
+    "schedule_hint": "none",
+    "notes": "Top-dress compost in spring if growth is weak."
+  },
+
+  "care": {
+    "pruning": { "required": false, "method": "cut_back", "notes": "Cut back after flowering for fresh growth; contain spread if needed." },
+    "pollination": { "type": "insect", "aid_notes": "Flowers attract pollinators strongly." }
+  },
+
+  "companions": {
+    "good": [
+      { "plant_id": "strawberry", "reason": "Good border herb; attracts pollinators.", "confidence": "low", "mechanism": "pollinator" },
+      { "plant_id": "tomato", "reason": "Biodiversity and beneficial insects nearby.", "confidence": "low", "mechanism": "pollinator" },
+      { "plant_id": "calendula", "reason": "General beneficial insects.", "confidence": "low", "mechanism": "pollinator" }
+    ],
+    "avoid": [
+      { "plant_id": "lettuce", "reason": "Can shade/overcrowd lettuce if not kept trimmed.", "confidence": "medium", "mechanism": "space" }
+    ]
+  },
+
+  "varieties": []
+}

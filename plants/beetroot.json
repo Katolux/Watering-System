@@ -1,0 +1,61 @@
+{
+  "schema_version": 1,
+  "id": "beetroot",
+  "names": { "common": "Beetroot", "scientific": "Beta vulgaris subsp. vulgaris", "de": "Rote Bete" },
+  "category": "vegetable",
+  "family": "Amaranthaceae",
+
+  "ui": { "icon_key": "beetroot", "emoji": "🫜", "photo_key": "beetroot_01" },
+
+  "spacing_cm": { "in_row": 10, "between_rows": 30 },
+
+  "roots": { "depth_cm_range": [20, 40], "type": "taproot" },
+
+  "soil": {
+    "preferred_textures": ["loam", "sandy"],
+    "drainage": "good",
+    "pH_range": [6.2, 7.5],
+    "organic_matter": "medium",
+    "notes": "Tolerant crop; avoid very acidic soils. Consistent moisture prevents woody roots."
+  },
+
+  "water_need": {
+    "overall": "medium",
+    "stage_profile": { "establishment": "high", "vegetative": "medium", "flowering_fruiting": "low", "finish": "low" }
+  },
+
+  "irrigation": { "sensitivity": "balanced", "mulch_helpful": true },
+
+  "calendar": {
+    "base": {
+      "sow_outdoors": { "weeks_relative_to_last_frost": [-2, 10], "weeks_of_year": null, "months": [4, 5, 6, 7], "notes": "Direct sow; thin seedlings (often multi-germ seedballs)." },
+      "harvest": { "weeks_relative_to_last_frost": [10, 22], "weeks_of_year": null, "months": [6, 7, 8, 9, 10] }
+    },
+    "days_to_maturity_range": [55, 90]
+  },
+
+  "nutrition": {
+    "feeder": "medium",
+    "emphasis": "balanced",
+    "schedule_hint": "monthly",
+    "notes": "Avoid too much N; balanced feeding supports root development."
+  },
+
+  "care": {
+    "pruning": { "required": true, "method": "thin", "notes": "Thin to final spacing; harvest young for tenderness." },
+    "pollination": { "type": "wind", "aid_notes": "Only relevant if letting plants bolt for seed." }
+  },
+
+  "companions": {
+    "good": [
+      { "plant_id": "onion", "reason": "Different root zones and canopy; easy interplant.", "confidence": "medium", "mechanism": "space" },
+      { "plant_id": "lettuce", "reason": "Efficient bed use; quick crop between beets.", "confidence": "medium", "mechanism": "space" },
+      { "plant_id": "calendula", "reason": "General beneficial insect support.", "confidence": "low", "mechanism": "pollinator" }
+    ],
+    "avoid": [
+      { "plant_id": "spinach", "reason": "Same family grouping can increase disease/pest clustering (rotation concern).", "confidence": "low", "mechanism": "disease" }
+    ]
+  },
+
+  "varieties": []
+}

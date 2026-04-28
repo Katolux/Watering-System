@@ -1,0 +1,62 @@
+{
+  "schema_version": 1,
+  "id": "sweetcorn",
+  "names": { "common": "Sweetcorn", "scientific": "Zea mays convar. saccharata", "de": "Zuckermais" },
+  "category": "vegetable",
+  "family": "Poaceae",
+
+  "ui": { "icon_key": "sweetcorn", "emoji": "🌽", "photo_key": "sweetcorn_01" },
+
+  "spacing_cm": { "in_row": 25, "between_rows": 60 },
+  "support": { "needs_trellis": false, "height_cm_range": [150, 250], "notes": "Plant in blocks (not single rows) for good wind pollination." },
+
+  "roots": { "depth_cm_range": [30, 120], "type": "fibrous" },
+
+  "soil": {
+    "preferred_textures": ["loam", "humus_rich"],
+    "drainage": "good",
+    "pH_range": [6.0, 7.2],
+    "organic_matter": "likes_high",
+    "notes": "Heavy feeder; benefits from rich soil and steady moisture."
+  },
+
+  "water_need": {
+    "overall": "high",
+    "stage_profile": { "establishment": "medium", "vegetative": "high", "flowering_fruiting": "high", "finish": "medium" }
+  },
+
+  "irrigation": { "sensitivity": "drought_sensitive", "mulch_helpful": true },
+
+  "calendar": {
+    "base": {
+      "sow_outdoors": { "weeks_relative_to_last_frost": [2, 8], "weeks_of_year": null, "months": [5, 6], "notes": "Soil must be warm; sow in blocks." },
+      "harvest": { "weeks_relative_to_last_frost": [14, 22], "weeks_of_year": null, "months": [8, 9] }
+    },
+    "days_to_maturity_range": [70, 100]
+  },
+
+  "nutrition": {
+    "feeder": "heavy",
+    "emphasis": "N",
+    "schedule_hint": "monthly",
+    "notes": "Nitrogen-demanding early; keep feeding moderate once tasseling begins."
+  },
+
+  "care": {
+    "pruning": { "required": false, "method": "none", "notes": "Plant in blocks; water during tassel/silk and ear fill." },
+    "pollination": { "type": "wind", "aid_notes": "Shake tassels lightly if pollination seems poor; blocks improve pollination." }
+  },
+
+  "companions": {
+    "good": [
+      { "plant_id": "bush_bean", "reason": "Classic pairing; legumes complement rotations.", "confidence": "low", "mechanism": "soil" },
+      { "plant_id": "calendula", "reason": "General beneficial insects.", "confidence": "low", "mechanism": "pollinator" },
+      { "plant_id": "cucumber", "reason": "Can work nearby if space and light are managed.", "confidence": "low", "mechanism": "space" }
+    ],
+    "avoid": [
+      { "plant_id": "tomato", "reason": "Tall corn can shade tomatoes in small beds; management complexity.", "confidence": "low", "mechanism": "space" }
+    ]
+  },
+
+  "varieties": []
+}

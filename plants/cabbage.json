@@ -1,0 +1,62 @@
+{
+  "schema_version": 1,
+  "id": "cabbage",
+  "names": { "common": "Cabbage", "scientific": "Brassica oleracea var. capitata", "de": "Kohl" },
+  "category": "vegetable",
+  "family": "Brassicaceae",
+
+  "ui": { "icon_key": "cabbage", "emoji": "🥬", "photo_key": "cabbage_01" },
+
+  "spacing_cm": { "in_row": 50, "between_rows": 60 },
+
+  "roots": { "depth_cm_range": [30, 60], "type": "mixed" },
+
+  "soil": {
+    "preferred_textures": ["loam", "humus_rich"],
+    "drainage": "good",
+    "pH_range": [6.5, 7.5],
+    "organic_matter": "likes_high",
+    "notes": "Heavy feeder; likes firm soil and consistent moisture."
+  },
+
+  "water_need": {
+    "overall": "high",
+    "stage_profile": { "establishment": "high", "vegetative": "high", "flowering_fruiting": "medium", "finish": "medium" }
+  },
+
+  "irrigation": { "sensitivity": "balanced", "mulch_helpful": true },
+
+  "calendar": {
+    "base": {
+      "sow_indoors": { "weeks_relative_to_last_frost": [-10, -6], "weeks_of_year": null, "months": [2, 3], "notes": "Start indoors for early crop; harden off well." },
+      "transplant_out": { "weeks_relative_to_last_frost": [-2, 6], "weeks_of_year": null, "months": [3, 4, 5], "notes": "Many types tolerate cool weather." },
+      "harvest": { "weeks_relative_to_last_frost": [12, 28], "weeks_of_year": null, "months": [6, 7, 8, 9, 10, 11] }
+    },
+    "days_to_maturity_range": [70, 140]
+  },
+
+  "nutrition": {
+    "feeder": "heavy",
+    "emphasis": "N",
+    "schedule_hint": "every_14_days",
+    "notes": "Nitrogen-demanding during leaf/head formation; maintain consistent moisture to reduce splitting."
+  },
+
+  "care": {
+    "pruning": { "required": false, "method": "none", "notes": "Protect from cabbage moths (netting) if needed; keep evenly watered." },
+    "pollination": { "type": "insect", "aid_notes": "Only relevant if overwintering for seed (biennial)." }
+  },
+
+  "companions": {
+    "good": [
+      { "plant_id": "onion", "reason": "Alliums may help deter pests; common in brassica beds.", "confidence": "medium", "mechanism": "pest" },
+      { "plant_id": "calendula", "reason": "Beneficial insects and biodiversity.", "confidence": "medium", "mechanism": "pollinator" },
+      { "plant_id": "radish", "reason": "Fast filler/trap crop in brassica beds.", "confidence": "low", "mechanism": "pest" }
+    ],
+    "avoid": [
+      { "plant_id": "tomato", "reason": "Not a strict avoid, but mixing warm-season solanaceae with brassica pest management is often inconvenient.", "confidence": "low", "mechanism": "unknown" }
+    ]
+  },
+
+  "varieties": []
+}

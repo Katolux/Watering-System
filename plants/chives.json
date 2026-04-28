@@ -1,0 +1,60 @@
+{
+  "schema_version": 1,
+  "id": "chives",
+  "names": { "common": "Chives", "scientific": "Allium schoenoprasum", "de": "Schnittlauch" },
+  "category": "herb",
+  "family": "Amaryllidaceae",
+
+  "ui": { "icon_key": "chives", "emoji": "🌿", "photo_key": "chives_01" },
+
+  "spacing_cm": { "in_row": 20, "between_rows": 25 },
+
+  "roots": { "depth_cm_range": [15, 30], "type": "fibrous" },
+
+  "soil": {
+    "preferred_textures": ["loam", "humus_rich"],
+    "drainage": "medium",
+    "pH_range": [6.0, 7.5],
+    "organic_matter": "medium",
+    "notes": "Perennial herb; tolerates cool climates well."
+  },
+
+  "water_need": {
+    "overall": "medium",
+    "stage_profile": { "establishment": "medium", "vegetative": "medium", "flowering_fruiting": "low", "finish": "low" }
+  },
+
+  "irrigation": { "sensitivity": "balanced", "mulch_helpful": true },
+
+  "calendar": {
+    "base": {
+      "sow_outdoors": { "weeks_relative_to_last_frost": [-6, 10], "weeks_of_year": null, "months": [2, 3, 4, 5, 6], "notes": "Often grown by division or seedlings; perennial once established." },
+      "harvest": { "weeks_relative_to_last_frost": [4, 32], "weeks_of_year": null, "months": [4, 5, 6, 7, 8, 9, 10, 11] }
+    }
+  },
+
+  "nutrition": {
+    "feeder": "light",
+    "emphasis": "N",
+    "schedule_hint": "none",
+    "notes": "Top-dress compost in spring if growth is weak."
+  },
+
+  "care": {
+    "pruning": { "required": false, "method": "cut_back", "notes": "Cut back hard to encourage fresh growth; remove flowers if you want more leaves." },
+    "pollination": { "type": "insect", "aid_notes": "Flowers attract pollinators strongly if left to bloom." }
+  },
+
+  "companions": {
+    "good": [
+      { "plant_id": "tomato", "reason": "Allium herb companion; fits at edges.", "confidence": "low", "mechanism": "pest" },
+      { "plant_id": "carrot", "reason": "Allium/carrot pairing (scent mixing).", "confidence": "low", "mechanism": "pest" },
+      { "plant_id": "lettuce", "reason": "Compact; easy interplant.", "confidence": "medium", "mechanism": "space" }
+    ],
+    "avoid": [
+      { "plant_id": "bush_bean", "reason": "Alliums and legumes often cited as poor companions (mixed evidence).", "confidence": "low", "mechanism": "unknown" }
+    ]
+  },
+
+  "varieties": []
+}

@@ -6,6 +6,7 @@ from repositories import (
 from watering_decision import WateringDecision, WateringInputs
 from db_access import get_today_weather
 from system_events_repo import log_system_event
+from calibration import raw_to_pct
 
 
 def daily_average_moisture_from_slots(bed_slots: dict):
@@ -13,7 +14,7 @@ def daily_average_moisture_from_slots(bed_slots: dict):
     bed_slots values can be either:
       - {"raw": int, "pct": int}
       - or raw int (fallback)
-    Returns average RAW value as int.
+    Returns average moisture % as int.
     """
     if not bed_slots:
         return None
@@ -24,12 +25,14 @@ def daily_average_moisture_from_slots(bed_slots: dict):
             continue
 
         if isinstance(v, dict):
-            raw = v.get("raw")
+            pct = v.get("pct")
+        elif isinstance(v, int):
+            pct = raw_to_pct(v)
         else:
-            raw = v
+            pct = None
 
-        if raw is not None:
-            values.append(raw)
+        if pct is not None:
+            values.append(pct)
 
     if not values:
         return None
@@ -74,6 +77,21 @@ def run_watering_engine():
         avg_moisture = daily_average_moisture_from_slots(bed_slots)
 
         if avg_moisture is None:
+            continue
+
+        if plant_name is None or min_m is None or max_m is None or base_minutes is None:
+            log_system_event(
+                level="WARNING",
+                source="watering_engine",
+                bed_id=bed_id,
+                message="Skipping bed because plant watering config is incomplete",
+                details=(
+                    f"plant_name={plant_name}, "
+                    f"min_moisture={min_m}, "
+                    f"max_moisture={max_m}, "
+                    f"base_minutes={base_minutes}"
+                )
+            )
             continue
 
         inputs = WateringInputs(

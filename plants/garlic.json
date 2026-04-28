@@ -1,0 +1,65 @@
+{
+  "schema_version": 1,
+  "id": "garlic",
+  "names": { "common": "Garlic", "scientific": "Allium sativum", "de": "Knoblauch" },
+  "category": "vegetable",
+  "family": "Amaryllidaceae",
+
+  "ui": { "icon_key": "garlic", "emoji": "🧄", "photo_key": "garlic_01" },
+
+  "spacing_cm": { "in_row": 12, "between_rows": 25 },
+
+  "roots": { "depth_cm_range": [20, 40], "type": "fibrous" },
+
+  "soil": {
+    "preferred_textures": ["loam", "silty"],
+    "drainage": "good",
+    "pH_range": [6.0, 7.2],
+    "organic_matter": "medium",
+    "notes": "Drainage is critical; waterlogged soil causes rot."
+  },
+
+  "water_need": {
+    "overall": "medium",
+    "stage_profile": {
+      "establishment": "medium",
+      "vegetative": "medium",
+      "flowering_fruiting": "low",
+      "finish": "low"
+    }
+  },
+
+  "irrigation": { "sensitivity": "wet_sensitive", "mulch_helpful": true },
+
+  "calendar": {
+    "base": {
+      "sow_outdoors": { "weeks_relative_to_last_frost": [-24, -8], "months": [10, 11, 12, 1, 2], "notes": "Planted as cloves in autumn or late winter depending on local conditions." },
+      "harvest": { "weeks_relative_to_last_frost": [12, 22], "months": [6, 7, 8], "notes": "Harvest when lower leaves yellow; cure dry and airy." }
+    }
+  },
+
+  "nutrition": {
+    "feeder": "medium",
+    "emphasis": "N",
+    "schedule_hint": "monthly",
+    "notes": "Feed in spring; stop feeding once bulbing begins."
+  },
+
+  "care": {
+    "pruning": { "required": false, "method": "cut_back", "notes": "If hardneck produces scapes: remove to boost bulb size." },
+    "pollination": { "type": "insect", "aid_notes": "Only relevant for flowering/seed; most garlic is propagated by cloves." }
+  },
+
+  "companions": {
+    "good": [
+      { "plant_id": "carrot", "reason": "Allium scent mixing; common pairing.", "confidence": "low", "mechanism": "pest" },
+      { "plant_id": "lettuce", "reason": "Different root zones; good space usage.", "confidence": "medium", "mechanism": "space" },
+      { "plant_id": "calendula", "reason": "Biodiversity and beneficial insects.", "confidence": "low", "mechanism": "pollinator" }
+    ],
+    "avoid": [
+      { "plant_id": "beans", "reason": "Alliums and legumes often cited as poor companions (debated).", "confidence": "low", "mechanism": "unknown" }
+    ]
+  },
+
+  "varieties": []
+}

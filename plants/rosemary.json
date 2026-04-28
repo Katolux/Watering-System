@@ -1,0 +1,60 @@
+{
+  "schema_version": 1,
+  "id": "rosemary",
+  "names": { "common": "Rosemary", "scientific": "Salvia rosmarinus", "de": "Rosmarin" },
+  "category": "herb",
+  "family": "Lamiaceae",
+
+  "ui": { "icon_key": "rosemary", "emoji": "🌿", "photo_key": "rosemary_01" },
+
+  "spacing_cm": { "in_row": 60, "between_rows": 80 },
+
+  "roots": { "depth_cm_range": [30, 80], "type": "mixed" },
+
+  "soil": {
+    "preferred_textures": ["sandy", "loam"],
+    "drainage": "good",
+    "pH_range": [6.0, 8.0],
+    "organic_matter": "low_ok",
+    "notes": "Mediterranean evergreen; in colder CH areas it’s often best in pots or a protected spot."
+  },
+
+  "water_need": {
+    "overall": "low",
+    "stage_profile": { "establishment": "medium", "vegetative": "low", "flowering_fruiting": "low", "finish": "low" }
+  },
+
+  "irrigation": { "sensitivity": "wet_sensitive", "mulch_helpful": false },
+
+  "calendar": {
+    "base": {
+      "transplant_out": { "weeks_relative_to_last_frost": [2, 10], "weeks_of_year": null, "months": [5, 6, 7], "notes": "Usually planted as a young plant/cutting." },
+      "harvest": { "weeks_relative_to_last_frost": [10, 40], "weeks_of_year": null, "months": [6, 7, 8, 9, 10, 11, 12] }
+    }
+  },
+
+  "nutrition": {
+    "feeder": "light",
+    "emphasis": "balanced",
+    "schedule_hint": "none",
+    "notes": "Avoid rich feeding; too much fertility reduces aroma and increases soft growth."
+  },
+
+  "care": {
+    "pruning": { "required": false, "method": "cut_back", "notes": "Light trim after flowering; avoid heavy cuts into old wood." },
+    "pollination": { "type": "insect", "aid_notes": "Flowers attract pollinators strongly." }
+  },
+
+  "companions": {
+    "good": [
+      { "plant_id": "cabbage", "reason": "Aromatic herb; supports biodiversity (traditional).", "confidence": "low", "mechanism": "pest" },
+      { "plant_id": "strawberry", "reason": "Good as border in well-drained spots.", "confidence": "low", "mechanism": "space" },
+      { "plant_id": "calendula", "reason": "Biodiversity and beneficial insects.", "confidence": "low", "mechanism": "pollinator" }
+    ],
+    "avoid": [
+      { "plant_id": "celery", "reason": "Rosemary dislikes wet soil; celery needs constant moisture.", "confidence": "medium", "mechanism": "space" }
+    ]
+  },
+
+  "varieties": []
+}

@@ -9,9 +9,9 @@ from typing import Optional
 @dataclass
 class WateringInputs:
     base_minutes: int
-    avg_moisture: Optional[int]
-    min_moisture: int
-    max_moisture: int
+    avg_moisture: Optional[int]   # now interpreted as %
+    min_moisture: int             # now interpreted as %
+    max_moisture: int             # now interpreted as %
     temp_max: float
     precipitation: float
 

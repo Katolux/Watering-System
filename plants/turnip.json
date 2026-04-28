@@ -1,0 +1,61 @@
+{
+  "schema_version": 1,
+  "id": "turnip",
+  "names": { "common": "Turnip", "scientific": "Brassica rapa subsp. rapa", "de": "Speiserübe" },
+  "category": "vegetable",
+  "family": "Brassicaceae",
+
+  "ui": { "icon_key": "turnip", "emoji": "🥕", "photo_key": "turnip_01" },
+
+  "spacing_cm": { "in_row": 10, "between_rows": 30 },
+
+  "roots": { "depth_cm_range": [15, 35], "type": "taproot" },
+
+  "soil": {
+    "preferred_textures": ["loam", "sandy"],
+    "drainage": "good",
+    "pH_range": [6.2, 7.5],
+    "organic_matter": "medium",
+    "notes": "Cool-season root; consistent moisture prevents woody roots."
+  },
+
+  "water_need": {
+    "overall": "medium",
+    "stage_profile": { "establishment": "high", "vegetative": "medium", "flowering_fruiting": "low", "finish": "low" }
+  },
+
+  "irrigation": { "sensitivity": "drought_sensitive", "mulch_helpful": true },
+
+  "calendar": {
+    "base": {
+      "sow_outdoors": { "weeks_relative_to_last_frost": [-4, 14], "weeks_of_year": null, "months": [3, 4, 5, 6, 7, 8], "notes": "Great as spring and late-summer sowing." },
+      "harvest": { "weeks_relative_to_last_frost": [6, 22], "weeks_of_year": null, "months": [5, 6, 7, 8, 9, 10] }
+    },
+    "days_to_maturity_range": [40, 80]
+  },
+
+  "nutrition": {
+    "feeder": "light",
+    "emphasis": "balanced",
+    "schedule_hint": "none",
+    "notes": "Avoid excess nitrogen (leafy tops, poor roots)."
+  },
+
+  "care": {
+    "pruning": { "required": true, "method": "thin", "notes": "Thin to final spacing for good root size." },
+    "pollination": { "type": "insect", "aid_notes": "Only relevant if overwintering for seed." }
+  },
+
+  "companions": {
+    "good": [
+      { "plant_id": "onion", "reason": "Different canopy; practical interplant.", "confidence": "low", "mechanism": "space" },
+      { "plant_id": "lettuce", "reason": "Efficient bed use; different root zones.", "confidence": "medium", "mechanism": "space" },
+      { "plant_id": "calendula", "reason": "General beneficial insect support.", "confidence": "low", "mechanism": "pollinator" }
+    ],
+    "avoid": [
+      { "plant_id": "cabbage", "reason": "Not harmful, but increases brassica clustering and pest pressure in tight beds.", "confidence": "low", "mechanism": "pest" }
+    ]
+  },
+
+  "varieties": []
+}

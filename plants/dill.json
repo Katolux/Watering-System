@@ -1,0 +1,60 @@
+{
+  "schema_version": 1,
+  "id": "dill",
+  "names": { "common": "Dill", "scientific": "Anethum graveolens", "de": "Dill" },
+  "category": "herb",
+  "family": "Apiaceae",
+
+  "ui": { "icon_key": "dill", "emoji": "🌿", "photo_key": "dill_01" },
+
+  "spacing_cm": { "in_row": 20, "between_rows": 25 },
+
+  "roots": { "depth_cm_range": [20, 40], "type": "taproot" },
+
+  "soil": {
+    "preferred_textures": ["loam", "sandy"],
+    "drainage": "good",
+    "pH_range": [6.0, 7.5],
+    "organic_matter": "medium",
+    "notes": "Best direct sown; dislikes transplanting due to taproot."
+  },
+
+  "water_need": {
+    "overall": "low",
+    "stage_profile": { "establishment": "medium", "vegetative": "low", "flowering_fruiting": "low", "finish": "low" }
+  },
+
+  "irrigation": { "sensitivity": "balanced", "mulch_helpful": false },
+
+  "calendar": {
+    "base": {
+      "sow_outdoors": { "weeks_relative_to_last_frost": [-4, 14], "weeks_of_year": null, "months": [3, 4, 5, 6, 7], "notes": "Succession sow for steady leaf harvest." },
+      "harvest": { "weeks_relative_to_last_frost": [6, 22], "weeks_of_year": null, "months": [5, 6, 7, 8, 9] }
+    }
+  },
+
+  "nutrition": {
+    "feeder": "light",
+    "emphasis": "balanced",
+    "schedule_hint": "none",
+    "notes": "Generally needs little feeding; too much N can make floppy growth."
+  },
+
+  "care": {
+    "pruning": { "required": false, "method": "none", "notes": "Harvest regularly; allow some plants to flower for beneficial insects." },
+    "pollination": { "type": "insect", "aid_notes": "Excellent beneficial insect plant when flowering." }
+  },
+
+  "companions": {
+    "good": [
+      { "plant_id": "cabbage", "reason": "Flowering dill attracts beneficial insects that can help brassica pest balance.", "confidence": "medium", "mechanism": "pollinator" },
+      { "plant_id": "cucumber", "reason": "Can support beneficial insects near cucumbers.", "confidence": "low", "mechanism": "pollinator" },
+      { "plant_id": "calendula", "reason": "More beneficial insects + biodiversity.", "confidence": "low", "mechanism": "pollinator" }
+    ],
+    "avoid": [
+      { "plant_id": "carrot", "reason": "Often cited as not ideal when crowded; can attract similar pests (evidence mixed).", "confidence": "low", "mechanism": "unknown" }
+    ]
+  },
+
+  "varieties": []
+}

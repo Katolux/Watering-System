@@ -7,7 +7,7 @@
 
 <h3>Add new bed</h3>
 
-<form method="post" action="/automation/beds/add">
+<form method="POST" action="{{ url_for('automation.automation_beds_add') }}">
   <label>
     Bed ID:
     <input type="text" name="bed_id" required>
@@ -32,7 +32,7 @@
 
 <h3>Assign plant to bed</h3>
 
-<form method="post" action="/automation/beds/assign">
+<form method="POST" action="{{ url_for('automation.automation_beds_assign') }}">
 
   <label>
     Bed:
@@ -113,10 +113,10 @@
     <br>
 
     <strong>Avg moisture today:</strong>
-    {% if bed.avg_moisture %}
-      {{ bed.avg_moisture }}
+    {% if bed.avg_moisture is not none %}
+      {{ bed.avg_moisture }}%
     {% else %}
-      n/a
+      no data
     {% endif %}
     <br>
 
@@ -137,7 +137,7 @@
     {% endif %}
 
     {# ===== WATER NOW ===== #}
-    <form method="post" action="/water_now" style="margin-top:6px;">
+   <form method="POST" action="{{ url_for('watering.water_now') }}" style="margin-top:6px;">
       <input type="hidden" name="bed_id" value="{{ bed.bed_id }}">
       <label>
         Water now (min):

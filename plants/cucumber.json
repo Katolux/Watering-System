@@ -1,0 +1,105 @@
+{
+  "schema_version": 1,
+  "id": "cucumber",
+  "names": {
+    "common": "Cucumber",
+    "scientific": "Cucumis sativus",
+    "de": "Gurke"
+  },
+  "category": "vegetable",
+  "family": "Cucurbitaceae",
+
+  "ui": {
+    "icon_key": "cucumber",
+    "emoji": "🥒",
+    "photo_key": "cucumber_01"
+  },
+
+  "spacing_cm": {
+    "in_row": 40,
+    "between_rows": 100
+  },
+
+  "support": {
+    "needs_trellis": true,
+    "height_cm_range": [150, 250],
+    "notes": "Vertical training improves airflow."
+  },
+
+  "roots": {
+    "depth_cm_range": [20, 60],
+    "type": "fibrous"
+  },
+
+  "soil": {
+    "preferred_textures": ["loam", "humus_rich"],
+    "drainage": "good",
+    "pH_range": [6.0, 7.0],
+    "organic_matter": "likes_high"
+  },
+
+  "water_need": {
+    "overall": "high",
+    "stage_profile": {
+      "establishment": "high",
+      "vegetative": "medium",
+      "flowering_fruiting": "high",
+      "finish": "medium"
+    }
+  },
+
+  "irrigation": {
+    "sensitivity": "drought_sensitive",
+    "mulch_helpful": true
+  },
+
+  "calendar": {
+    "base": {
+      "sow_indoors": {
+        "weeks_relative_to_last_frost": [-4, -2],
+        "months": [4]
+      },
+      "sow_outdoors": {
+        "weeks_relative_to_last_frost": [2, 6],
+        "months": [5, 6]
+      },
+      "harvest": {
+        "weeks_relative_to_last_frost": [10, 18],
+        "months": [7, 8, 9]
+      }
+    },
+    "days_to_maturity_range": [50, 70]
+  },
+
+  "nutrition": {
+    "feeder": "heavy",
+    "emphasis": "balanced",
+    "schedule_hint": "every_14_days",
+    "notes": "Maintain steady feeding once fruiting begins."
+  },
+
+  "care": {
+    "pruning": {
+      "required": false,
+      "method": "pinch",
+      "notes": "Pinch side shoots if excessive vegetative growth."
+    },
+    "pollination": {
+      "type": "insect",
+      "aid_notes": "Hand pollinate if fruit aborts."
+    }
+  },
+
+  "companions": {
+    "good": [
+      { "plant_id": "calendula", "reason": "Attracts beneficial insects.", "confidence": "medium", "mechanism": "pollinator" },
+      { "plant_id": "onion", "reason": "Alliums may help deter pests.", "confidence": "low", "mechanism": "pest" },
+      { "plant_id": "lettuce", "reason": "Shallow roots allow efficient layering.", "confidence": "medium", "mechanism": "space" }
+    ],
+    "avoid": [
+      { "plant_id": "zucchini", "reason": "Dense cucurbit combination increases mildew risk.", "confidence": "medium", "mechanism": "disease" }
+    ]
+  },
+
+  "varieties": []
+}

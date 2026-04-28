@@ -1,0 +1,61 @@
+{
+  "schema_version": 1,
+  "id": "marigold",
+  "names": { "common": "Marigold (Tagetes)", "scientific": "Tagetes spp.", "de": "Studentenblume" },
+  "category": "flower",
+  "family": "Asteraceae",
+
+  "ui": { "icon_key": "marigold", "emoji": "🌼", "photo_key": "marigold_01" },
+
+  "spacing_cm": { "in_row": 25, "between_rows": 30 },
+
+  "support": { "needs_trellis": false, "height_cm_range": [20, 60], "notes": "Annual flower; commonly used as companion plant and border." },
+
+  "roots": { "depth_cm_range": [15, 30], "type": "fibrous" },
+
+  "soil": {
+    "preferred_textures": ["loam", "sandy"],
+    "drainage": "good",
+    "pH_range": [6.0, 7.5],
+    "organic_matter": "medium",
+    "notes": "Tolerant and easy; flowers all season with deadheading."
+  },
+
+  "water_need": {
+    "overall": "low",
+    "stage_profile": { "establishment": "medium", "vegetative": "low", "flowering_fruiting": "low", "finish": "low" }
+  },
+
+  "irrigation": { "sensitivity": "balanced", "mulch_helpful": false },
+
+  "calendar": {
+    "base": {
+      "sow_indoors": { "weeks_relative_to_last_frost": [-6, -2], "weeks_of_year": null, "months": [3, 4] },
+      "sow_outdoors": { "weeks_relative_to_last_frost": [0, 10], "weeks_of_year": null, "months": [4, 5, 6] },
+      "harvest": { "weeks_relative_to_last_frost": [8, 28], "weeks_of_year": null, "months": [6, 7, 8, 9, 10], "notes": "Harvest flowers for decoration/companion use; deadhead to extend bloom." }
+    }
+  },
+
+  "nutrition": {
+    "feeder": "light",
+    "emphasis": "balanced",
+    "schedule_hint": "none",
+    "notes": "Generally thrives without extra feeding."
+  },
+
+  "care": {
+    "pruning": { "required": false, "method": "cut_back", "notes": "Deadhead for continuous flowering; cut back if leggy." },
+    "pollination": { "type": "insect", "aid_notes": "Attracts beneficial insects and pollinators." }
+  },
+
+  "companions": {
+    "good": [
+      { "plant_id": "tomato", "reason": "Common companion flower; supports beneficial insects.", "confidence": "medium", "mechanism": "pollinator" },
+      { "plant_id": "cabbage", "reason": "Biodiversity around brassicas; may help pest balance indirectly.", "confidence": "low", "mechanism": "pest" },
+      { "plant_id": "cucumber", "reason": "Supports pollinator activity near cucurbits.", "confidence": "low", "mechanism": "pollinator" }
+    ],
+    "avoid": []
+  },
+
+  "varieties": []
+}
