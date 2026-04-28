@@ -1,25 +1,49 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Garden System</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-</head>
-<body>
+{% extends "base.html" %}
 
-<h1>🌱 Garden System</h1>
+{% block title %}Dashboard | GardenHUB{% endblock %}
 
-<form method="post" action="/refresh_weather">
-  <button>Refresh Weather Forecast</button>
-</form>
+{% block content %}
 
-<form action="/watering">
-  <button>Watering Options</button>
-</form>
+<h1>🌱 Garden Dashboard</h1>
 
-<form action="/history">
-  <button>Historic Options</button>
-</form>
+<div class="grid grid-2">
 
-<form action="/automation">
-  <button>Automation & Plant Status</button>
-</form>
+  <!-- WEATHER CARD -->
+  <div class="card">
+    <h2>Weather</h2>
+
+    <p>Latest forecast available</p>
+
+    <form method="POST" action="{{ url_for('refresh_weather_route') }}">
+      <button>Refresh Weather</button>
+    </form>
+  </div>
+
+  <!-- SYSTEM CARD -->
+  <div class="card">
+    <h2>System</h2>
+
+    <ul>
+      <li>Automation: active</li>
+      <li>Sensors: connected</li>
+      <li>Database: OK</li>
+    </ul>
+  </div>
+
+</div>
+
+<!-- QUICK ACTIONS -->
+<div class="card">
+  <h2>Quick Actions</h2>
+
+  <div class="grid grid-2">
+    <a class="button" href="{{ url_for('automation.automation') }}">Automation</a>
+    <a class="button" href="{{ url_for('automation.automation_beds') }}">Beds</a>
+    <a class="button" href="{{ url_for('plant.automation_plants') }}">Plants</a>
+    <a class="button" href="{{ url_for('sensor.automation_sensors') }}">Sensors</a>
+    <a class="button" href="{{ url_for('watering.watering') }}">Watering</a>
+    <a class="button" href="{{ url_for('history') }}">History</a>
+  </div>
+</div>
+
+{% endblock %}
