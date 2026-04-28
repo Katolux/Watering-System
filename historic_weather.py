@@ -61,3 +61,25 @@ def print_last_days_weather(days=10):
         )
 
     print("-" * 70)
+
+
+def get_today_weather_record():
+    with get_conn() as conn:
+        cur = conn.cursor()
+        cur.execute(
+            """
+            SELECT
+                date,
+                temp_max,
+                temp_min,
+                precipitation,
+                sunshine,
+                daylight,
+                wind_max,
+                wind_dir
+            FROM weather_data
+            WHERE date = date('now')
+            LIMIT 1
+            """
+        )
+        return cur.fetchone()

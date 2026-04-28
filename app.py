@@ -6,8 +6,7 @@ from flask import (
 )
 
 from get_weather_new import refresh_weather
-from historic_weather import get_last_days_weather
-
+from historic_weather import get_last_days_weather, get_today_weather_record
 from gardenhub.routes.automation_routes import automation_bp
 from gardenhub.routes.watering_routes import watering_bp
 from gardenhub.routes.sensor_routes import sensor_bp
@@ -22,6 +21,7 @@ from repositories import (
 from python_receiver import receiver_bp
 
 from db_init import init_all_tables
+from system_events_repo import get_recent_system_events
 
 
 
@@ -43,7 +43,14 @@ except Exception as e:
 
 @app.route("/")
 def index():
-    return render_template("index.html")
+    latest_weather = get_today_weather_record()
+    system_events = get_recent_system_events(5)
+
+    return render_template(
+        "index.html",
+        latest_weather=latest_weather,
+        system_events=system_events
+    )
 
 @app.route("/refresh_weather", methods=["POST"])
 def refresh_weather_route():

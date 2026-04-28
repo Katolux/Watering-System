@@ -9,27 +9,45 @@
 <div class="grid grid-2">
 
   <!-- WEATHER CARD -->
-  <div class="card">
-    <h2>Weather</h2>
+<div class="card">
+  <h2>Weather</h2>
 
-    <p>Latest forecast available</p>
+  {% if latest_weather %}
+    <p><strong>Date:</strong> {{ latest_weather[0] }}</p>
+    <p><strong>Max:</strong> {{ "%.1f"|format(latest_weather[1]) }} °C</p>
+    <p><strong>Min:</strong> {{ "%.1f"|format(latest_weather[2]) }} °C</p>
+    <p><strong>Rain:</strong> {{ "%.1f"|format(latest_weather[3]) }} mm</p>
+    <p><strong>Sunshine:</strong> {{ "%.0f"|format(latest_weather[4]) }} min</p>
+    <p><strong>Wind:</strong> {{ "%.1f"|format(latest_weather[6]) }} km/h</p>
+  {% else %}
+    <p>No weather data available yet.</p>
+  {% endif %}
 
-    <form method="POST" action="{{ url_for('refresh_weather_route') }}">
-      <button>Refresh Weather</button>
-    </form>
-  </div>
+  <form method="POST" action="{{ url_for('refresh_weather_route') }}">
+    <button>Refresh Weather</button>
+  </form>
+</div>
 
   <!-- SYSTEM CARD -->
-  <div class="card">
-    <h2>System</h2>
+<div class="card">
+  <h2>Recent System Events</h2>
 
+  {% if system_events %}
     <ul>
-      <li>Automation: active</li>
-      <li>Sensors: connected</li>
-      <li>Database: OK</li>
+      {% for e in system_events %}
+        <li>
+          <strong>{{ e[1] }}</strong>
+          [{{ e[2] }}]
+          {% if e[3] %}(bed {{ e[3] }}){% endif %}
+          — {{ e[4] }}
+          <br>
+          <small>{{ e[0] }}</small>
+        </li>
+      {% endfor %}
     </ul>
-  </div>
-
+  {% else %}
+    <p><em>No system events recorded.</em></p>
+  {% endif %}
 </div>
 
 <!-- QUICK ACTIONS -->
