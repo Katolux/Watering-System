@@ -1,25 +1,25 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <meta charset="UTF-8">
-  <title>Confirm Delete Variety</title>
-</head>
-<body>
-  <p><a href="/automation/plants/{{ plant[0] }}">← Back to Plant Detail</a></p>
+{% extends "base.html" %}
 
-  <h1>Confirm Variety Deletion</h1>
+{% block content %}
+<p>
+  <a href="{{ url_for('plant.automation_plant_detail', plant_id=plant[0]) }}">
+    ← Back to Plant Detail
+  </a>
+</p>
 
-  <p>You selected this variety for deletion:</p>
+<h1>Confirm Variety Deletion</h1>
 
-  <ul>
-    <li><strong>Plant:</strong> {{ plant[1] }}</li>
-    <li><strong>Variety ID:</strong> {{ variety[0] }}</li>
-    <li><strong>Variety name:</strong> {{ variety[1] }}</li>
-    <li><strong>Notes:</strong> {{ variety[2] or "-" }}</li>
-  </ul>
+<p>You selected this variety for deletion:</p>
 
-  <form method="post" action="/automation/plants/{{ plant[0] }}/varieties/{{ variety[0] }}/delete-confirm">
-    <button type="submit">Yes, delete this variety</button>
-  </form>
-</body>
-</html>
+<ul>
+  <li><strong>Plant:</strong> {{ plant[1] }}</li>
+  <li><strong>Variety ID:</strong> {{ variety[0] }}</li>
+  <li><strong>Variety name:</strong> {{ variety[1] }}</li>
+  <li><strong>Notes:</strong> {{ variety[2] or "-" }}</li>
+</ul>
+
+<form method="POST" action="{{ url_for('plant.automation_variety_delete_confirm', plant_id=plant[0], variety_id=variety[0]) }}">
+  <button type="submit">Yes, delete this variety</button>
+</form>
+
+{% endblock %}

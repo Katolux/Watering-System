@@ -1,21 +1,17 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <meta charset="UTF-8">
-  <title>{% if mode == "edit" %}Edit Plant{% else %}Add Plant{% endif %}</title>
-</head>
-<body>
-  <p><a href="/automation/plants">← Back to Plant Encyclopedia</a></p>
+{% extends "base.html" %}
 
-  <h1>{% if mode == "edit" %}Edit Plant{% else %}Add New Plant{% endif %}</h1>
+{% block content %}
+<p><a href="{{ url_for('plant.automation_plants') }}">← Back to Plant Encyclopedia</a></p>
 
-  <p><em>Moisture targets and base minutes are auto-derived from water need + root depth.</em></p>
+<h1>{% if mode == "edit" %}Edit Plant{% else %}Add New Plant{% endif %}</h1>
 
-  {% if error %}
-    <p style="color:red;"><strong>{{ error }}</strong></p>
-  {% endif %}
+<p><em>Moisture targets and base minutes are auto-derived from water need + root depth.</em></p>
 
-  <form method="post">
+{% if error %}
+  <p style="color:red;"><strong>{{ error }}</strong></p>
+{% endif %}
+
+<form method="POST" action="{% if mode == 'edit' %}{{ url_for('plant.automation_plants_edit', plant_id=plant_id_locked) }}{% else %}{{ url_for('plant.add_plant') }}{% endif %}">
     <h2>Identity</h2>
 
     <p>
@@ -149,6 +145,6 @@
     <p><label>Pruning notes<br><textarea name="pruning_notes" rows="3" cols="60">{{ form_data.get('pruning_notes', '') }}</textarea></label></p>
 
     <p><button type="submit">{% if mode == "edit" %}Save changes{% else %}Add plant{% endif %}</button></p>
-  </form>
-</body>
-</html>
+
+</form>
+{% endblock %}

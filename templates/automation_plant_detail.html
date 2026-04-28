@@ -1,59 +1,61 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <meta charset="UTF-8">
-  <title>Plant Detail</title>
-</head>
-<body>
-  <p>
-    <a href="/automation/plants">← Back to Plant Encyclopedia</a>
-  </p>
+{% extends "base.html" %}
 
-  <h1>
-    {% if plant[6] %}{{ plant[6] }} {% endif %}
-    {{ plant[1] }}
-  </h1>
-
-  <p><strong>Scientific name:</strong> {{ plant[2] or "-" }}</p>
-  <p><strong>Category:</strong> {{ plant[3] or "-" }}</p>
-  <p><strong>Family:</strong> {{ plant[4] or "-" }}</p>
-
-  <h2>Watering</h2>
-  <p><strong>Water need:</strong> {{ plant[13] or "-" }}</p>
-  <p><strong>Irrigation sensitivity:</strong> {{ plant[14] or "-" }}</p>
-  <p><strong>Mulch helpful:</strong> {{ "Yes" if plant[15] else "No" }}</p>
-  <p><strong>Moisture target:</strong> {{ plant[16] }}%–{{ plant[17] }}%</p>
-  <p><strong>Base minutes:</strong> {{ plant[18] }} min</p>
-
-  <h2>Spacing and roots</h2>
-  <p><strong>Spacing:</strong> {{ plant[8] }} cm in row / {{ plant[9] }} cm between rows</p>
-  <p><strong>Root depth:</strong> {{ plant[10] }}–{{ plant[11] }} cm</p>
-  <p><strong>Root type:</strong> {{ plant[12] or "-" }}</p>
-
-  <h2>Soil</h2>
-  <pre>{{ soil | tojson(indent=2) }}</pre>
-
-  <h2>Calendar</h2>
-  <pre>{{ calendar | tojson(indent=2) }}</pre>
-
-  <h2>Nutrition</h2>
-  <pre>{{ nutrition | tojson(indent=2) }}</pre>
-
-  <h2>Care</h2>
-  <pre>{{ care | tojson(indent=2) }}</pre>
+{% block content %}
 <p>
-  <a href="/automation/plants/{{ plant[0] }}/edit">Edit this plant</a>
+  <a href="{{ url_for('plant.automation_plants') }}">← Back to Plant Encyclopedia</a>
 </p>
+
+<h1>
+  {% if plant[6] %}{{ plant[6] }} {% endif %}
+  {{ plant[1] }}
+</h1>
+
+<p><strong>Scientific name:</strong> {{ plant[2] or "-" }}</p>
+<p><strong>Category:</strong> {{ plant[3] or "-" }}</p>
+<p><strong>Family:</strong> {{ plant[4] or "-" }}</p>
+
+<h2>Watering</h2>
+<p><strong>Water need:</strong> {{ plant[13] or "-" }}</p>
+<p><strong>Irrigation sensitivity:</strong> {{ plant[14] or "-" }}</p>
+<p><strong>Mulch helpful:</strong> {{ "Yes" if plant[15] else "No" }}</p>
+<p><strong>Moisture target:</strong> {{ plant[16] }}%–{{ plant[17] }}%</p>
+<p><strong>Base minutes:</strong> {{ plant[18] }} min</p>
+
+<h2>Spacing and roots</h2>
+<p><strong>Spacing:</strong> {{ plant[8] }} cm in row / {{ plant[9] }} cm between rows</p>
+<p><strong>Root depth:</strong> {{ plant[10] }}–{{ plant[11] }} cm</p>
+<p><strong>Root type:</strong> {{ plant[12] or "-" }}</p>
+
+<h2>Soil</h2>
+<pre>{{ soil | tojson(indent=2) }}</pre>
+
+<h2>Calendar</h2>
+<pre>{{ calendar | tojson(indent=2) }}</pre>
+
+<h2>Nutrition</h2>
+<pre>{{ nutrition | tojson(indent=2) }}</pre>
+
+<h2>Care</h2>
+<pre>{{ care | tojson(indent=2) }}</pre>
+
+<p>
+  <a href="{{ url_for('plant.automation_plants_edit', plant_id=plant[0]) }}">Edit this plant</a>
+</p>
+
 <h2>Varieties</h2>
+
 {% if varieties %}
   <ul>
     {% for v in varieties %}
-      <li><strong>{{ v[1] }}</strong> ({{ v[0] }}){% if v[2] %} — {{ v[2] }}{% endif %}</li>
+      <li>
+        <strong>{{ v[1] }}</strong> ({{ v[0] }})
+        {% if v[2] %} — {{ v[2] }}{% endif %}
+      </li>
     {% endfor %}
   </ul>
 
   <h3>Delete a variety</h3>
-  <form method="post" action="/automation/plants/{{ plant[0] }}/varieties/delete-select">
+  <form method="POST" action="{{ url_for('plant.automation_variety_delete_select', plant_id=plant[0]) }}">
     <label>Select variety to delete:
       <select name="variety_id" required>
         {% for v in varieties %}
@@ -67,20 +69,20 @@
   <p><em>No varieties.</em></p>
 {% endif %}
 
-  <h2>Companions</h2>
-  {% if companions %}
-    <ul>
-      {% for c in companions %}
-        <li>
-          <strong>{{ c[0] }}</strong> — {{ c[1] }}
-          {% if c[2] %} | {{ c[2] }}{% endif %}
-          {% if c[3] %} | confidence: {{ c[3] }}{% endif %}
-          {% if c[4] %} | mechanism: {{ c[4] }}{% endif %}
-        </li>
-      {% endfor %}
-    </ul>
-  {% else %}
-    <p><em>No companion data.</em></p>
-  {% endif %}
-</body>
-</html>
+<h2>Companions</h2>
+
+{% if companions %}
+  <ul>
+    {% for c in companions %}
+      <li>
+        <strong>{{ c[0] }}</strong> — {{ c[1] }}
+        {% if c[2] %} | {{ c[2] }}{% endif %}
+        {% if c[3] %} | confidence: {{ c[3] }}{% endif %}
+        {% if c[4] %} | mechanism: {{ c[4] }}{% endif %}
+      </li>
+    {% endfor %}
+  </ul>
+{% else %}
+  <p><em>No companion data.</em></p>
+{% endif %}
+{% endblock %}
