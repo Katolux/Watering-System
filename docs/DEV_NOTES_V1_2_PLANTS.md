@@ -79,3 +79,17 @@ This update moves the plant system from a minimal plant list into a richer plant
 - Manual edit/delete for plants and varieties added; further validation and UI polish still needed.
 - Implement plant interpreter layer to derive irrigation behavior from DB/JSON traits instead of relying only on seeded defaults.
 - Later refactor project structure into clearer modules (routes/services/repositories) once testing is stable.
+
+
+## Stabilization update
+
+The v1.2 branch now includes:
+- backend audit fixes
+- Blueprint route refactor
+- template `url_for` cleanup
+- basic CSS and shared layout
+- homepage weather/system event cards
+- grouped bed display for multiple plantings
+- manual smoke test with no obvious errors
+
+This branch is now considered ready for final review before merge.
