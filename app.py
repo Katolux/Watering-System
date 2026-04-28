@@ -13,6 +13,7 @@ from get_weather_new import refresh_weather
 from historic_weather import get_last_days_weather
 
 from gardenhub.routes.automation_routes import automation_bp
+from gardenhub.routes.watering_routes import watering_bp
 
 from repositories import (
     add_bed,
@@ -64,6 +65,7 @@ from db_init import init_all_tables
 app = Flask(__name__)
 app.register_blueprint(receiver_bp)
 app.register_blueprint(automation_bp)
+app.register_blueprint(watering_bp)
 
 init_all_tables()
 
@@ -193,24 +195,6 @@ def index():
 def refresh_weather_route():
     refresh_weather()
     return redirect(url_for("index"))
-
-
-@app.route("/watering")
-def watering():
-    beds = get_beds_with_plants()
-    latest_by_bed = {}
-    for bed_id, active, plant_name, min_m, max_m, base_minutes in beds:
-        latest_by_bed[bed_id] = get_latest_watering_decision(bed_id)
-
-    events = get_recent_watering_events(limit=100)
-
-    return render_template(
-        "watering.html",
-        beds=beds,
-        latest_by_bed=latest_by_bed,
-        events=events
-    )
-
 
 
 @app.route("/history")
@@ -1011,23 +995,6 @@ def automation_sensors_assign():
         assign_sensor_to_bed(sensor_id, bed_id)
 
     return redirect(url_for("automation_sensors"))
-
-@app.route("/water_now", methods=["POST"])
-def water_now():
-    bed_id = request.form.get("bed_id")
-    minutes = request.form.get("minutes")
-
-    if bed_id and minutes:
-        log_watering_event(
-            bed_id=bed_id,
-            minutes=int(minutes),
-            mode="manual",
-            note="Triggered from web UI"
-        )
-
-        print(f"WATER NOW → {bed_id} for {minutes} min")
-
-    return redirect(url_for("automation_beds"))
 
 
 if __name__ == "__main__":

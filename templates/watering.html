@@ -3,8 +3,8 @@
 {% block content %}
 <h2>🚿 Watering Menu</h2>
 
-<form method="post" action="/water_now">
-  <button>Water now</button>
+<form method="POST" action="{{ url_for('watering.water_now') }}">
+  <button type="submit">Water now</button>
 </form>
 
 <hr>
