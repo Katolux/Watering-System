@@ -92,7 +92,6 @@ def assign_plant_to_bed(bed_id, plant_id, variety_id=None, quantity=1, planted_a
             (bed_id, plant_id, variety_id, quantity, planted_at, notes)
         )
         conn.commit()
-
 def get_beds_with_plants():
     with get_conn() as conn:
         cur = conn.cursor()
@@ -101,16 +100,18 @@ def get_beds_with_plants():
             SELECT
                 beds.bed_id,
                 beds.active,
-                plants.name,
-                plants.min_moisture,
-                plants.max_moisture,
-                plants.base_minutes
+                GROUP_CONCAT(plants.name, ', ') AS plant_names,
+                MIN(plants.min_moisture) AS min_moisture,
+                MAX(plants.max_moisture) AS max_moisture,
+                MAX(plants.base_minutes) AS base_minutes
             FROM beds
             LEFT JOIN bed_plantings bp
                 ON beds.bed_id = bp.bed_id
                AND bp.removed_at IS NULL
             LEFT JOIN plants
                 ON bp.plant_id = plants.plant_id
+            GROUP BY beds.bed_id, beds.active
+            ORDER BY beds.bed_id
             """
         )
         rows = cur.fetchall()
