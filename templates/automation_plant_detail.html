@@ -8,6 +8,9 @@
 <h1>
   {% if plant[6] %}{{ plant[6] }} {% endif %}
   {{ plant[1] }}
+  <small>
+    (<a href="{{ url_for('plant.automation_plants_edit', plant_id=plant[0]) }}">edit</a>)
+  </small>
 </h1>
 
 <p><strong>Scientific name:</strong> {{ plant[2] or "-" }}</p>
@@ -37,10 +40,6 @@
 
 <h2>Care</h2>
 <pre>{{ care | tojson(indent=2) }}</pre>
-
-<p>
-  <a href="{{ url_for('plant.automation_plants_edit', plant_id=plant[0]) }}">Edit this plant</a>
-</p>
 
 <h2>Varieties</h2>
 
@@ -85,4 +84,11 @@
 {% else %}
   <p><em>No companion data.</em></p>
 {% endif %}
+<hr>
+
+<p>
+  <a href="{{ url_for('plant.automation_plants_edit', plant_id=plant[0]) }}">
+    ✏️ Edit this plant
+  </a>
+</p>
 {% endblock %}
