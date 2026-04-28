@@ -14,6 +14,7 @@ from historic_weather import get_last_days_weather
 
 from gardenhub.routes.automation_routes import automation_bp
 from gardenhub.routes.watering_routes import watering_bp
+from gardenhub.routes.sensor_routes import sensor_bp
 
 from repositories import (
     add_bed,
@@ -66,6 +67,7 @@ app = Flask(__name__)
 app.register_blueprint(receiver_bp)
 app.register_blueprint(automation_bp)
 app.register_blueprint(watering_bp)
+app.register_blueprint(sensor_bp)
 
 init_all_tables()
 
@@ -965,37 +967,6 @@ def automation_plants_add_variety():
         "automation_plant_add_variety.html",
         plants=plants
     )
-
-@app.route("/automation/sensors")
-def automation_sensors():
-    sensors = get_all_sensors()
-    beds = get_all_beds()
-    return render_template(
-        "automation_sensors.html",
-        sensors=sensors,
-        beds=beds
-    )
-
-@app.route("/automation/sensors/add", methods=["POST"])
-def automation_sensors_add():
-    sensor_id = request.form.get("sensor_id")
-    active = request.form.get("active") == "1"
-
-    if sensor_id:
-        add_sensor(sensor_id, active)
-
-    return redirect(url_for("automation_sensors"))
-
-@app.route("/automation/sensors/assign", methods=["POST"])
-def automation_sensors_assign():
-    sensor_id = request.form.get("sensor_id")
-    bed_id = request.form.get("bed_id")
-
-    if sensor_id and bed_id:
-        assign_sensor_to_bed(sensor_id, bed_id)
-
-    return redirect(url_for("automation_sensors"))
-
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000, debug=False) 
