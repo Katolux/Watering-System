@@ -368,7 +368,7 @@ def delete_plant(plant_id):
     with get_conn() as conn:
         cur = conn.cursor()
 
-        cur.execute("DELETE FROM plant_companions WHERE plant_id = ?", (plant_id,))
+        cur.execute("DELETE FROM plant_companions WHERE plant_id = ? OR other_plant_id = ?",(plant_id, plant_id))
         cur.execute("DELETE FROM plant_varieties WHERE plant_id = ?", (plant_id,))
 
         cur.execute("""
