@@ -20,7 +20,7 @@ from repositories import (
 
 from python_receiver import receiver_bp
 
-from db_init import init_all_tables
+from gardenhub.db.initialization import init_all_tables
 from system_events_repo import get_recent_system_events
 
 

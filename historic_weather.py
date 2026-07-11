@@ -1,6 +1,6 @@
 import sqlite3
 import os
-from db import get_conn
+from gardenhub.db.connection import get_conn
 
 
 

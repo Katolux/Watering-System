@@ -2,7 +2,7 @@ import json
 from pathlib import Path
 from copy import deepcopy
 
-from db import get_conn
+from gardenhub.db.connection import get_conn
 
 
 WATER_NEED_DEFAULTS = {

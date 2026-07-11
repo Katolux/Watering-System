@@ -9,8 +9,11 @@ Not used in production runtime.
 from get_weather_new import refresh_weather
 from historic_weather import print_last_days_weather 
 from repositories import add_bed_menu, list_beds_with_sensors
-from db_schema import init_beds_and_sensors_tables, init_sensor_readings_table
-from get_weather_new import init_weather_db
+from gardenhub.db.schema import (
+    init_beds_and_sensors_tables,
+    init_sensor_readings_table,
+    init_weather_db,
+)
 
 
 def main_menu():

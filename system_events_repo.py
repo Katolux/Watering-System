@@ -1,5 +1,5 @@
 from datetime import datetime, timezone
-from db import get_conn
+from gardenhub.db.connection import get_conn
 
 def log_system_event(level, source, message, bed_id=None, details=None):
     now = datetime.now(timezone.utc)

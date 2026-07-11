@@ -3,28 +3,8 @@ import pandas as pd
 import requests_cache
 from retry_requests import retry
 from datetime import datetime
-from db import get_conn
-
-
-
-def init_weather_db():
-    with get_conn() as conn:
-        cur = conn.cursor()
-        cur.execute("""
-            CREATE TABLE IF NOT EXISTS weather_data (
-                date TEXT PRIMARY KEY,
-                timestamp TEXT,
-                temp_max REAL,
-                temp_min REAL,
-                precipitation REAL,
-                sunshine REAL,
-                daylight REAL,
-                wind_max REAL,
-                wind_dir REAL
-            )
-        """)
-
-
+from gardenhub.db.connection import get_conn
+from gardenhub.db.schema import init_weather_db
 
 def save_weather_record(record):
     with get_conn() as conn:

@@ -1,5 +1,5 @@
 from datetime import date
-from db import get_conn
+from gardenhub.db.connection import get_conn
 
 
 

@@ -1,6 +1,6 @@
 import sqlite3
 from datetime import datetime, timedelta
-from db import get_conn
+from gardenhub.db.connection import get_conn
 
 def get_last_10_days_weather():
     with get_conn() as conn:
