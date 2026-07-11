@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, redirect, url_for, request
 from datetime import datetime, timezone
-from system_events_repo import get_recent_system_events
+from gardenhub.repositories.system_events_repo import get_recent_system_events
 from watering_engine import run_watering_engine
 from calibration import raw_to_pct
 

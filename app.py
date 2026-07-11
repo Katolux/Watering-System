@@ -21,7 +21,7 @@ from repositories import (
 from python_receiver import receiver_bp
 
 from gardenhub.db.initialization import init_all_tables
-from system_events_repo import get_recent_system_events
+from gardenhub.repositories.system_events_repo import get_recent_system_events
 
 
 
