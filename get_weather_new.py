@@ -2,49 +2,8 @@ import openmeteo_requests
 import pandas as pd
 import requests_cache
 from retry_requests import retry
-from datetime import datetime
-from gardenhub.db.connection import get_conn
 from gardenhub.db.schema import init_weather_db
-
-def save_weather_record(record):
-    with get_conn() as conn:
-        cur = conn.cursor()
-        cur.execute(
-            """
-            INSERT INTO weather_data (
-                date,
-                timestamp,
-                temp_max,
-                temp_min,
-                precipitation,
-                sunshine,
-                daylight,
-                wind_max,
-                wind_dir
-            )
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-            ON CONFLICT(date) DO UPDATE SET
-                timestamp = excluded.timestamp,
-                temp_max = excluded.temp_max,
-                temp_min = excluded.temp_min,
-                precipitation = excluded.precipitation,
-                sunshine = excluded.sunshine,
-                daylight = excluded.daylight,
-                wind_max = excluded.wind_max,
-                wind_dir = excluded.wind_dir
-            """,
-            (
-                record["date"],
-                datetime.utcnow().isoformat(),
-                record["temp_max"],
-                record["temp_min"],
-                record["precipitation"],
-                record["sunshine"],
-                record["daylight"],
-                record["wind_max"],
-                record["wind_dir"],
-            ),
-        )
+from gardenhub.repositories.weather_repo import save_weather_record
 
 
 def refresh_weather():

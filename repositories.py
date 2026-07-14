@@ -1,4 +1,4 @@
-from datetime import datetime, timezone, date, timedelta
+from datetime import datetime, timezone, date
 from gardenhub.db.connection import get_conn
 from calibration import raw_to_pct
 import json
@@ -554,31 +554,6 @@ def get_recent_sensor_readings(limit=200):
         """, (limit,))
         return cur.fetchall()
 
-
-
-# -----------------------------
-# WEATHER
-# -----------------------------
-
-def get_latest_weather_date():
-    with get_conn() as conn:
-        cur = conn.cursor()
-        cur.execute("SELECT MAX(date) FROM weather_data")
-        row = cur.fetchone()
-    return row[0]
-
-
-def should_refresh_weather():
-    try:
-        latest = get_latest_weather_date()
-    except Exception:
-        return True
-
-    if latest is None:
-        return True
-
-    latest_date = date.fromisoformat(latest)
-    return (date.today() - latest_date) >= timedelta(days=3)
 
 
 # -----------------------------

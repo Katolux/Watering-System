@@ -4,8 +4,8 @@ from repositories import (
     save_watering_decision,
 )
 from watering_decision import WateringDecision, WateringInputs
-from db_access import get_today_weather
 from gardenhub.repositories.system_events_repo import log_system_event
+from gardenhub.repositories.weather_repo import get_today_weather
 from calibration import raw_to_pct
 
 

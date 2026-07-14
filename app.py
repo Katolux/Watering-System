@@ -6,22 +6,23 @@ from flask import (
 )
 
 from get_weather_new import refresh_weather
-from historic_weather import get_last_days_weather, get_today_weather_record
 from gardenhub.routes.automation_routes import automation_bp
 from gardenhub.routes.watering_routes import watering_bp
 from gardenhub.routes.sensor_routes import sensor_bp
 from gardenhub.routes.plant_routes import plant_bp
 
-from repositories import (
-    should_refresh_weather,
-    get_recent_sensor_readings,
-    )
+from repositories import get_recent_sensor_readings
 
 
 from python_receiver import receiver_bp
 
 from gardenhub.db.initialization import init_all_tables
 from gardenhub.repositories.system_events_repo import get_recent_system_events
+from gardenhub.repositories.weather_repo import (
+    get_last_days_weather,
+    get_today_weather_record,
+    should_refresh_weather,
+)
 
 
 
