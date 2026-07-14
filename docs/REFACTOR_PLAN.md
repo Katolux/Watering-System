@@ -424,13 +424,39 @@ Phase 3 service-module movement is complete. No active service module remains at
 
 ### Phase 4 — Route organization
 
-Status: **Pending — next**
+Status: **In progress — Phase 4A complete; Phase 4B next**
 
-Move:
+Phase 3 service-module movement is complete and verified.
+
+#### Phase 4A — Receiver Blueprint
+
+Status: **Complete**
+
+Completed move:
 
 - `python_receiver.py` → `gardenhub/routes/receiver_routes.py`
+- updated `app.py` to import `receiver_bp` from `gardenhub.routes.receiver_routes`
+- removed the root `python_receiver.py` without a compatibility wrapper or re-export
 
-After DB, repositories, and services are stable, split `plant_routes.py` into:
+Verification completed:
+
+- the moved receiver file retained the exact original Git blob and an identical complete-module AST
+- the only active consumer, `app.py`, changed only its receiver import path; no active or development import references the root module
+- Blueprint name `receiver`, route `POST /sensor_data`, function `receive_soil`, and endpoint `receiver.receive_soil` remained unchanged
+- missing-field and invalid-moisture responses remained `400` with the same bodies
+- the out-of-soil threshold response remained `202` with the same body and no inserted row
+- accepted readings retained raw-to-percentage conversion, bed and sensor values, UTC timestamp/date persistence, and bed-based slot assignment
+- slots remained limited to 1–6; a seventh reading retained its `409` response and inserted no extra row
+- the current Arduino JSON payload and `/sensor_data` URL remain compatible without changes
+- all five Blueprints remained registered and all 25 Flask rules retained their URLs, methods, namespaces, and endpoint names
+- a local Flask HTTP server returned `200` for `/`, `/automation`, `/automation/beds`, `/automation/sensors`, `/watering`, and `/history`
+- compilation, stale-import searches, duplicate-definition searches, and `git diff --check` passed
+
+#### Phase 4B — Plant Route Split
+
+Status: **Pending — next**
+
+Split `plant_routes.py` into:
 
 ```text
 gardenhub/routes/plants/
@@ -485,7 +511,7 @@ Status: **Pending**
 
 Before and after every phase, verify:
 
-- all 24 routes retain URLs and methods
+- all 25 registered Flask rules retain URLs and methods
 - Blueprint names remain:
   - `receiver`
   - `automation`

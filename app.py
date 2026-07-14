@@ -14,7 +14,7 @@ from gardenhub.routes.plant_routes import plant_bp
 from gardenhub.repositories.sensors_repo import get_recent_sensor_readings
 
 
-from python_receiver import receiver_bp
+from gardenhub.routes.receiver_routes import receiver_bp
 
 from gardenhub.db.initialization import init_all_tables
 from gardenhub.repositories.system_events_repo import get_recent_system_events

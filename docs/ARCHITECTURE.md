@@ -72,6 +72,7 @@ Completed:
 - Phase 3D: weather API orchestration moved unchanged into `gardenhub/services/weather.py`
 - Phase 3E: watering-engine orchestration moved unchanged into `gardenhub/services/watering_engine.py`
 - Phase 3: service-module movement complete; no active service module remains at the project root
+- Phase 4A: receiver Blueprint moved unchanged into `gardenhub/routes/receiver_routes.py`
 
 Current structural direction:
 
@@ -124,12 +125,12 @@ ProjectGarden/
 │       ├── __init__.py
 │       ├── automation_routes.py
 │       ├── plant_routes.py
+│       ├── receiver_routes.py
 │       ├── sensor_routes.py
 │       └── watering_routes.py
 │
 ├── db_access.py
 ├── historic_weather.py
-├── python_receiver.py
 ├── ml_pipeline.py
 │
 ├── seeding/
@@ -143,7 +144,7 @@ ProjectGarden/
         └── historic_sensor.py
 ```
 
-This remains a transitional structure for route modules. The repository and service package phases are complete, and no active repository or service module remains at the project root.
+This remains a transitional structure for the plant-route split. The repository and service package phases are complete, the receiver Blueprint now lives under `gardenhub/routes/`, and no active repository or service module remains at the project root.
 
 ---
 
@@ -180,10 +181,25 @@ Endpoint names and Blueprint namespaces are used extensively by templates and mu
 
 ## Sensor Ingestion
 
+The active receiver Blueprint lives in:
+
+```text
+gardenhub/routes/receiver_routes.py
+```
+
+It owns request parsing and validation, out-of-soil filtering, calibration, daily slot selection, reading persistence, and the existing response bodies and status codes. Its active dependencies are `gardenhub/repositories/sensors_repo.py` for slot selection and persistence and `gardenhub/services/calibration.py` for the out-of-soil threshold and raw-to-percentage conversion. `app.py` imports and registers `receiver_bp` directly from the packaged route module.
+
 Current route:
 
 ```text
 POST /sensor_data
+```
+
+Verified Blueprint and endpoint names:
+
+```text
+receiver
+receiver.receive_soil
 ```
 
 Current flow:
@@ -270,7 +286,7 @@ The obsolete standalone `historic_sensor.py` is retained unchanged under `dev_te
 
 Current consumers:
 
-- `python_receiver.py` uses `OUT_OF_SOIL_RAW` and `raw_to_pct()` to preserve receiver filtering and stored percentage values.
+- `gardenhub/routes/receiver_routes.py` uses `OUT_OF_SOIL_RAW` and `raw_to_pct()` to preserve receiver filtering and stored percentage values.
 - `gardenhub/routes/automation_routes.py` uses `raw_to_pct()` for legacy raw-only slot values.
 - `gardenhub/services/watering_engine.py` uses `raw_to_pct()` for legacy raw-only slot values before calculating daily average moisture.
 
@@ -446,7 +462,6 @@ Frontend redesign, template grouping, icons, visual garden-map work, and product
 ## Current Structural Problems
 
 - `plant_routes.py` is oversized and contains repeated form/JSON work
-- receiver Blueprint remains at root
 - no automated regression-test suite
 - remaining legacy and experimental files are not yet fully organized
 - some documentation still describes the pre-refactor state
