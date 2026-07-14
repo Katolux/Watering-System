@@ -1,7 +1,6 @@
 from flask import Blueprint, request, render_template, redirect, url_for
 from gardenhub.repositories.beds_repo import get_all_beds
-
-from repositories import(
+from gardenhub.repositories.sensors_repo import (
     get_all_sensors,
     add_sensor,
     assign_sensor_to_bed,

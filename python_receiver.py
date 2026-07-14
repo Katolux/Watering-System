@@ -1,5 +1,5 @@
 from flask import Blueprint, request, jsonify
-from repositories import next_slot_for_today, save_reading
+from gardenhub.repositories.sensors_repo import next_slot_for_today, save_reading
 from calibration import OUT_OF_SOIL_RAW, raw_to_pct
 
 receiver_bp = Blueprint("receiver", __name__)

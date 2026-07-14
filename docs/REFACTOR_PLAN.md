@@ -202,19 +202,35 @@ Verification completed:
 
 #### Phase 2D — Sensors repository
 
-Status: **Next**
+Status: **Complete**
 
-Move sensor metadata and assignment into:
+Completed move:
 
-```text
-gardenhub/repositories/sensors_repo.py
-```
+- created `gardenhub/repositories/sensors_repo.py`
+- moved `list_beds_with_sensors()`
+- moved `get_all_sensors()`
+- moved `add_sensor()`
+- moved `assign_sensor_to_bed()`
+- moved `next_slot_for_today()`
+- moved `save_reading()`
+- moved `get_today_moisture_slots()`
+- moved `get_recent_sensor_readings()`
+- kept sensor metadata and sensor-reading persistence together because they form one understandable repository at the current project size
 
-A separate sensor-readings module may be approved if current responsibilities justify it.
+Verification completed:
+
+- all eight signatures and function bodies remained AST-identical
+- SQL statements, parameter ordering, commit behavior, return values, and tuple shapes remained unchanged
+- all active and diagnostic callers import the packaged sensor repository directly; no compatibility re-export was required
+- sensor listing, assignment, recent-reading retrieval, today's moisture-slot aggregation, reading persistence, and the six-slot limit passed against a disposable database
+- receiver responses remained unchanged for missing fields, invalid moisture, out-of-soil readings, accepted readings, and a seventh reading
+- the packaged sensor repository imports successfully and uses the same project-root SQLite database path
+- Flask startup and all required key-page checks passed
+- all 24 application routes remained unchanged
 
 #### Phase 2E — Watering repository
 
-Status: **Pending**
+Status: **Next**
 
 Move watering decisions and watering events into:
 

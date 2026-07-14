@@ -2,7 +2,7 @@ import time
 from datetime import datetime, date, timedelta
 
 from watering_engine import run_watering_engine
-from repositories import get_today_moisture_slots
+from gardenhub.repositories.sensors_repo import get_today_moisture_slots
 from gardenhub.repositories.system_events_repo import log_system_event
 from get_weather_new import refresh_weather
 

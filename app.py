@@ -11,7 +11,7 @@ from gardenhub.routes.watering_routes import watering_bp
 from gardenhub.routes.sensor_routes import sensor_bp
 from gardenhub.routes.plant_routes import plant_bp
 
-from repositories import get_recent_sensor_readings
+from gardenhub.repositories.sensors_repo import get_recent_sensor_readings
 
 
 from python_receiver import receiver_bp

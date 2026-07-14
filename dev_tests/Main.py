@@ -8,7 +8,8 @@ Not used in production runtime.
 
 from get_weather_new import refresh_weather
 from historic_weather import print_last_days_weather 
-from repositories import add_bed_menu, list_beds_with_sensors
+from repositories import add_bed_menu
+from gardenhub.repositories.sensors_repo import list_beds_with_sensors
 from gardenhub.db.schema import (
     init_beds_and_sensors_tables,
     init_sensor_readings_table,
