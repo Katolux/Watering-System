@@ -144,27 +144,19 @@ Verification completed:
 
 #### Phase 2B — Weather repository
 
-Status: **Next**
+Status: **Complete**
 
-Goal:
+Completed move:
 
-Create:
+- created `gardenhub/repositories/weather_repo.py`
+- moved `save_weather_record()`
+- moved `get_latest_weather_date()`
+- moved the database-backed application `should_refresh_weather()`
+- moved `get_last_days_weather()`
+- moved `get_today_weather_record()`
+- moved `get_today_weather()`
 
-```text
-gardenhub/repositories/weather_repo.py
-```
-
-Move weather database access only.
-
-Expected responsibilities:
-
-- save/upsert weather records
-- database-backed stored-weather freshness check
-- retrieve today’s weather
-- retrieve recent weather
-- retrieve dashboard weather record
-
-Do not move yet:
+Preserved in their existing locations:
 
 - Open-Meteo API request
 - retry/cache configuration
@@ -173,21 +165,44 @@ Do not move yet:
 - scheduler timing
 - Flask routes
 
-Preserve the app and scheduler refresh checks as separate behaviors.
+Verification completed:
+
+- all six signatures and function bodies preserved
+- SQL and tuple shapes preserved
+- weather upsert, freshness, ordering, and missing-weather behavior passed against a disposable database
+- the app and scheduler refresh checks remained separate
+- Flask startup and key-page checks passed
+- all 24 routes remained unchanged
 
 #### Phase 2C — Beds repository
 
-Status: **Pending**
+Status: **Complete**
 
-Move bed CRUD, plant assignment, and bed/plant aggregation into:
+Completed move:
 
-```text
-gardenhub/repositories/beds_repo.py
-```
+- created `gardenhub/repositories/beds_repo.py`
+- moved `add_bed()`
+- moved `get_all_beds()`
+- moved `assign_plant_to_bed()`
+- moved `get_beds_with_plants()`
+- kept the mixed `list_beds_with_sensors()` diagnostic helper in the transitional root repository because sensor metadata is outside Phase 2C
+- moved confirmed legacy `historic_sensor.py` unchanged to `dev_tests/legacy/historic_sensor.py`
+- added `dev_tests/legacy/README.md`
+
+Verification completed:
+
+- all four signatures and function bodies preserved
+- SQL, parameter ordering, commits, and tuple shapes preserved
+- bed creation, retrieval, plant assignment, and bed/plant aggregation passed against a disposable database
+- database initialization remained idempotent
+- manual three-pass plant seeding passed against a disposable database
+- no active runtime imports depended on `historic_sensor.py`
+- Flask startup and all required key-page checks passed
+- all 24 routes remained unchanged
 
 #### Phase 2D — Sensors repository
 
-Status: **Pending**
+Status: **Next**
 
 Move sensor metadata and assignment into:
 

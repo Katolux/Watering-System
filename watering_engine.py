@@ -1,9 +1,9 @@
 from repositories import (
-    get_beds_with_plants,
     get_today_moisture_slots,
     save_watering_decision,
 )
 from watering_decision import WateringDecision, WateringInputs
+from gardenhub.repositories.beds_repo import get_beds_with_plants
 from gardenhub.repositories.system_events_repo import log_system_event
 from gardenhub.repositories.weather_repo import get_today_weather
 from calibration import raw_to_pct
