@@ -63,6 +63,7 @@ Completed:
 - Phase 2B: weather database access moved into `gardenhub/repositories/weather_repo.py`
 - Phase 2C: bed persistence and bed/plant aggregation moved into `gardenhub/repositories/beds_repo.py`
 - Phase 2D: sensor metadata and sensor-reading persistence moved into `gardenhub/repositories/sensors_repo.py`
+- Phase 2E: watering-decision and watering-event persistence moved into `gardenhub/repositories/watering_repo.py`
 
 Current structural direction:
 
@@ -99,6 +100,7 @@ ProjectGarden/
 │   │   ├── beds_repo.py
 │   │   ├── sensors_repo.py
 │   │   ├── system_events_repo.py
+│   │   ├── watering_repo.py
 │   │   └── weather_repo.py
 │   │
 │   └── routes/
@@ -241,9 +243,10 @@ Current packaged repositories:
 - `beds_repo.py` owns bed creation, bed retrieval, plant assignment to beds, and bed/plant watering-configuration aggregation.
 - `sensors_repo.py` owns sensor creation and retrieval, sensor-to-bed assignment, the bed/sensor diagnostic listing, reading-slot selection, sensor-reading persistence, today's moisture-slot aggregation, and recent-reading retrieval.
 - `weather_repo.py` owns weather persistence, stored-weather freshness, and weather retrieval queries.
+- `watering_repo.py` owns saving watering decisions, retrieving the latest decision for a bed, logging watering events, and retrieving recent watering-event history.
 - `system_events_repo.py` owns system-event persistence and retrieval.
 
-The transitional root `repositories.py` no longer owns bed, sensor, or weather persistence. It still contains plant catalog persistence and watering persistence pending later approved phases.
+The transitional root `repositories.py` no longer owns bed, sensor, weather, or watering persistence. It now contains only plant catalog persistence pending Phase 2F.
 
 The obsolete standalone `historic_sensor.py` is retained unchanged under `dev_tests/legacy/` and is not imported by the active runtime.
 
@@ -364,7 +367,7 @@ Frontend redesign, template grouping, icons, visual garden-map work, and product
 ## Current Structural Problems
 
 - root-level repositories and services mixed with packaged routes
-- `repositories.py` still combines plant and watering persistence
+- `repositories.py` still contains plant catalog persistence pending Phase 2F
 - `plant_routes.py` is oversized and contains repeated form/JSON work
 - receiver Blueprint remains at root
 - no automated regression-test suite

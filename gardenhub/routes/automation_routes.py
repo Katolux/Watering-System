@@ -7,12 +7,12 @@ from gardenhub.repositories.beds_repo import (
     get_beds_with_plants,
 )
 from gardenhub.repositories.sensors_repo import get_today_moisture_slots
+from gardenhub.repositories.watering_repo import get_latest_watering_decision
 from watering_engine import run_watering_engine
 from calibration import raw_to_pct
 
 from repositories import (
     get_all_plants_catalog,
-    get_latest_watering_decision,
     )
 
 

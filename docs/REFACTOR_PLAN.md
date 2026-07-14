@@ -230,17 +230,36 @@ Verification completed:
 
 #### Phase 2E — Watering repository
 
-Status: **Next**
+Status: **Complete**
 
-Move watering decisions and watering events into:
+Completed move:
 
 ```text
 gardenhub/repositories/watering_repo.py
 ```
 
+- moved `save_watering_decision()`
+- moved `get_latest_watering_decision()`
+- moved `log_watering_event()`
+- moved `get_recent_watering_events()`
+- updated the watering engine, watering routes, and automation routes to import the packaged watering repository directly
+- no compatibility re-export was required
+
+Verification completed:
+
+- all four signatures, function bodies, SQL statements, SQL parameter ordering, transaction behavior, return values, and tuple shapes remained AST-identical
+- the packaged watering repository imports successfully and uses the same project-root SQLite database path
+- decision writes, latest-decision retrieval, manual event writes, and recent-event retrieval passed against a disposable database
+- watering-decision tuples remained `(final_minutes, soil_factor, temp_factor, rain_factor, timestamp)`
+- watering-event history tuples remained `(timestamp, bed_id, minutes, mode, source_decision_id, note)`
+- watering-engine inactive-bed, missing-reading, incomplete-configuration, factor, persistence, missing-weather fallback, and system-event logging behavior passed against a disposable database
+- `/water_now` remained logging-only and preserved manual mode, minutes, null factors/reference, and its note
+- Flask startup and all required key-page checks passed
+- all 25 application routes remained unchanged
+
 #### Phase 2F — Plants repository
 
-Status: **Pending**
+Status: **Next (pending)**
 
 Move plants, varieties, companions, and plant persistence last because this domain has the widest dependency surface.
 

@@ -1,4 +1,4 @@
-from repositories import (
+from gardenhub.repositories.watering_repo import (
     save_watering_decision,
 )
 from watering_decision import WateringDecision, WateringInputs

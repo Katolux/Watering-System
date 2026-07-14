@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, redirect, url_for, request
 from gardenhub.repositories.beds_repo import get_beds_with_plants
 
-from repositories import (
+from gardenhub.repositories.watering_repo import (
     get_recent_watering_events,
     get_latest_watering_decision,
     log_watering_event,
