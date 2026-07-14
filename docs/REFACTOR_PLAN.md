@@ -424,7 +424,7 @@ Phase 3 service-module movement is complete. No active service module remains at
 
 ### Phase 4 — Route organization
 
-Status: **In progress — Phase 4A complete; Phase 4B next**
+Status: **Complete**
 
 Phase 3 service-module movement is complete and verified.
 
@@ -454,9 +454,9 @@ Verification completed:
 
 #### Phase 4B — Plant Route Split
 
-Status: **Pending — next**
+Status: **Complete**
 
-Split `plant_routes.py` into:
+Completed split:
 
 ```text
 gardenhub/routes/plants/
@@ -467,19 +467,47 @@ gardenhub/routes/plants/
 └── form_helpers.py
 ```
 
-Requirements:
+Route movement:
 
-- one `plant` Blueprint
-- identical URLs
-- identical HTTP methods
-- identical endpoint names
-- identical templates and render contexts
+- `catalog.py`: `automation_plants()`, `automation_plant_detail()`, `automation_plants_edit_select()`, `automation_plants_delete_select()`, and `automation_plant_delete_confirm()`
+- `editor.py`: `add_plant()` and `automation_plants_edit()`
+- `varieties.py`: `automation_variety_delete_select()`, `automation_variety_delete_confirm()`, and `automation_plants_add_variety()`
+
+Helper movement:
+
+- `form_helpers.py`: `parse_months()`, `derive_watering_defaults()`, and `plant_to_form_data()`
+
+Blueprint and import changes:
+
+- defined `plant_bp = Blueprint("plant", __name__)` once in `gardenhub/routes/plants/__init__.py`
+- imported `catalog`, `editor`, and `varieties` after the shared Blueprint definition
+- updated `app.py` to import `plant_bp` from `gardenhub.routes.plants`
+- removed `gardenhub/routes/plant_routes.py` without a compatibility wrapper or re-export
+
+Verification completed:
+
+- all 13 moved function signatures, decorators, and bodies remained AST-identical
+- the single `plant` Blueprint retained its name and registered exactly ten deferred route functions
+- the ten plant URLs, HTTP methods, endpoint names, templates, render contexts, redirects, validation order/messages, form parsing, JSON construction, watering defaults, repository calls, tuple indexing, and deletion behavior remained unchanged
+- the complete 25-rule Flask map and all five Blueprint names matched the baseline
+- the literal `python -B -m flask --app app routes` command listed the unchanged route map in an isolated project copy
+- seeded list, detail, edit selection, edit GET, add GET, add-variety GET, plant delete confirmation, and variety delete confirmation checks passed
+- missing ID/name, duplicate plant, missing water need, missing sow/transplant months, missing harvest months, invalid plant numeric fields, duplicate variety, missing parent plant, and invalid variety numeric override checks retained their statuses and messages
+- edit-route missing name, water need, sow/transplant months, harvest months, and invalid numeric checks also retained their statuses and messages
+- disposable-database create, view, edit, add-variety, view-variety, delete-variety, and delete-plant checks passed with unchanged redirects, stored scalar/JSON fields, and tuple shapes
+- seeded counts remained 51 plants, 25 varieties, and 199 companion relationships after temporary CRUD cleanup
+- a real local Flask server returned `200` for all required pages, and the in-app browser rendered the seeded encyclopedia, plant detail, add/edit/variety forms, and surrounding application pages
+- no template, static, plant-data, seeding, repository, service, or frontend file was changed
+- the documented direct `python -B seeding/seed_plants.py` entry point still reproduces its pre-existing import-path failure in an isolated copy; the unchanged command passed with the previously established project-root `PYTHONPATH` workaround and retained the stable 51/25/199 counts
+- compilation, stale-import searches, duplicate-definition searches, and `git diff --check` passed
+
+Phase 4 route organization is complete. All active Blueprints now live under `gardenhub/routes/`.
 
 ---
 
 ### Phase 5 — Legacy and experiment organization
 
-Status: **Pending**
+Status: **Pending — next**
 
 After file-by-file approval:
 

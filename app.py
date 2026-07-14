@@ -9,7 +9,7 @@ from gardenhub.services.weather import refresh_weather
 from gardenhub.routes.automation_routes import automation_bp
 from gardenhub.routes.watering_routes import watering_bp
 from gardenhub.routes.sensor_routes import sensor_bp
-from gardenhub.routes.plant_routes import plant_bp
+from gardenhub.routes.plants import plant_bp
 
 from gardenhub.repositories.sensors_repo import get_recent_sensor_readings
 

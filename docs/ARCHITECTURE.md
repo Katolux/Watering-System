@@ -73,6 +73,8 @@ Completed:
 - Phase 3E: watering-engine orchestration moved unchanged into `gardenhub/services/watering_engine.py`
 - Phase 3: service-module movement complete; no active service module remains at the project root
 - Phase 4A: receiver Blueprint moved unchanged into `gardenhub/routes/receiver_routes.py`
+- Phase 4B: plant routes split unchanged into `gardenhub/routes/plants/`
+- Phase 4: route organization complete; all active Blueprints now live under `gardenhub/routes/`
 
 Current structural direction:
 
@@ -124,10 +126,15 @@ ProjectGarden/
 │   └── routes/
 │       ├── __init__.py
 │       ├── automation_routes.py
-│       ├── plant_routes.py
 │       ├── receiver_routes.py
 │       ├── sensor_routes.py
-│       └── watering_routes.py
+│       ├── watering_routes.py
+│       └── plants/
+│           ├── __init__.py
+│           ├── catalog.py
+│           ├── editor.py
+│           ├── varieties.py
+│           └── form_helpers.py
 │
 ├── db_access.py
 ├── historic_weather.py
@@ -144,7 +151,7 @@ ProjectGarden/
         └── historic_sensor.py
 ```
 
-This remains a transitional structure for the plant-route split. The repository and service package phases are complete, the receiver Blueprint now lives under `gardenhub/routes/`, and no active repository or service module remains at the project root.
+The database, repository, service, and route-organization phases are complete. All active Blueprints now live under `gardenhub/routes/`, and no active repository, service, or route module remains incorrectly placed at the project root.
 
 ---
 
@@ -318,6 +325,27 @@ The module's dataclass fields, class and function signatures, thresholds, formul
 
 ---
 
+## Plant Routes
+
+The active plant Blueprint is organized under:
+
+```text
+gardenhub/routes/plants/
+```
+
+`gardenhub/routes/plants/__init__.py` defines the single shared `plant_bp = Blueprint("plant", __name__)` and imports the three route modules after the Blueprint is created. `app.py` imports `plant_bp` directly from the package.
+
+Responsibilities:
+
+- `catalog.py` owns the encyclopedia list, plant detail, edit-selection redirect, plant delete selection, and plant delete confirmation routes.
+- `editor.py` owns the add-plant and edit-plant routes and preserves their separate form-processing and persistence logic.
+- `varieties.py` owns add-variety, variety delete selection, and variety delete confirmation.
+- `form_helpers.py` owns `parse_months()`, `derive_watering_defaults()`, and `plant_to_form_data()`.
+
+The former `gardenhub/routes/plant_routes.py` module was removed without a compatibility wrapper. The Blueprint namespace remains `plant`, all ten plant endpoints retain their existing names, and templates remain flat and unchanged.
+
+---
+
 ## Plant Seeding
 
 Plant seeding is manual during development.
@@ -461,7 +489,6 @@ Frontend redesign, template grouping, icons, visual garden-map work, and product
 
 ## Current Structural Problems
 
-- `plant_routes.py` is oversized and contains repeated form/JSON work
 - no automated regression-test suite
 - remaining legacy and experimental files are not yet fully organized
 - some documentation still describes the pre-refactor state
