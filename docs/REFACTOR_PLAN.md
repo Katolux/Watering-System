@@ -368,23 +368,40 @@ Verification completed:
 
 #### Phase 3D — Weather Service
 
+Status: **Complete**
+
+Completed move:
+
+- weather API orchestration → `gardenhub/services/weather.py`
+- moved `refresh_weather()` with the existing Open-Meteo setup, cache/retry configuration, request parameters, response processing, Pandas date construction, record creation, repository persistence calls, and formatted console output
+- updated `app.py`, `scheduler.py`, `dev_tests/Main.py`, and `dev_tests/debug_import.py` to use the packaged weather service
+- removed `get_weather_new.py` without a compatibility wrapper
+- preserved `historic_weather.py` unchanged as a separate repository-backed CLI history printer
+
+Verification completed:
+
+- the moved weather source remained equivalent to the former root file apart from its final newline, and the complete module AST remained identical
+- the Open-Meteo endpoint, hardcoded coordinates, daily variables and ordering, model, timezone, cache filename and expiration, retry count and backoff, response indexes, Pandas date-range construction, conversions, record keys, float behavior, repository calls, and console output remained unchanged
+- side-by-side mocked-response refreshes produced identical dates and weather values for temperature, precipitation, sunshine, daylight, wind maximum, and wind direction
+- two refreshes against disposable SQLite databases preserved upsert behavior and produced three unique date rows without duplicates
+- the packaged service, application, scheduler, exploratory scripts, and watering-engine repository interface imported successfully
+- active weather SQL remained confined to the repository and schema layers, and the project-root SQLite path remained unchanged
+- the application database-backed freshness check and scheduler in-memory three-day refresh interval remained separate
+- scheduler immediate refresh, watering window, fallback behavior, and sleep durations remained unchanged
+- manual `/refresh_weather` continued to call the service and redirect to `/`
+- Flask startup and the four required key-page HTTP checks passed with byte-identical rendered output
+- all 25 application routes, methods, Blueprint namespaces, and endpoint names remained unchanged
+- compilation and `git diff --check` passed
+
+#### Phase 3E — Watering Engine Service
+
 Status: **Pending — next**
 
 Next move:
 
-- weather API orchestration → `gardenhub/services/weather.py`
-
-Do not begin Phase 3D without separate approval.
-
-#### Later Phase 3 service tasks
-
-Status: **Pending**
-
-Move existing modules without changing logic:
-
 - `watering_engine.py` → `gardenhub/services/watering_engine.py`
 
-Do not alter formulas, thresholds, fallback behavior, or scheduler logic.
+Do not begin Phase 3E without separate approval. Do not alter formulas, thresholds, fallback behavior, or scheduler logic.
 
 ---
 

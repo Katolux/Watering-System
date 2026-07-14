@@ -5,7 +5,7 @@ from flask import (
     url_for,
 )
 
-from get_weather_new import refresh_weather
+from gardenhub.services.weather import refresh_weather
 from gardenhub.routes.automation_routes import automation_bp
 from gardenhub.routes.watering_routes import watering_bp
 from gardenhub.routes.sensor_routes import sensor_bp

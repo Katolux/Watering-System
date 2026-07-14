@@ -69,6 +69,7 @@ Completed:
 - Phase 3A: calibration moved unchanged into `gardenhub/services/calibration.py`
 - Phase 3B: garden status logic moved unchanged into `gardenhub/services/garden_status.py`
 - Phase 3C: watering-decision logic moved unchanged into `gardenhub/services/watering_decision.py`
+- Phase 3D: weather API orchestration moved unchanged into `gardenhub/services/weather.py`
 
 Current structural direction:
 
@@ -113,7 +114,8 @@ ProjectGarden/
 │   │   ├── __init__.py
 │   │   ├── calibration.py
 │   │   ├── garden_status.py
-│   │   └── watering_decision.py
+│   │   ├── watering_decision.py
+│   │   └── weather.py
 │   │
 │   └── routes/
 │       ├── __init__.py
@@ -123,7 +125,6 @@ ProjectGarden/
 │       └── watering_routes.py
 │
 ├── db_access.py
-├── get_weather_new.py
 ├── historic_weather.py
 ├── python_receiver.py
 ├── watering_engine.py
@@ -338,12 +339,21 @@ Future product behavior will allow the user to select a location, after which we
 
 Current flows:
 
-- app startup checks stored-weather freshness
-- manual refresh is available through `/refresh_weather`
-- scheduler refreshes weather using its own in-memory timing logic
+- `gardenhub/services/weather.py` configures the Open-Meteo client, request cache, and retries; sends the fixed forecast request; transforms the response with Pandas; constructs weather records; saves them through `gardenhub/repositories/weather_repo.py`; and preserves the formatted console output
+- app startup checks stored-weather freshness before calling the weather service
+- manual refresh is available through `/refresh_weather` and calls the weather service
+- scheduler calls the weather service according to its own in-memory timing logic
 - dashboard reads today’s record
 - history reads recent records
 - watering engine reads today’s temperature and precipitation
+
+Current weather-service consumers:
+
+- `app.py`
+- `scheduler.py`
+- the exploratory `dev_tests/Main.py` and `dev_tests/debug_import.py` scripts
+
+Weather SQL remains in `gardenhub/repositories/weather_repo.py`, while weather-table creation remains in `gardenhub/db/schema.py`. The root `get_weather_new.py` module was removed without a compatibility wrapper. The separate root `historic_weather.py` repository-backed CLI printer remains unchanged because it is not API orchestration and has not been approved as legacy.
 
 The app freshness check and scheduler refresh timing have different behavior and must not be unified during movement-only refactoring.
 

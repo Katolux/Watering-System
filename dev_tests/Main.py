@@ -6,7 +6,7 @@ Not used in production runtime.
 
 
 
-from get_weather_new import refresh_weather
+from gardenhub.services.weather import refresh_weather
 from historic_weather import print_last_days_weather 
 from repositories import add_bed_menu
 from gardenhub.repositories.sensors_repo import list_beds_with_sensors
