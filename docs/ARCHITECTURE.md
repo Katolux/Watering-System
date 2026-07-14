@@ -67,6 +67,7 @@ Completed:
 - Phase 2F: plant, variety, companion, and plant JSON persistence moved into `gardenhub/repositories/plants_repo.py`
 - Phase 2: repository split complete; the transitional root `repositories.py` has been removed
 - Phase 3A: calibration moved unchanged into `gardenhub/services/calibration.py`
+- Phase 3B: garden status logic moved unchanged into `gardenhub/services/garden_status.py`
 
 Current structural direction:
 
@@ -109,7 +110,8 @@ ProjectGarden/
 │   │
 │   ├── services/
 │   │   ├── __init__.py
-│   │   └── calibration.py
+│   │   ├── calibration.py
+│   │   └── garden_status.py
 │   │
 │   └── routes/
 │       ├── __init__.py
@@ -122,7 +124,6 @@ ProjectGarden/
 ├── get_weather_new.py
 ├── historic_weather.py
 ├── python_receiver.py
-├── garden_logic.py
 ├── watering_decision.py
 ├── watering_engine.py
 ├── ml_pipeline.py
@@ -270,6 +271,18 @@ Current consumers:
 - `watering_engine.py` uses `raw_to_pct()` for legacy raw-only slot values before calculating daily average moisture.
 
 The file is byte-identical to the former root `calibration.py`. The root module was removed and no compatibility copy or re-export remains.
+
+---
+
+## Garden Status Service
+
+`gardenhub/services/garden_status.py` owns the existing moisture-status interpretation, overall bed-status summary, and daily-average helper logic.
+
+Current consumer:
+
+- `gardenhub/routes/automation_routes.py` uses `moisture_status()` and `overall_bed_status()` to preserve the moisture labels and bed summaries displayed by `/automation/beds`.
+
+The module's function signatures and bodies remain equivalent to the former root `garden_logic.py`. The unused `daily_average_moisture()` helper remains preserved, the root module was removed, and no compatibility copy or re-export remains.
 
 ---
 

@@ -16,7 +16,7 @@ from gardenhub.repositories.plants_repo import (
     )
 
 
-from garden_logic import (
+from gardenhub.services.garden_status import (
     moisture_status,
     overall_bed_status,
 )

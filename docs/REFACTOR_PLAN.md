@@ -324,13 +324,35 @@ Verification completed:
 
 #### Phase 3B — Garden Status Service
 
+Status: **Complete**
+
+Completed move:
+
+- `garden_logic.py` → `gardenhub/services/garden_status.py`
+- updated the automation routes to import the packaged garden status service directly
+- removed the root garden status module without a compatibility copy or re-export
+- preserved the inactive `daily_average_moisture()` helper unchanged
+
+Verification completed:
+
+- all three function signatures and bodies remained AST-identical
+- moisture thresholds, status labels, return values, calculations, display behavior, and representative edge cases remained unchanged
+- the packaged garden status module imported successfully
+- no Python import references the former root module
+- Flask startup and the five required key-page HTTP checks passed
+- all five required pages produced byte-identical rendered output before and after the move
+- all 25 application routes, methods, Blueprint namespaces, and endpoint names remained unchanged
+- compilation and `git diff --check` passed
+
+#### Phase 3C — Watering Decision Service
+
 Status: **Pending — next**
 
 Next move:
 
-- `garden_logic.py` → `gardenhub/services/garden_status.py`
+- `watering_decision.py` → `gardenhub/services/watering_decision.py`
 
-Do not begin Phase 3B without separate approval.
+Do not begin Phase 3C without separate approval.
 
 #### Later Phase 3 service tasks
 
@@ -338,7 +360,6 @@ Status: **Pending**
 
 Move existing modules without changing logic:
 
-- `watering_decision.py` → `gardenhub/services/watering_decision.py`
 - `watering_engine.py` → `gardenhub/services/watering_engine.py`
 - weather API orchestration → `gardenhub/services/weather.py`
 
