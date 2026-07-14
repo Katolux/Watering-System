@@ -75,6 +75,7 @@ Completed:
 - Phase 4A: receiver Blueprint moved unchanged into `gardenhub/routes/receiver_routes.py`
 - Phase 4B: plant routes split unchanged into `gardenhub/routes/plants/`
 - Phase 4: route organization complete; all active Blueprints now live under `gardenhub/routes/`
+- Phase 5: confirmed legacy, experiments, hardware diagnostics, and empty placeholders organized
 
 Current structural direction:
 
@@ -138,7 +139,6 @@ ProjectGarden/
 │
 ├── db_access.py
 ├── historic_weather.py
-├── ml_pipeline.py
 │
 ├── seeding/
 ├── plants/
@@ -146,12 +146,27 @@ ProjectGarden/
 ├── static/
 ├── docs/
 └── dev_tests/
+    ├── debug_import.py
+    ├── experiments/
+    │   ├── README.md
+    │   ├── ml_pipeline.py
+    │   ├── test_perenual.py
+    │   └── test_trefle.py
+    ├── hardware/
+    │   ├── README.md
+    │   ├── arduino_test
+    │   ├── test_code_andruino.cpp
+    │   ├── check_macadress.cpp
+    │   ├── arduino_ip.cpp
+    │   ├── arduino_send_test.cpp
+    │   └── python_receiver_test.py
     └── legacy/
         ├── README.md
+        ├── Main.py
         └── historic_sensor.py
 ```
 
-The database, repository, service, and route-organization phases are complete. All active Blueprints now live under `gardenhub/routes/`, and no active repository, service, or route module remains incorrectly placed at the project root.
+The database, repository, service, route, and development-file organization phases are complete. Active Blueprints live under `gardenhub/routes/`; development-only legacy, experiment, and hardware files are separated under `dev_tests/`.
 
 ---
 
@@ -397,7 +412,9 @@ Current weather-service consumers:
 
 - `app.py`
 - `scheduler.py`
-- the exploratory `dev_tests/Main.py` and `dev_tests/debug_import.py` scripts
+- the supported development diagnostic `dev_tests/debug_import.py`
+
+The quarantined `dev_tests/legacy/Main.py` retains its historical weather import unchanged, but it also imports removed menu code and is not a supported consumer or application entry point.
 
 Weather SQL remains in `gardenhub/repositories/weather_repo.py`, while weather-table creation remains in `gardenhub/db/schema.py`. The root `get_weather_new.py` module was removed without a compatibility wrapper. The separate root `historic_weather.py` repository-backed CLI printer remains unchanged because it is not API orchestration and has not been approved as legacy.
 
@@ -483,15 +500,30 @@ Active stylesheet:
 static/css/main.css
 ```
 
+The empty, unreferenced `templates/dashboard.html` and `static/style.css` placeholders were removed during Phase 5. No active template rendered the former dashboard placeholder, and all active pages continue to link `static/css/main.css` through `base.html`.
+
 Frontend redesign, template grouping, icons, visual garden-map work, and product design are separate future tasks.
+
+---
+
+## Development-Only Files
+
+- `dev_tests/legacy/` retains obsolete or broken historical scripts that are not supported entry points.
+- `dev_tests/experiments/` contains the ML and external plant-API experiments; their API and schema assumptions are not production contracts.
+- `dev_tests/hardware/` contains manual sensor, network, and HTTP-post diagnostics. The paired test receiver and sender remain together.
+- `dev_tests/debug_import.py` remains a supported import-diagnostic tool.
+- `db_access.py` and `historic_weather.py` remain untouched because their future role is uncertain and they were not approved as legacy.
+- Primary firmware `arduino_send_final.cpp` and the `arduino_secrets.example.h` configuration template remain at repository root.
+
+None of the legacy, experiment, or hardware diagnostic files is imported by the active Flask or scheduler runtime.
 
 ---
 
 ## Current Structural Problems
 
 - no automated regression-test suite
-- remaining legacy and experimental files are not yet fully organized
-- some documentation still describes the pre-refactor state
+- uncertain standalone helpers still require a later keep/remove decision
+- some operational and top-level documentation still describes pre-refactor paths
 
 These are being addressed incrementally without changing behavior.
 

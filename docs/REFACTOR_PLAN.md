@@ -292,7 +292,7 @@ Verification completed:
 - all 25 application routes remained unchanged
 - compilation and `git diff --check` passed
 - the documented direct seeding command failed in an isolated copy unless the project root was placed on `PYTHONPATH`; the unchanged three-pass seeder passed with that path supplied, and the entry-point issue was left for a future task
-- one pre-existing exploratory reference remains in `dev_tests/Main.py`: it imports the already-absent `add_bed_menu` from root `repositories`; no active runtime import references the removed module
+- one pre-existing exploratory reference was preserved in `dev_tests/Main.py`: it imports the already-absent `add_bed_menu` from root `repositories`; Phase 5 later moved the file unchanged to `dev_tests/legacy/Main.py`
 
 ---
 
@@ -374,7 +374,7 @@ Completed move:
 
 - weather API orchestration → `gardenhub/services/weather.py`
 - moved `refresh_weather()` with the existing Open-Meteo setup, cache/retry configuration, request parameters, response processing, Pandas date construction, record creation, repository persistence calls, and formatted console output
-- updated `app.py`, `scheduler.py`, `dev_tests/Main.py`, and `dev_tests/debug_import.py` to use the packaged weather service
+- updated `app.py`, `scheduler.py`, the then-current `dev_tests/Main.py` (now `dev_tests/legacy/Main.py`), and `dev_tests/debug_import.py` to use the packaged weather service
 - removed `get_weather_new.py` without a compatibility wrapper
 - preserved `historic_weather.py` unchanged as a separate repository-backed CLI history printer
 
@@ -507,28 +507,61 @@ Phase 4 route organization is complete. All active Blueprints now live under `ga
 
 ### Phase 5 — Legacy and experiment organization
 
-Status: **Pending — next**
+Status: **Complete**
 
-After file-by-file approval:
+Completed legacy organization:
 
-- confirmed legacy → `dev_tests/legacy/`
-- ML/API experiments → `dev_tests/experiments/`
-- hardware diagnostics may later move to `dev_tests/hardware/`
+- moved `dev_tests/Main.py` unchanged to `dev_tests/legacy/Main.py`
+- retained `dev_tests/legacy/historic_sensor.py` unchanged
+- expanded `dev_tests/legacy/README.md` to identify both scripts as unsupported historical references
 
-Do not delete uncertain files.
+Completed experiment organization:
 
-Do not correct plant data during this phase.
+- moved `ml_pipeline.py` unchanged to `dev_tests/experiments/ml_pipeline.py`
+- moved `dev_tests/test_perenual.py` and `dev_tests/test_trefle.py` unchanged to `dev_tests/experiments/`
+- added `dev_tests/experiments/README.md`
+
+Completed hardware-diagnostic organization:
+
+- moved `arduino_test`, `test_code_andruino.cpp`, `check_macadress.cpp`, `arduino_ip.cpp`, `arduino_send_test.cpp`, and `python_receiver_test.py` to `dev_tests/hardware/`
+- kept the paired HTTP sender and standalone Flask receiver together
+- added `dev_tests/hardware/README.md` with the diagnostic purposes and secrets workflow
+- retained primary firmware `arduino_send_final.cpp` and `arduino_secrets.example.h` at repository root
+
+Removed confirmed empty placeholders:
+
+- `templates/dashboard.html`
+- `static/style.css`
+
+Deliberately retained:
+
+- `dev_tests/debug_import.py` as a supported development diagnostic
+- `db_access.py` and `historic_weather.py` because their future role remains uncertain
+
+Verification completed:
+
+- all ten moved files matched their original Git blob hashes exactly
+- no active Python import references a moved legacy, experiment, or hardware file
+- runtime and `dev_tests` compilation passed
+- scheduler import and runtime dependency resolution passed
+- all 25 Flask rules retained their URLs, methods, Blueprint namespaces, and endpoint names
+- a controlled local Flask server returned `200` for `/`, `/history`, `/automation`, `/automation/beds`, `/automation/plants`, `/automation/sensors`, `/watering`, and `/static/css/main.css`
+- `base.html` remained the only stylesheet link source and still selects `static/css/main.css`
+- disposable three-pass plant seeding produced 51 plants, 25 varieties, and 199 companion relationships
+- the known bare-script import-path failure for `python -B seeding/seed_plants.py` remained unchanged; the literal command passed with the established project-root `PYTHONPATH` context
+- primary Arduino firmware and its example secrets header remained in their expected root locations
+- stale-reference searches and `git diff --check` passed
+
+No active runtime logic, schema, SQL, plant data, frontend content, scheduler behavior, or Arduino firmware behavior changed.
 
 ---
 
-### Phase 6 — Documentation and final cleanup
+### Phase 6 — Final Cleanup and Backend Verification
 
 Status: **Pending**
 
-- remove confirmed empty unused placeholders
 - remove temporary compatibility re-exports
 - update README repository tree
-- update architecture documentation
 - document supported operational commands
 - perform full smoke test
 - prepare merge review

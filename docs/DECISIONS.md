@@ -149,7 +149,7 @@ Location will belong to user/garden configuration and drive weather, frost-date,
 
 - confirmed obsolete/broken historical code may move to `dev_tests/legacy/`
 - future ML/API experiments may move to `dev_tests/experiments/`
-- hardware diagnostics remain in place until separately reviewed
+- hardware diagnostics require a separate file-by-file workflow review before movement
 - uncertain helpers remain preserved
 
 **Reason**
@@ -219,3 +219,24 @@ Each Codex task must have one narrow objective and must stop after completing it
 **Reason**
 
 Narrow tasks reduce unintended scope, improve reviewability, and align work with small Git commits.
+
+---
+
+## ADR-011 — Separate hardware diagnostics from primary firmware
+
+**Status:** Accepted
+
+**Decision**
+
+Keep manual sensor, network, and HTTP-post diagnostics under `dev_tests/hardware/` after their purposes and pairings have been reviewed.
+
+Keep the primary firmware and hardware configuration template at repository root:
+
+- `arduino_send_final.cpp`
+- `arduino_secrets.example.h`
+
+The paired `arduino_send_test.cpp` and `python_receiver_test.py` diagnostics remain together, and diagnostics that use Wi-Fi credentials continue to follow the repository-root secrets-template workflow.
+
+**Reason**
+
+The diagnostics remain useful during hardware development, but separating them from primary firmware makes their non-production role clear without changing firmware or upload behavior.
