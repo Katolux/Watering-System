@@ -298,7 +298,7 @@ Verification completed:
 
 ### Phase 3 — Service modules
 
-Status: **In progress**
+Status: **Complete**
 
 #### Phase 3A — Calibration service
 
@@ -395,19 +395,36 @@ Verification completed:
 
 #### Phase 3E — Watering Engine Service
 
-Status: **Pending — next**
+Status: **Complete**
 
-Next move:
+Completed move:
 
 - `watering_engine.py` → `gardenhub/services/watering_engine.py`
+- updated `scheduler.py`, `gardenhub/routes/automation_routes.py`, and `gardenhub/routes/watering_routes.py` to import the packaged watering-engine service directly
+- removed the root watering-engine module without a compatibility copy or re-export
+- preserved `daily_average_moisture_from_slots()` and `run_watering_engine()` unchanged
 
-Do not begin Phase 3E without separate approval. Do not alter formulas, thresholds, fallback behavior, or scheduler logic.
+Verification completed:
+
+- the moved file remained byte-identical to the former root file, with matching Git object and SHA-256 hashes and an identical complete-module AST
+- the three consumers remained AST-identical apart from the watering-engine import path
+- before/after comparisons passed for inactive beds, no readings, incomplete configuration, valid weather, missing weather, multiple beds, multiple plants, and moisture below, within, and above target
+- disposable SQLite comparisons preserved bed ordering and skips, moisture averages, aggregated plant configuration, weather values, factors, final minutes, plant names, warning events, persistence fields, ISO-8601 timezone-aware timestamps, and inserted-row counts
+- missing weather preserved `None` weather values, neutral temperature and rain factors, and the existing warning message and details
+- no automatic `watering_events` rows were inserted, and `/water_now` remained unchanged
+- a local Flask HTTP server returned `200` for `/`, `/automation`, `/automation/beds`, `/watering`, and `/history`; latest decisions and factors rendered on both watering views
+- `POST /automation/run_watering_engine` invoked the packaged engine and preserved the `302` redirect to `/automation`
+- all 25 Flask rules, including the built-in static rule, retained their URLs, methods, Blueprint namespaces, and endpoint names
+- scheduler import, 05:00–10:59 window, slot-1 trigger, after-09:00 fallback, once-per-date tracking, one-hour post-run sleep, 60-second polling and recovery, and three-day weather-refresh behavior remained unchanged
+- the packaged module imported successfully, the root module was absent, and compilation, stale-import searches, duplicate-definition searches, and `git diff --check` passed
+
+Phase 3 service-module movement is complete. No active service module remains at the project root.
 
 ---
 
 ### Phase 4 — Route organization
 
-Status: **Pending**
+Status: **Pending — next**
 
 Move:
 

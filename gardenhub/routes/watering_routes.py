@@ -7,7 +7,7 @@ from gardenhub.repositories.watering_repo import (
     log_watering_event,
 )
 
-from watering_engine import run_watering_engine
+from gardenhub.services.watering_engine import run_watering_engine
 
 
 watering_bp = Blueprint("watering", __name__)

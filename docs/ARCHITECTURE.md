@@ -70,6 +70,8 @@ Completed:
 - Phase 3B: garden status logic moved unchanged into `gardenhub/services/garden_status.py`
 - Phase 3C: watering-decision logic moved unchanged into `gardenhub/services/watering_decision.py`
 - Phase 3D: weather API orchestration moved unchanged into `gardenhub/services/weather.py`
+- Phase 3E: watering-engine orchestration moved unchanged into `gardenhub/services/watering_engine.py`
+- Phase 3: service-module movement complete; no active service module remains at the project root
 
 Current structural direction:
 
@@ -115,6 +117,7 @@ ProjectGarden/
 │   │   ├── calibration.py
 │   │   ├── garden_status.py
 │   │   ├── watering_decision.py
+│   │   ├── watering_engine.py
 │   │   └── weather.py
 │   │
 │   └── routes/
@@ -127,7 +130,6 @@ ProjectGarden/
 ├── db_access.py
 ├── historic_weather.py
 ├── python_receiver.py
-├── watering_engine.py
 ├── ml_pipeline.py
 │
 ├── seeding/
@@ -141,7 +143,7 @@ ProjectGarden/
         └── historic_sensor.py
 ```
 
-This remains a transitional structure for service and route modules. The repository package split is complete and no active repository module remains at the project root.
+This remains a transitional structure for route modules. The repository and service package phases are complete, and no active repository or service module remains at the project root.
 
 ---
 
@@ -270,7 +272,7 @@ Current consumers:
 
 - `python_receiver.py` uses `OUT_OF_SOIL_RAW` and `raw_to_pct()` to preserve receiver filtering and stored percentage values.
 - `gardenhub/routes/automation_routes.py` uses `raw_to_pct()` for legacy raw-only slot values.
-- `watering_engine.py` uses `raw_to_pct()` for legacy raw-only slot values before calculating daily average moisture.
+- `gardenhub/services/watering_engine.py` uses `raw_to_pct()` for legacy raw-only slot values before calculating daily average moisture.
 
 The file is byte-identical to the former root `calibration.py`. The root module was removed and no compatibility copy or re-export remains.
 
@@ -294,7 +296,7 @@ The module's function signatures and bodies remain equivalent to the former root
 
 Current consumer:
 
-- `watering_engine.py` creates `WateringInputs`, runs `WateringDecision.calculate()`, and persists the returned final minutes and soil, temperature, and rain factors.
+- `gardenhub/services/watering_engine.py` creates `WateringInputs`, runs `WateringDecision.calculate()`, and persists the returned final minutes and soil, temperature, and rain factors.
 
 The module's dataclass fields, class and function signatures, thresholds, formulas, rounding, minimum clamp, neutral fallbacks, and `(final_minutes, breakdown)` result remain equivalent to the former root `watering_decision.py`. The root module was removed and no compatibility copy or re-export remains.
 
@@ -361,6 +363,8 @@ The app freshness check and scheduler refresh timing have different behavior and
 
 ## Watering Engine
 
+`gardenhub/services/watering_engine.py` owns the current watering orchestration. The former root `watering_engine.py` was removed without a compatibility copy or re-export.
+
 Inputs:
 
 - active beds
@@ -378,11 +382,29 @@ Behavior:
 - saves watering decisions
 - logs warning events when weather is unavailable
 
+Active dependencies:
+
+- `gardenhub/repositories/beds_repo.py` for ordered bed and plant watering configuration
+- `gardenhub/repositories/sensors_repo.py` for today's moisture slots
+- `gardenhub/repositories/weather_repo.py` for today's temperature and precipitation
+- `gardenhub/repositories/watering_repo.py` for watering-decision persistence
+- `gardenhub/repositories/system_events_repo.py` for warning events
+- `gardenhub/services/calibration.py` for legacy raw-only slot conversion
+- `gardenhub/services/watering_decision.py` for factor calculation and final minutes
+
+Current consumers:
+
+- `scheduler.py`
+- `gardenhub/routes/automation_routes.py`
+- `gardenhub/routes/watering_routes.py`
+
+The move preserved `daily_average_moisture_from_slots()` and `run_watering_engine()` byte-for-byte. Repository calls, tuple unpacking, bed ordering, skip behavior, neutral missing-weather fallback, warning messages, decision fields, timestamps, return values, and console output remain unchanged.
+
 Current output is runtime in minutes.
 
 Future output should move toward target water volume, with runtime derived from measured flow.
 
-`/water_now` currently logs a manual watering event and does not actuate physical hardware.
+The engine does not create automatic `watering_events` rows or actuate physical hardware. `/water_now` continues to log only a manual watering event.
 
 ---
 
@@ -423,7 +445,6 @@ Frontend redesign, template grouping, icons, visual garden-map work, and product
 
 ## Current Structural Problems
 
-- remaining root-level service modules are pending later Phase 3 tasks
 - `plant_routes.py` is oversized and contains repeated form/JSON work
 - receiver Blueprint remains at root
 - no automated regression-test suite
