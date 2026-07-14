@@ -298,12 +298,46 @@ Verification completed:
 
 ### Phase 3 — Service modules
 
+Status: **In progress**
+
+#### Phase 3A — Calibration service
+
+Status: **Complete**
+
+Completed move:
+
+- `calibration.py` → `gardenhub/services/calibration.py`
+- created `gardenhub/services/__init__.py`
+- updated the receiver, automation routes, and watering engine to import the packaged calibration service directly
+- removed the root calibration module without a compatibility copy or re-export
+
+Verification completed:
+
+- the moved calibration file is byte-identical to the former root file
+- constants, thresholds, function signature, function body, clamping, and integer behavior remained unchanged
+- representative comparisons passed below, at, between, and above the wet/dry thresholds and at the out-of-soil threshold
+- receiver missing-field, invalid-value, out-of-soil, accepted-reading, stored raw/percentage, and seventh-slot responses passed against a disposable database
+- the packaged module and watering-engine imports succeeded
+- Flask startup and all required key-page HTTP checks passed
+- all 25 application routes remained unchanged
+- compilation, stale-reference searches, duplicate-definition searches, and `git diff --check` passed
+
+#### Phase 3B — Garden Status Service
+
+Status: **Pending — next**
+
+Next move:
+
+- `garden_logic.py` → `gardenhub/services/garden_status.py`
+
+Do not begin Phase 3B without separate approval.
+
+#### Later Phase 3 service tasks
+
 Status: **Pending**
 
 Move existing modules without changing logic:
 
-- `calibration.py` → `gardenhub/services/calibration.py`
-- `garden_logic.py` → `gardenhub/services/garden_status.py`
 - `watering_decision.py` → `gardenhub/services/watering_decision.py`
 - `watering_engine.py` → `gardenhub/services/watering_engine.py`
 - weather API orchestration → `gardenhub/services/weather.py`

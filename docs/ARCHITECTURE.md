@@ -66,6 +66,7 @@ Completed:
 - Phase 2E: watering-decision and watering-event persistence moved into `gardenhub/repositories/watering_repo.py`
 - Phase 2F: plant, variety, companion, and plant JSON persistence moved into `gardenhub/repositories/plants_repo.py`
 - Phase 2: repository split complete; the transitional root `repositories.py` has been removed
+- Phase 3A: calibration moved unchanged into `gardenhub/services/calibration.py`
 
 Current structural direction:
 
@@ -106,6 +107,10 @@ ProjectGarden/
 │   │   ├── watering_repo.py
 │   │   └── weather_repo.py
 │   │
+│   ├── services/
+│   │   ├── __init__.py
+│   │   └── calibration.py
+│   │
 │   └── routes/
 │       ├── __init__.py
 │       ├── automation_routes.py
@@ -117,7 +122,6 @@ ProjectGarden/
 ├── get_weather_new.py
 ├── historic_weather.py
 ├── python_receiver.py
-├── calibration.py
 ├── garden_logic.py
 ├── watering_decision.py
 ├── watering_engine.py
@@ -255,6 +259,20 @@ The obsolete standalone `historic_sensor.py` is retained unchanged under `dev_te
 
 ---
 
+## Calibration Service
+
+`gardenhub/services/calibration.py` owns the current soil-moisture calibration constants, the out-of-soil raw threshold, and the raw-to-percentage conversion helper.
+
+Current consumers:
+
+- `python_receiver.py` uses `OUT_OF_SOIL_RAW` and `raw_to_pct()` to preserve receiver filtering and stored percentage values.
+- `gardenhub/routes/automation_routes.py` uses `raw_to_pct()` for legacy raw-only slot values.
+- `watering_engine.py` uses `raw_to_pct()` for legacy raw-only slot values before calculating daily average moisture.
+
+The file is byte-identical to the former root `calibration.py`. The root module was removed and no compatibility copy or re-export remains.
+
+---
+
 ## Plant Seeding
 
 Plant seeding is manual during development.
@@ -369,8 +387,7 @@ Frontend redesign, template grouping, icons, visual garden-map work, and product
 
 ## Current Structural Problems
 
-- root-level repositories and services mixed with packaged routes
-- `repositories.py` still contains plant catalog persistence pending Phase 2F
+- remaining root-level service modules are pending later Phase 3 tasks
 - `plant_routes.py` is oversized and contains repeated form/JSON work
 - receiver Blueprint remains at root
 - no automated regression-test suite
