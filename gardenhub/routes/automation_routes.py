@@ -11,7 +11,7 @@ from gardenhub.repositories.watering_repo import get_latest_watering_decision
 from watering_engine import run_watering_engine
 from calibration import raw_to_pct
 
-from repositories import (
+from gardenhub.repositories.plants_repo import (
     get_all_plants_catalog,
     )
 

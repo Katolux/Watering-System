@@ -64,6 +64,8 @@ Completed:
 - Phase 2C: bed persistence and bed/plant aggregation moved into `gardenhub/repositories/beds_repo.py`
 - Phase 2D: sensor metadata and sensor-reading persistence moved into `gardenhub/repositories/sensors_repo.py`
 - Phase 2E: watering-decision and watering-event persistence moved into `gardenhub/repositories/watering_repo.py`
+- Phase 2F: plant, variety, companion, and plant JSON persistence moved into `gardenhub/repositories/plants_repo.py`
+- Phase 2: repository split complete; the transitional root `repositories.py` has been removed
 
 Current structural direction:
 
@@ -98,6 +100,7 @@ ProjectGarden/
 │   ├── repositories/
 │   │   ├── __init__.py
 │   │   ├── beds_repo.py
+│   │   ├── plants_repo.py
 │   │   ├── sensors_repo.py
 │   │   ├── system_events_repo.py
 │   │   ├── watering_repo.py
@@ -110,7 +113,6 @@ ProjectGarden/
 │       ├── sensor_routes.py
 │       └── watering_routes.py
 │
-├── repositories.py
 ├── db_access.py
 ├── get_weather_new.py
 ├── historic_weather.py
@@ -132,7 +134,7 @@ ProjectGarden/
         └── historic_sensor.py
 ```
 
-This is a transitional structure. Root-level repositories and services will be moved incrementally.
+This remains a transitional structure for service and route modules. The repository package split is complete and no active repository module remains at the project root.
 
 ---
 
@@ -241,12 +243,13 @@ Development databases are disposable while schema and data models are still evol
 Current packaged repositories:
 
 - `beds_repo.py` owns bed creation, bed retrieval, plant assignment to beds, and bed/plant watering-configuration aggregation.
+- `plants_repo.py` owns plant catalog retrieval, full plant lookup and existence checks, rich plant insertion and updating, plant deletion cleanup, variety lookup/existence/insertion/deletion, companion retrieval, and JSON-field serialization for plant persistence.
 - `sensors_repo.py` owns sensor creation and retrieval, sensor-to-bed assignment, the bed/sensor diagnostic listing, reading-slot selection, sensor-reading persistence, today's moisture-slot aggregation, and recent-reading retrieval.
 - `weather_repo.py` owns weather persistence, stored-weather freshness, and weather retrieval queries.
 - `watering_repo.py` owns saving watering decisions, retrieving the latest decision for a bed, logging watering events, and retrieving recent watering-event history.
 - `system_events_repo.py` owns system-event persistence and retrieval.
 
-The transitional root `repositories.py` no longer owns bed, sensor, weather, or watering persistence. It now contains only plant catalog persistence pending Phase 2F.
+The transitional root `repositories.py` was removed after Phase 2F because no active repository functions remained. Active runtime callers import the packaged domain repositories directly; no compatibility re-export is used.
 
 The obsolete standalone `historic_sensor.py` is retained unchanged under `dev_tests/legacy/` and is not imported by the active runtime.
 

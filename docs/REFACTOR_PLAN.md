@@ -121,7 +121,7 @@ Commits:
 
 ### Phase 2 — Repository split
 
-Status: **In progress**
+Status: **Complete**
 
 #### Phase 2A — System events
 
@@ -259,17 +259,40 @@ Verification completed:
 
 #### Phase 2F — Plants repository
 
-Status: **Next (pending)**
+Status: **Complete**
 
-Move plants, varieties, companions, and plant persistence last because this domain has the widest dependency surface.
+Completed move:
 
-Create:
+- created `gardenhub/repositories/plants_repo.py`
+- moved `get_all_plants_catalog()`
+- moved `get_plant_by_id()`
+- moved `get_plant_varieties()`
+- moved `get_plant_companions()`
+- moved `plant_exists()`
+- moved `variety_exists()`
+- moved `insert_rich_plant()`
+- moved `insert_rich_variety()`
+- moved `update_rich_plant()`
+- moved `delete_plant()`
+- moved `delete_variety()`
+- updated the automation and plant route modules to import the packaged plants repository directly
+- removed the root `repositories.py` after confirming that it contained no remaining active functions
+- no compatibility re-export was required
 
-```text
-gardenhub/repositories/plants_repo.py
-```
+Verification completed:
 
-After all active imports use the new modules, remove the old root `repositories.py`.
+- all 11 function signatures and bodies remained AST-identical
+- SQL, SQL parameter ordering, commits, return values, delete ordering, and JSON serialization remained unchanged
+- the packaged plants repository imports successfully and uses the same project-root SQLite path
+- two disposable three-pass seeding runs produced stable counts of 51 plants, 25 varieties, and 199 companion relationships
+- catalog, plant, variety, and companion tuple shapes remained 7, 25, 3, and 5 fields respectively
+- plant insert/update, variety insert/delete, companion cleanup, plant deletion, existence checks, and JSON-field round trips passed against a disposable database
+- deletion of a plant referenced by `bed_plantings` still raises the pre-existing foreign-key `IntegrityError` and rolls back; this behavior was preserved and not corrected in this structural phase
+- Flask startup and all required key-page checks passed
+- all 25 application routes remained unchanged
+- compilation and `git diff --check` passed
+- the documented direct seeding command failed in an isolated copy unless the project root was placed on `PYTHONPATH`; the unchanged three-pass seeder passed with that path supplied, and the entry-point issue was left for a future task
+- one pre-existing exploratory reference remains in `dev_tests/Main.py`: it imports the already-absent `add_bed_menu` from root `repositories`; no active runtime import references the removed module
 
 ---
 

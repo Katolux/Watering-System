@@ -1,6 +1,6 @@
 from flask import Blueprint, request, render_template, redirect, url_for
 import json
-from repositories import (
+from gardenhub.repositories.plants_repo import (
     get_all_plants_catalog,
     get_plant_by_id,
     plant_exists,
