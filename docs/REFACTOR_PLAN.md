@@ -346,13 +346,35 @@ Verification completed:
 
 #### Phase 3C — Watering Decision Service
 
+Status: **Complete**
+
+Completed move:
+
+- `watering_decision.py` → `gardenhub/services/watering_decision.py`
+- updated the watering engine to import the packaged watering-decision service directly
+- removed the root watering-decision module without a compatibility copy or re-export
+
+Verification completed:
+
+- the moved source remained equivalent to the former root file apart from its final newline, and the complete module AST remained identical
+- the `WateringInputs` dataclass field names, field order, types, class and function signatures, thresholds, comparison operators, formulas, rounding, minimum clamp, fallbacks, and result structure remained unchanged
+- representative before/after comparisons passed for moisture below, inside, and above target; low, normal, and high temperature; no, moderate, and heavy rain; minimum clamping; the existing absence of a maximum clamp; exact boundaries; and missing moisture or weather values
+- the packaged module and watering-engine imports succeeded, with no stale root import or duplicate decision/input definition
+- disposable-database watering-engine checks preserved stored final minutes and soil, temperature, and rain factors for low, target-range, and high moisture
+- missing-weather fallback preserved neutral factors and warning-event details without writing to the development database
+- Flask startup and the five required key-page HTTP checks passed with byte-identical rendered output
+- all 25 application routes, methods, Blueprint namespaces, and endpoint names remained unchanged
+- compilation and `git diff --check` passed
+
+#### Phase 3D — Weather Service
+
 Status: **Pending — next**
 
 Next move:
 
-- `watering_decision.py` → `gardenhub/services/watering_decision.py`
+- weather API orchestration → `gardenhub/services/weather.py`
 
-Do not begin Phase 3C without separate approval.
+Do not begin Phase 3D without separate approval.
 
 #### Later Phase 3 service tasks
 
@@ -361,7 +383,6 @@ Status: **Pending**
 Move existing modules without changing logic:
 
 - `watering_engine.py` → `gardenhub/services/watering_engine.py`
-- weather API orchestration → `gardenhub/services/weather.py`
 
 Do not alter formulas, thresholds, fallback behavior, or scheduler logic.
 

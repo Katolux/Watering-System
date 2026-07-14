@@ -68,6 +68,7 @@ Completed:
 - Phase 2: repository split complete; the transitional root `repositories.py` has been removed
 - Phase 3A: calibration moved unchanged into `gardenhub/services/calibration.py`
 - Phase 3B: garden status logic moved unchanged into `gardenhub/services/garden_status.py`
+- Phase 3C: watering-decision logic moved unchanged into `gardenhub/services/watering_decision.py`
 
 Current structural direction:
 
@@ -111,7 +112,8 @@ ProjectGarden/
 │   ├── services/
 │   │   ├── __init__.py
 │   │   ├── calibration.py
-│   │   └── garden_status.py
+│   │   ├── garden_status.py
+│   │   └── watering_decision.py
 │   │
 │   └── routes/
 │       ├── __init__.py
@@ -124,7 +126,6 @@ ProjectGarden/
 ├── get_weather_new.py
 ├── historic_weather.py
 ├── python_receiver.py
-├── watering_decision.py
 ├── watering_engine.py
 ├── ml_pipeline.py
 │
@@ -283,6 +284,18 @@ Current consumer:
 - `gardenhub/routes/automation_routes.py` uses `moisture_status()` and `overall_bed_status()` to preserve the moisture labels and bed summaries displayed by `/automation/beds`.
 
 The module's function signatures and bodies remain equivalent to the former root `garden_logic.py`. The unused `daily_average_moisture()` helper remains preserved, the root module was removed, and no compatibility copy or re-export remains.
+
+---
+
+## Watering Decision Service
+
+`gardenhub/services/watering_decision.py` owns the existing watering-input dataclass, soil-moisture factor, temperature factor, rain factor, and final minutes-based watering calculation.
+
+Current consumer:
+
+- `watering_engine.py` creates `WateringInputs`, runs `WateringDecision.calculate()`, and persists the returned final minutes and soil, temperature, and rain factors.
+
+The module's dataclass fields, class and function signatures, thresholds, formulas, rounding, minimum clamp, neutral fallbacks, and `(final_minutes, breakdown)` result remain equivalent to the former root `watering_decision.py`. The root module was removed and no compatibility copy or re-export remains.
 
 ---
 

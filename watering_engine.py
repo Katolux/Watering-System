@@ -1,7 +1,7 @@
 from gardenhub.repositories.watering_repo import (
     save_watering_decision,
 )
-from watering_decision import WateringDecision, WateringInputs
+from gardenhub.services.watering_decision import WateringDecision, WateringInputs
 from gardenhub.repositories.beds_repo import get_beds_with_plants
 from gardenhub.repositories.sensors_repo import get_today_moisture_slots
 from gardenhub.repositories.system_events_repo import log_system_event
