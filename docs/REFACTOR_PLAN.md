@@ -1,213 +1,370 @@
-# Backend Restructure Plan (v1.2 → v1.3)
+# GardenHUB Structural Refactor Plan — v1.2 to v1.3
 
-## Goal
+## Objective
 
-Move from:
-- monolithic `app.py`
-- mixed responsibilities (routes + logic + DB)
+Reorganize the existing working GardenHUB code into a clear, professional Python package structure.
 
-To:
-- modular structure
-- clear separation of concerns
-- maintainable codebase
+This is a structural refactor only.
 
----
+The objective is to:
 
-## Current Problems
+- move active code into logical packages
+- split oversized files by responsibility
+- update imports
+- quarantine confirmed legacy code
+- preserve all runtime behavior
 
-- `app.py` > 1000 lines
-- routes, logic, DB mixed together
-- difficult to debug and extend
-- risk of breaking things when adding features
+The objective is not to:
 
----
-
-## Target Structure
-
-ProjectGarden/
-│
-├── app.py                  # small entry point only
-├── config.py
-├── requirements.txt
-├── README.md
-│
-├── gardenhub/
-│   ├── __init__.py         # create_app()
-│   ├── routes/
-│   │   ├── main_routes.py
-│   │   ├── automation_routes.py
-│   │   ├── plant_routes.py
-│   │   ├── sensor_routes.py
-│   │   └── watering_routes.py
-│   │
-│   ├── repositories/
-│   │   ├── beds_repo.py
-│   │   ├── plants_repo.py
-│   │   ├── sensors_repo.py
-│   │   ├── watering_repo.py
-│   │   └── system_events_repo.py
-│   │
-│   ├── services/
-│   │   ├── watering_engine.py
-│   │   ├── watering_decision.py
-│   │   ├── weather_service.py
-│   │   └── calibration.py
-│   │
-│   └── db/
-│       ├── connection.py
-│       ├── schema.py
-│       └── init.py
-│
-├── templates/
-│   ├── base.html
-│   ├── automation/
-│   ├── plants/
-│   ├── sensors/
-│   └── watering/
-│
-├── static/
-│   └── css/
-│       └── main.css
-│
-├── plants/
-├── seeding/
-├── docs/
-└── dev_tests/
+- rewrite working logic
+- add features
+- redesign algorithms
+- change SQL or schemas
+- change routes or endpoints
+- modify templates or frontend design
+- correct unrelated plant data
 
 ---
 
-## Refactor Strategy
+## Core Rules
 
-Refactoring is performed incrementally to ensure system stability.
-
-The application must remain runnable at all times during the process.
-
-Each step follows the cycle:
-- implement change
-- test functionality
-- commit changes
-
-Feature development is paused during refactoring.
-
----
-
-## Phase 1 – Route Extraction
-
-**Objective**
-
-Reduce the size and responsibility of `app.py` without changing behavior.
-
-**Actions**
-
-- Create `gardenhub/routes/`
-- Move route definitions into:
-  - `automation_routes.py`
-  - `plant_routes.py`
-  - `sensor_routes.py`
-  - `watering_routes.py`
-- Introduce Flask Blueprints
-- Register Blueprints in `app.py`
-
-**Result**
-
-- Reduced complexity in `app.py`
-- No functional changes
+- Prefer moving code over rewriting code.
+- Preserve function bodies wherever practical.
+- Preserve SQL, parameter order, tuple shapes, and return values.
+- Preserve route URLs, HTTP methods, Blueprint names, and endpoint names.
+- Preserve template names and render contexts.
+- Preserve plant JSON and manual seeding.
+- Preserve weather, calibration, sensor, watering, scheduler, and Arduino behavior.
+- Work in small phases.
+- Verify after each phase.
+- Commit each approved phase separately.
+- Do not automatically continue into another phase.
 
 ---
 
-## Phase 2 – Separate Logic from Routes
+## Approved Decisions
 
-**Objective**
+- Keep `app.py` as Flask constructor and owner of:
+  - `/`
+  - `/refresh_weather`
+  - `/history`
+- Do not introduce an application factory during this refactor.
+- Use explicit repository filenames:
+  - `beds_repo.py`
+  - `plants_repo.py`
+  - `sensors_repo.py`
+  - `weather_repo.py`
+  - `watering_repo.py`
+  - `system_events_repo.py`
+- Keep templates flat.
+- Do not modify frontend files.
+- Split `plant_routes.py` only after DB, repository, and service phases are stable.
+- Preserve unused or uncertain helpers.
+- Move only confirmed legacy code.
+- Treat ML and external API scripts as experiments, not legacy.
+- Leave Arduino and hardware diagnostics in place until separately reviewed.
+- Treat plant JSON/index inconsistencies as a separate data task.
+- Keep plant seeding manual.
+- Supported seeding command:
 
-Ensure routes only handle HTTP concerns.
-
-**Actions**
-
-Move business logic into `services/`:
-- watering engine
-- watering decision logic
-- weather handling
-- calibration
-
-Routes should:
-- receive request
-- call service layer
-- return response
-
----
-
-## Phase 3 – Repository Cleanup
-
-**Objective**
-
-Establish a clean and predictable database layer.
-
-**Rules**
-
-- SQL is only written inside repositories
-- No business logic inside repositories
-- Consistent return structures
+  ```text
+  python -B seeding/seed_plants.py
+  ```
 
 ---
 
-## Phase 4 – Template Organization
+## Phase Status
 
-**Actions**
+### Phase 0 — Baseline inspection
 
-Restructure templates:
-templates/
-automation/
-plants/
-sensors/
-watering/
+Status: **Complete**
 
+Completed work:
 
-Fix:
-- broken links
-- inconsistent naming
+- current repository inspected
+- routes and Blueprint namespaces recorded
+- active, legacy, and experimental files identified
+- target structure approved
+- behavior-preservation requirements documented
 
 ---
 
-## Phase 5 – Static & CSS
+### Phase 1 — Database package
 
-**Actions**
+Status: **Complete**
+
+Completed moves:
+
+- `db.py` → `gardenhub/db/connection.py`
+- `db_schema.py` → `gardenhub/db/schema.py`
+- `db_init.py` → `gardenhub/db/initialization.py`
+- `init_weather_db()` moved into `gardenhub/db/schema.py`
+- `gardenhub/db/__init__.py` created
+
+Verification completed:
+
+- function bodies preserved
+- SQL preserved
+- DB root path preserved
+- initialization remained idempotent
+- manual plant seeding passed
+- Flask startup passed
+- key pages returned HTTP 200
+- route map remained unchanged
+
+Commits:
+
+- database package refactor
+- removal of original root DB modules
+
+---
+
+### Phase 2 — Repository split
+
+Status: **In progress**
+
+#### Phase 2A — System events
+
+Status: **Complete**
+
+Completed move:
+
+- `system_events_repo.py` → `gardenhub/repositories/system_events_repo.py`
+- `gardenhub/repositories/__init__.py` created
+
+Verification completed:
+
+- 100% Git rename
+- function bodies preserved
+- SQL preserved
+- insert/read behavior passed
+- tuple shapes preserved
+- Flask startup passed
+- route map remained unchanged
+
+#### Phase 2B — Weather repository
+
+Status: **Next**
+
+Goal:
 
 Create:
-static/css/main.css
 
+```text
+gardenhub/repositories/weather_repo.py
+```
 
-Start with:
-- spacing
-- typography
-- table readability
+Move weather database access only.
 
-No frameworks required.
+Expected responsibilities:
+
+- save/upsert weather records
+- database-backed stored-weather freshness check
+- retrieve today’s weather
+- retrieve recent weather
+- retrieve dashboard weather record
+
+Do not move yet:
+
+- Open-Meteo API request
+- retry/cache configuration
+- Pandas date processing
+- API response formatting
+- scheduler timing
+- Flask routes
+
+Preserve the app and scheduler refresh checks as separate behaviors.
+
+#### Phase 2C — Beds repository
+
+Status: **Pending**
+
+Move bed CRUD, plant assignment, and bed/plant aggregation into:
+
+```text
+gardenhub/repositories/beds_repo.py
+```
+
+#### Phase 2D — Sensors repository
+
+Status: **Pending**
+
+Move sensor metadata and assignment into:
+
+```text
+gardenhub/repositories/sensors_repo.py
+```
+
+A separate sensor-readings module may be approved if current responsibilities justify it.
+
+#### Phase 2E — Watering repository
+
+Status: **Pending**
+
+Move watering decisions and watering events into:
+
+```text
+gardenhub/repositories/watering_repo.py
+```
+
+#### Phase 2F — Plants repository
+
+Status: **Pending**
+
+Move plants, varieties, companions, and plant persistence last because this domain has the widest dependency surface.
+
+Create:
+
+```text
+gardenhub/repositories/plants_repo.py
+```
+
+After all active imports use the new modules, remove the old root `repositories.py`.
 
 ---
 
-## Phase 6 – Final Cleanup
+### Phase 3 — Service modules
 
-- remove unused code
-- remove debug statements
-- unify naming conventions
-- eliminate duplicate logic
+Status: **Pending**
+
+Move existing modules without changing logic:
+
+- `calibration.py` → `gardenhub/services/calibration.py`
+- `garden_logic.py` → `gardenhub/services/garden_status.py`
+- `watering_decision.py` → `gardenhub/services/watering_decision.py`
+- `watering_engine.py` → `gardenhub/services/watering_engine.py`
+- weather API orchestration → `gardenhub/services/weather.py`
+
+Do not alter formulas, thresholds, fallback behavior, or scheduler logic.
 
 ---
 
-## Rules During Refactor
+### Phase 4 — Route organization
 
-- Small, incremental changes only
-- Test after each step
-- Commit frequently
-- No feature development during refactor
+Status: **Pending**
+
+Move:
+
+- `python_receiver.py` → `gardenhub/routes/receiver_routes.py`
+
+After DB, repositories, and services are stable, split `plant_routes.py` into:
+
+```text
+gardenhub/routes/plants/
+├── __init__.py
+├── catalog.py
+├── editor.py
+├── varieties.py
+└── form_helpers.py
+```
+
+Requirements:
+
+- one `plant` Blueprint
+- identical URLs
+- identical HTTP methods
+- identical endpoint names
+- identical templates and render contexts
+
+---
+
+### Phase 5 — Legacy and experiment organization
+
+Status: **Pending**
+
+After file-by-file approval:
+
+- confirmed legacy → `dev_tests/legacy/`
+- ML/API experiments → `dev_tests/experiments/`
+- hardware diagnostics may later move to `dev_tests/hardware/`
+
+Do not delete uncertain files.
+
+Do not correct plant data during this phase.
+
+---
+
+### Phase 6 — Documentation and final cleanup
+
+Status: **Pending**
+
+- remove confirmed empty unused placeholders
+- remove temporary compatibility re-exports
+- update README repository tree
+- update architecture documentation
+- document supported operational commands
+- perform full smoke test
+- prepare merge review
+
+---
+
+## Behavior-Preservation Checklist
+
+Before and after every phase, verify:
+
+- all 24 routes retain URLs and methods
+- Blueprint names remain:
+  - `receiver`
+  - `automation`
+  - `sensor`
+  - `watering`
+  - `plant`
+- endpoint names used by templates remain unchanged
+- SQL statements remain equivalent
+- table definitions and initialization order remain equivalent
+- repository return tuple shapes remain unchanged
+- `/sensor_data` response bodies and status codes remain unchanged
+- templates and render contexts remain unchanged
+- `static/css/main.css` remains active
+- plant JSON remains unchanged
+- seeding remains manual
+- bulk three-pass seeding remains available
+- watering defaults remain unchanged
+- calibration remains unchanged
+- moisture statuses remain unchanged
+- weather behavior remains unchanged
+- slot assignment remains unchanged
+- watering skip conditions remain unchanged
+- `/water_now` remains logging-only
+- scheduler behavior remains unchanged
+- Arduino behavior remains unchanged
+
+---
+
+## Standard Verification
+
+```text
+git diff --check
+git status --short --branch
+python -m compileall app.py scheduler.py gardenhub seeding
+```
+
+Also:
+
+- search for obsolete imports
+- import new modules
+- start Flask
+- compare route map
+- load key pages
+- use a disposable/development DB for approved write tests
+- verify manual seeding
+- confirm moved originals are removed
+- stop after the requested phase
 
 ---
 
 ## Definition of Done
 
-- `app.py` < 200 lines
-- Routes separated into modules
-- Services handle business logic
-- Repositories handle database access only
-- Templates organized
-- Codebase understandable by another developer
+The structural refactor is complete when:
+
+- database code lives under `gardenhub/db/`
+- repository code is split by domain under `gardenhub/repositories/`
+- active services live under `gardenhub/services/`
+- active Blueprints live under `gardenhub/routes/`
+- `repositories.py` is removed
+- root-level active modules are reduced to intentional entrypoints and hardware/operational files
+- templates remain functional
+- all routes and behavior remain unchanged
+- legacy and experiments are clearly separated
+- documentation matches the real repository
+- the branch passes final local smoke testing
