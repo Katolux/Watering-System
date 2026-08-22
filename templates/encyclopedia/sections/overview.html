@@ -1,0 +1,90 @@
+{% from "components/icons.html" import icon %}
+{% from "encyclopedia/_macros.html" import section_heading, fact_list %}
+
+<section class="knowledge-section overview-view" aria-labelledby="overview-title">
+  <div class="overview-top-grid">
+    <div class="overview-introduction">
+      <p class="encyclopedia-eyebrow">Overview</p>
+      <h2 id="overview-title">At a glance</h2>
+      {% if plant.summary %}<p class="plant-overview-copy">{{ plant.summary }}</p>{% endif %}
+    </div>
+    {% if plant.quick_facts %}
+    <aside class="quick-facts-card" aria-label="Quick facts">
+      <h3>Quick facts</h3>
+      {{ fact_list(plant.quick_facts) }}
+    </aside>
+    {% endif %}
+
+    {% if plant.quick_stats %}
+    <div class="plant-stat-grid">
+      {% for stat in plant.quick_stats if stat.value %}
+      <article class="plant-stat">
+        <span class="plant-stat__icon">{{ icon(stat.icon) }}</span>
+        <span class="plant-stat__label">{{ stat.label }}</span>
+        <strong>{{ stat.value }}</strong>
+        {% if stat.detail %}<small>{{ stat.detail }}</small>{% endif %}
+      </article>
+      {% endfor %}
+    </div>
+    {% endif %}
+  </div>
+
+  <div class="overview-feature-grid">
+  {% if plant.growth_habit.label or plant.growth_habit_visual %}
+  <article class="feature-module feature-module--growth">
+    {% if plant.growth_habit_visual %}
+    <figure class="feature-module__visual">
+      <img src="{{ url_for('static', filename=plant.growth_habit_visual, v=plant.asset_version) }}" alt="{{ plant.name }} shown in its typical growth habit">
+    </figure>
+    {% endif %}
+    <div class="feature-module__copy">
+      <h3>Growth habit</h3>
+      {% if plant.growth_habit.label %}<p class="feature-lead">{{ plant.growth_habit.label }}</p>{% endif %}
+      {% if plant.growth_habit.support_notes %}<p>{{ plant.growth_habit.support_notes }}</p>{% endif %}
+      {% if plant.growth_habit.support_methods %}
+      <div class="inline-pills" aria-label="Support methods">
+        {% for method in plant.growth_habit.support_methods %}<span>{{ method }}</span>{% endfor %}
+      </div>
+      {% endif %}
+      {% if plant.growth_habit.pruning_notes %}<p class="module-note">{{ plant.growth_habit.pruning_notes }}</p>{% endif %}
+    </div>
+  </article>
+  {% endif %}
+
+  {% if plant.mature_size.height or plant.mature_size.spread or plant.mature_size_visual %}
+  <article class="feature-module feature-module--size">
+    <div class="feature-module__copy">
+      <div class="module-title-line"><h3>Typical mature size</h3><span>Varies by cultivar</span></div>
+      <div class="size-values">
+        {% if plant.mature_size.height %}<div><small>Height</small><strong>{{ plant.mature_size.height }}</strong></div>{% endif %}
+        {% if plant.mature_size.spread %}<div><small>Spread</small><strong>{{ plant.mature_size.spread }}</strong></div>{% endif %}
+      </div>
+    </div>
+    {% if plant.mature_size_visual %}
+    <figure class="feature-module__visual">
+      <img src="{{ url_for('static', filename=plant.mature_size_visual, v=plant.asset_version) }}" alt="Typical mature height and spread of {{ plant.name }}">
+    </figure>
+    {% endif %}
+  </article>
+  {% endif %}
+  </div>
+
+  <div class="overview-module-grid">
+    {% if plant.best_uses %}
+    <article class="knowledge-card best-uses-card">
+      <h3>Best uses</h3>
+      <ul class="best-use-list">
+        {% for use in plant.best_uses %}<li><span>{{ icon(use.icon) }}</span>{{ use.label }}</li>{% endfor %}
+      </ul>
+    </article>
+    {% endif %}
+    {% if plant.interesting_facts %}
+    <article class="knowledge-card interesting-facts-card">
+      <div class="interesting-facts-card__heading">{{ icon("info") }}<h3>Interesting facts</h3></div>
+      <ul>
+        {% for fact in plant.interesting_facts %}<li>{{ fact }}</li>{% endfor %}
+      </ul>
+    </article>
+    {% endif %}
+  </div>
+</section>

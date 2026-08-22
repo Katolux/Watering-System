@@ -57,7 +57,7 @@
       { "plant_id": "calendula", "reason": "Biodiversity and beneficial insects.", "confidence": "low", "mechanism": "pollinator" }
     ],
     "avoid": [
-      { "plant_id": "beans", "reason": "Alliums and legumes often cited as poor companions (debated).", "confidence": "low", "mechanism": "unknown" }
+      { "plant_id": "bush_bean", "reason": "Alliums and legumes often cited as poor companions (debated).", "confidence": "low", "mechanism": "unknown" }
     ]
   },
 

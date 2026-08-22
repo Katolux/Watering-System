@@ -1,32 +1,109 @@
+{% from "components/icons.html" import icon %}
+{% from "components/app_header.html" import app_header with context %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>{% block title %}GardenHUB{% endblock %}</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
-
+  <title>{% block title %}GardenHub{% endblock %}</title>
+  <meta name="theme-color" content="#1D3322">
+  <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='images/brand/gardenhub-favicon.svg') }}">
+  <link rel="apple-touch-icon" sizes="180x180" href="{{ url_for('static', filename='images/brand/gardenhub-apple-touch-icon.png') }}">
+  <link rel="manifest" href="{{ url_for('static', filename='manifest.webmanifest') }}">
   <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/surfaces.css') }}">
+  {% block extra_styles %}{% endblock %}
 </head>
+<body class="{% block body_class %}{% endblock %}">
+  {% set endpoint = request.endpoint or '' %}
+  {% if endpoint == 'index' %}
+    {% set shell_title = 'Workspace' %}
+  {% elif endpoint == 'automation.automation' %}
+    {% set shell_title = 'Garden Control' %}
+  {% elif endpoint == 'automation.automation_beds' %}
+    {% set shell_title = 'Beds' %}
+  {% elif endpoint.startswith('sensor.') %}
+    {% set shell_title = 'Sensors' %}
+  {% elif endpoint.startswith('watering.') %}
+    {% set shell_title = 'Watering' %}
+  {% elif endpoint.startswith('weather.') %}
+    {% set shell_title = 'Weather' %}
+  {% elif endpoint == 'history' %}
+    {% set shell_title = 'History' %}
+  {% elif endpoint.startswith('planner.') %}
+    {% set shell_title = 'Planner' %}
+  {% elif endpoint.startswith('plant.') %}
+    {% set shell_title = 'Encyclopedia' %}
+  {% elif endpoint.startswith('notifications.') %}
+    {% set shell_title = 'Notifications' %}
+  {% else %}
+    {% set shell_title = 'GardenHub' %}
+  {% endif %}
 
-<body>
-  <header class="app-header">
-    <div class="app-header__inner">
-      <a class="app-logo" href="{{ url_for('index') }}">🌱 GardenHUB</a>
+  <div class="app-shell" data-app-shell data-sidebar-collapsed="false" data-sidebar-open="false">
+    <aside class="app-sidebar" id="app-sidebar" aria-label="Primary navigation">
+      <div class="app-sidebar__top">
+        <a class="wordmark" href="{{ url_for('index') }}" aria-label="GardenHub workspace">
+          <img class="wordmark__logo wordmark__logo--full" src="{{ url_for('static', filename='images/brand/gardenhub-logo-reversed.svg') }}" alt="GardenHub">
+          <img class="wordmark__logo wordmark__logo--compact" src="{{ url_for('static', filename='images/brand/gardenhub-mark-reversed.svg') }}" alt="">
+        </a>
+      </div>
 
-      <nav class="app-nav">
-        <a href="{{ url_for('index') }}">Home</a>
-        <a href="{{ url_for('automation.automation') }}">Dashboard</a>
-        <a href="{{ url_for('automation.automation_beds') }}">Beds</a>
-        <a href="{{ url_for('plant.automation_plants') }}">Plants</a>
-        <a href="{{ url_for('sensor.automation_sensors') }}">Sensors</a>
-        <a href="{{ url_for('watering.watering') }}">Watering</a>
-        <a href="{{ url_for('history') }}">History</a>
+      <nav class="sidebar-nav">
+        <div class="sidebar-nav__group">
+          <a class="sidebar-nav__item" href="{{ url_for('index') }}"{% if endpoint == 'index' %} aria-current="page"{% endif %} title="Workspace">{{ icon("home") }}<span class="sidebar-nav__text">Workspace</span></a>
+          <a class="sidebar-nav__item" href="{{ url_for('planner.planner') }}"{% if endpoint.startswith('planner.') %} aria-current="page"{% endif %} title="Planner">{{ icon("layout") }}<span class="sidebar-nav__text">Planner</span></a>
+          <a class="sidebar-nav__item" href="{{ url_for('plant.automation_plants') }}"{% if endpoint.startswith('plant.') %} aria-current="page"{% endif %} title="Encyclopedia">{{ icon("book") }}<span class="sidebar-nav__text">Encyclopedia</span></a>
+          <a class="sidebar-nav__item sidebar-nav__item--with-meta" href="{{ url_for('automation.automation') }}"{% if endpoint.startswith('automation.') or endpoint.startswith('sensor.') or endpoint.startswith('watering.') %} aria-current="page"{% endif %} title="Garden Control">{{ icon("automation") }}<span class="sidebar-nav__text">Garden Control</span><span class="sidebar-nav__meta">{{ icon("chevron-down") }}</span></a>
+          <a class="sidebar-nav__item" href="{{ url_for('weather.weather') }}"{% if endpoint.startswith('weather.') %} aria-current="page"{% endif %} title="Weather">{{ icon("cloud") }}<span class="sidebar-nav__text">Weather</span></a>
+          <a class="sidebar-nav__item" href="{{ url_for('notifications.notifications') }}"{% if endpoint.startswith('notifications.') %} aria-current="page"{% endif %} title="Notifications">{{ icon("bell") }}<span class="sidebar-nav__text">Notifications</span></a>
+          <a class="sidebar-nav__item" href="{{ url_for('history') }}"{% if endpoint == 'history' %} aria-current="page"{% endif %} title="History">{{ icon("history") }}<span class="sidebar-nav__text">History</span></a>
+          <span class="sidebar-nav__item" aria-disabled="true" title="Community is coming later">{{ icon("users") }}<span class="sidebar-nav__text">Community</span></span>
+        </div>
       </nav>
-    </div>
-  </header>
 
-  <main class="app-main">
-    {% block content %}{% endblock %}
-  </main>
+      <div class="app-sidebar__footer">
+        <div class="profile-card" aria-label="Local profile placeholder">
+          <span class="profile-card__avatar" aria-hidden="true">GH</span>
+          <span class="profile-card__body"><span class="profile-card__name">Garden keeper</span><span class="profile-card__meta">Local profile</span></span>
+          <span class="profile-card__chevron">{{ icon("chevron-down") }}</span>
+        </div>
+        <span class="sidebar-nav__item" aria-disabled="true" title="Settings are coming later">{{ icon("settings") }}<span class="sidebar-nav__text">Settings</span></span>
+        {% if demo_mode %}<div class="demo-sidebar-note" title="Connected to the isolated demo database"><span class="status-dot status-dot--success"></span><span class="sidebar-nav__text">Demo database</span></div>{% endif %}
+        <button class="sidebar-collapse" type="button" data-sidebar-toggle aria-controls="app-sidebar" aria-expanded="true" aria-label="Collapse sidebar" title="Collapse sidebar">{{ icon("arrow-left") }}<span class="sidebar-nav__text">Collapse</span></button>
+      </div>
+    </aside>
+
+    <button class="sidebar-scrim" type="button" data-sidebar-scrim aria-label="Close navigation" hidden></button>
+
+    <div class="app-frame">
+      {% call app_header(shell_title) %}{% block header_back %}{% endblock %}{% endcall %}
+
+      <main class="app-main" id="main-content">{% block content %}{% endblock %}</main>
+    </div>
+  </div>
+  <dialog class="garden-location-dialog" data-location-dialog aria-labelledby="garden-location-title">
+    <form method="dialog" data-location-form>
+      <header>
+        <div><span>Active garden</span><h2 id="garden-location-title">Garden location</h2></div>
+        <button class="button button--ghost button--icon" type="button" data-location-dialog-close aria-label="Close location settings">{{ icon("x") }}</button>
+      </header>
+      <p class="garden-location-dialog__intro">Location belongs to the garden and will drive its weather once backend garden coordinates are available.</p>
+      <button class="button button--secondary garden-location-dialog__geolocate" type="button" data-use-device-location>{{ icon("map-pin") }} Use my current location</button>
+      <div class="garden-location-dialog__divider"><span>or enter it manually</span></div>
+      <label>Location or address<input type="text" name="address_label" data-location-label autocomplete="street-address" placeholder="Home garden, Madrid"></label>
+      <div class="garden-location-dialog__coordinates" data-location-coordinates hidden>
+        <span><small>Latitude</small><output data-location-latitude></output></span>
+        <span><small>Longitude</small><output data-location-longitude></output></span>
+      </div>
+      <p class="garden-location-dialog__note">Manual address lookup is not connected yet. The label can be kept for this browser session; coordinate resolution will connect to the future garden API.</p>
+      <p class="garden-location-dialog__status" data-location-status role="status" aria-live="polite"></p>
+      <footer><button class="button button--ghost" type="button" data-location-dialog-close>Cancel</button><button class="button button--primary" type="submit">Use this location</button></footer>
+    </form>
+  </dialog>
+  <script type="application/json" data-garden-context>{{ garden_context|tojson }}</script>
+  <script src="{{ url_for('static', filename='js/app-shell.js') }}" defer></script>
+  <script src="{{ url_for('static', filename='js/garden-context.js') }}" defer></script>
+  {% block extra_scripts %}{% endblock %}
 </body>
 </html>

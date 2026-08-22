@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 284 64" role="img" aria-labelledby="title desc">
+  <title id="title">GardenHub</title>
+  <desc id="desc">Light GardenHub wordmark and framed living-system symbol for dark backgrounds.</desc>
+  <defs>
+    <clipPath id="logo-clip"><circle cx="32" cy="32" r="27"/></clipPath>
+  </defs>
+  <g fill="none" stroke="#F7F5EE" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="32" cy="32" r="27" stroke-width="3.2"/>
+    <g clip-path="url(#logo-clip)" stroke-width="2.15">
+      <path d="M5.5 19.5C14.5 16.2 23.2 16.1 31.5 19.2C41.7 23 49.2 23.6 58.6 20.9"/><path d="M4.9 25.9C14.7 22.5 23.1 22.9 31.8 25.8C41.6 29 49.6 29.5 59.2 25.7"/><path d="M4.7 32.2C14.2 28.8 23 29.9 31.8 32.1C42 34.6 50.2 34.5 59.4 30.5"/><path d="M4.8 38.2C16 37.3 23.5 37.4 32 37.8C41.2 38.2 49.8 36.9 59.1 34.1"/>
+      <path d="M32 37.8V59.5M32 40.2C27.7 45.9 23.5 50.3 17.2 57.3M32 40.2C36.3 45.9 40.5 50.3 46.8 57.3M25.6 38.2C22.5 43.7 16.2 47.2 8.1 48.9M38.4 38.2C41.5 43.7 47.8 47.2 55.9 48.9M32 47.1L24.5 59.1M32 47.1L39.5 59.1"/>
+    </g>
+  </g>
+  <circle cx="32" cy="32" r="4.25" fill="#F7F5EE"/>
+  <text x="74" y="43" fill="#F7F5EE" font-family="Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="32" font-weight="600" letter-spacing="-1.35">Garden<tspan fill="#C5D0BF" font-weight="500">Hub</tspan></text>
+</svg>

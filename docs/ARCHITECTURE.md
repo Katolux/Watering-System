@@ -1,272 +1,127 @@
-# GardenHUB Architecture
+# GardenHub Architecture
 
-## System Summary
+## Overview
 
-GardenHUB is a Flask and SQLite garden-management and irrigation system. It ingests soil-moisture readings from Arduino/ESP32 nodes, stores readings and weather in SQLite, produces explainable watering recommendations, and exposes configuration and monitoring through a Jinja-based web interface.
+GardenHub is a local Flask/SQLite garden-management application.
 
-Current actuation is dry-run/logging only.
+The backend is intentionally simple: Flask routes and Blueprints handle HTTP requests, services contain application/domain logic, repositories own SQLite access, and Jinja templates render the server-side interface. Vanilla JavaScript is used where the frontend needs richer interaction, most notably in the Planner.
 
-Future actuation may use valve control and flow-based volume delivery.
+The application currently supports several real but separate domains:
 
----
+- garden planning and saved Planner layouts;
+- plant knowledge and plantings;
+- soil-moisture sensors and readings;
+- Weather retrieval and storage;
+- watering recommendations and manual watering records;
+- Garden Control projection;
+- History;
+- system-event-backed notifications.
 
-## High-Level Runtime Flow
+GardenHub does **not** currently control irrigation hardware. Watering decisions are recommendations, and manual watering actions are records of watering rather than commands to valves or pumps.
+
+## Runtime shape
 
 ```text
-Arduino / ESP32
-    |
-    | HTTP POST /sensor_data
-    v
-Receiver Blueprint
-    |
-    v
-Sensor repositories
-    |
-    v
+Browser
+  |
+  v
+Flask routes / Blueprints
+  |
+  +--> services / presentation logic
+  |      |
+  |      +--> repositories --> SQLite
+  |
+  +--> Jinja templates
+  |
+  +--> JSON endpoints used by Planner
+
+ESP32 / Arduino
+  |
+  | POST /sensor_data
+  v
+sensor receiver
+  |
+  v
+calibration + sensor repository
+  |
+  v
 SQLite
 
-Browser
-    |
-    v
-Flask routes / Blueprints
-    |
-    v
-Repositories and services
-    |
-    +--> SQLite
-    +--> Jinja templates
-
 scheduler.py
-    |
-    +--> weather refresh
-    |
-    +--> watering engine
-            |
-            +--> watering decisions
-            +--> system events
+  |
+  +--> Weather refresh
+  |
+  +--> watering recommendation engine
+          |
+          +--> watering_decisions
+          +--> system_events
 ```
 
----
+The scheduler is a separate process from Flask.
 
-## Current Git/Refactor State
+## Main layers
 
-Current structural branch:
+### Routes and Blueprints
 
-```text
-v1.3-structure-review
-```
+HTTP handling lives under `gardenhub/routes/` together with the plant-route package.
 
-Completed:
+Routes should mainly deal with:
 
-- Phase 1: database modules moved into `gardenhub/db/`
-- Phase 2A: system-events repository moved into `gardenhub/repositories/`
-- Phase 2B: weather database access moved into `gardenhub/repositories/weather_repo.py`
-- Phase 2C: bed persistence and bed/plant aggregation moved into `gardenhub/repositories/beds_repo.py`
-- Phase 2D: sensor metadata and sensor-reading persistence moved into `gardenhub/repositories/sensors_repo.py`
-- Phase 2E: watering-decision and watering-event persistence moved into `gardenhub/repositories/watering_repo.py`
-- Phase 2F: plant, variety, companion, and plant JSON persistence moved into `gardenhub/repositories/plants_repo.py`
-- Phase 2: repository split complete; the transitional root `repositories.py` has been removed
-- Phase 3A: calibration moved unchanged into `gardenhub/services/calibration.py`
-- Phase 3B: garden status logic moved unchanged into `gardenhub/services/garden_status.py`
-- Phase 3C: watering-decision logic moved unchanged into `gardenhub/services/watering_decision.py`
-- Phase 3D: weather API orchestration moved unchanged into `gardenhub/services/weather.py`
-- Phase 3E: watering-engine orchestration moved unchanged into `gardenhub/services/watering_engine.py`
-- Phase 3: service-module movement complete; no active service module remains at the project root
-- Phase 4A: receiver Blueprint moved unchanged into `gardenhub/routes/receiver_routes.py`
-- Phase 4B: plant routes split unchanged into `gardenhub/routes/plants/`
-- Phase 4: route organization complete; all active Blueprints now live under `gardenhub/routes/`
-- Phase 5: confirmed legacy, experiments, hardware diagnostics, and empty placeholders organized
+- request parsing;
+- basic validation;
+- calling the relevant service or repository;
+- choosing a response, redirect or template.
 
-Current structural direction:
+Some older routes still contain more domain/presentation work than this ideal, but the general structure is already in place.
 
-- database modules under `gardenhub/db/`
-- repository modules under `gardenhub/repositories/`
-- route modules under `gardenhub/routes/`
-- service/domain modules under `gardenhub/services/`
-- top-level product assets and operational folders remain at root
+The application currently registers Blueprints for the main functional areas, including sensor ingestion, automation/Garden Control, sensors, watering, plants, Weather, Planner and notifications.
 
----
+`app.py` remains the Flask application entry point and also owns a small number of top-level pages such as Workspace and History.
 
-## Current Repository Structure
+No application-factory rewrite is currently needed.
 
-```text
-ProjectGarden/
-├── app.py
-├── scheduler.py
-├── requirements.txt
-├── README.md
-├── arduino_send_final.cpp
-├── arduino_secrets.example.h
-│
-├── gardenhub/
-│   ├── __init__.py
-│   │
-│   ├── db/
-│   │   ├── __init__.py
-│   │   ├── connection.py
-│   │   ├── schema.py
-│   │   └── initialization.py
-│   │
-│   ├── repositories/
-│   │   ├── __init__.py
-│   │   ├── beds_repo.py
-│   │   ├── plants_repo.py
-│   │   ├── sensors_repo.py
-│   │   ├── system_events_repo.py
-│   │   ├── watering_repo.py
-│   │   └── weather_repo.py
-│   │
-│   ├── services/
-│   │   ├── __init__.py
-│   │   ├── calibration.py
-│   │   ├── garden_status.py
-│   │   ├── watering_decision.py
-│   │   ├── watering_engine.py
-│   │   └── weather.py
-│   │
-│   └── routes/
-│       ├── __init__.py
-│       ├── automation_routes.py
-│       ├── receiver_routes.py
-│       ├── sensor_routes.py
-│       ├── watering_routes.py
-│       └── plants/
-│           ├── __init__.py
-│           ├── catalog.py
-│           ├── editor.py
-│           ├── varieties.py
-│           └── form_helpers.py
-│
-├── db_access.py
-├── historic_weather.py
-│
-├── seeding/
-├── plants/
-├── templates/
-├── static/
-├── docs/
-└── dev_tests/
-    ├── debug_import.py
-    ├── experiments/
-    │   ├── README.md
-    │   ├── ml_pipeline.py
-    │   ├── test_perenual.py
-    │   └── test_trefle.py
-    ├── hardware/
-    │   ├── README.md
-    │   ├── arduino_test
-    │   ├── test_code_andruino.cpp
-    │   ├── check_macadress.cpp
-    │   ├── arduino_ip.cpp
-    │   ├── arduino_send_test.cpp
-    │   └── python_receiver_test.py
-    └── legacy/
-        ├── README.md
-        ├── Main.py
-        └── historic_sensor.py
-```
+### Services
 
-The database, repository, service, route, and development-file organization phases are complete. Active Blueprints live under `gardenhub/routes/`; development-only legacy, experiment, and hardware files are separated under `dev_tests/`.
+Services sit between routes and repositories when a feature needs orchestration or domain logic.
 
----
+Important service areas currently include:
 
-## Flask Application
+- soil-moisture calibration;
+- garden/bed status;
+- watering-decision calculations;
+- watering-engine orchestration;
+- Weather retrieval and transformation;
+- Workspace/overview composition;
+- garden context;
+- Planner layout validation/presentation;
+- Planner-to-Garden-Control projection;
+- History aggregation;
+- plant Encyclopedia presentation;
+- notification presentation.
 
-### `app.py`
+Not every read path needs a service. Small repository queries can remain direct where the extra layer would not improve clarity.
 
-Current responsibilities:
+### Repositories
 
-- create the Flask application
-- register five Blueprints
-- initialize database tables
-- conditionally refresh weather
-- define:
-  - `GET /`
-  - `POST /refresh_weather`
-  - `GET /history`
+Repositories own SQLite queries and persistence.
 
-`app.py` is already small. It remains the Flask constructor and owner of the three un-namespaced routes during the current refactor.
+Current repository domains include:
 
-No application factory will be introduced during this structural pass.
+- beds and plantings;
+- plants, varieties and companions;
+- sensors and sensor readings;
+- Weather;
+- watering decisions and watering events;
+- system events;
+- Planner layouts.
 
-### Registered Blueprints
+The project uses explicit SQL rather than an ORM. That remains a reasonable choice for the current local application.
 
-- `receiver`
-- `automation`
-- `sensor`
-- `watering`
-- `plant`
+### Database
 
-Endpoint names and Blueprint namespaces are used extensively by templates and must remain unchanged during structural work.
+SQLite is the runtime data store.
 
----
-
-## Sensor Ingestion
-
-The active receiver Blueprint lives in:
-
-```text
-gardenhub/routes/receiver_routes.py
-```
-
-It owns request parsing and validation, out-of-soil filtering, calibration, daily slot selection, reading persistence, and the existing response bodies and status codes. Its active dependencies are `gardenhub/repositories/sensors_repo.py` for slot selection and persistence and `gardenhub/services/calibration.py` for the out-of-soil threshold and raw-to-percentage conversion. `app.py` imports and registers `receiver_bp` directly from the packaged route module.
-
-Current route:
-
-```text
-POST /sensor_data
-```
-
-Verified Blueprint and endpoint names:
-
-```text
-receiver
-receiver.receive_soil
-```
-
-Current flow:
-
-1. Arduino posts:
-   - `bed`
-   - `sensor`
-   - `moisture`
-2. Missing or invalid fields return `400`.
-3. Readings at or above the out-of-soil threshold return `202` without persistence.
-4. Accepted raw readings are converted to percentage.
-5. The next daily slot is assigned.
-6. The reading is stored in `sensor_readings`.
-7. A seventh daily reading returns `409`.
-
-Current slot assignment is bed-based and limited to slots 1–6.
-
-This behavior must remain unchanged during the structural refactor.
-
----
-
-## Database
-
-Connection and schema modules now live under:
-
-```text
-gardenhub/db/
-```
-
-### `connection.py`
-
-- defines the project-root SQLite path
-- creates connections
-- enables foreign keys
-- uses the current timeout and thread settings
-
-### `schema.py`
-
-Contains idempotent table-creation functions, including weather table initialization.
-
-### `initialization.py`
-
-Calls the table initialization functions in the existing order.
-
-### Current application tables
+The current schema contains 13 main tables:
 
 - `zones`
 - `beds`
@@ -280,308 +135,331 @@ Calls the table initialization functions in the existing order.
 - `watering_decisions`
 - `watering_events`
 - `system_events`
+- `planner_layouts`
 
-Development databases are disposable while schema and data models are still evolving.
+Foreign-key enforcement is enabled on database connections, although some historical/event relationships are intentionally loose and a few integrity gaps remain.
 
----
+GardenHub currently has no general migration framework. Schema evolution is still handled through initialization/create-if-absent logic and targeted additions. That is acceptable for the prototype but is known technical debt.
 
-## Repositories
+## Planner architecture
 
-Current packaged repositories:
+The Planner is the most client-heavy part of GardenHub.
 
-- `beds_repo.py` owns bed creation, bed retrieval, plant assignment to beds, and bed/plant watering-configuration aggregation.
-- `plants_repo.py` owns plant catalog retrieval, full plant lookup and existence checks, rich plant insertion and updating, plant deletion cleanup, variety lookup/existence/insertion/deletion, companion retrieval, and JSON-field serialization for plant persistence.
-- `sensors_repo.py` owns sensor creation and retrieval, sensor-to-bed assignment, the bed/sensor diagnostic listing, reading-slot selection, sensor-reading persistence, today's moisture-slot aggregation, and recent-reading retrieval.
-- `weather_repo.py` owns weather persistence, stored-weather freshness, and weather retrieval queries.
-- `watering_repo.py` owns saving watering decisions, retrieving the latest decision for a bed, logging watering events, and retrieving recent watering-event history.
-- `system_events_repo.py` owns system-event persistence and retrieval.
+### Frontend ownership
 
-The transitional root `repositories.py` was removed after Phase 2F because no active repository functions remained. Active runtime callers import the packaged domain repositories directly; no compatibility re-export is used.
+The browser owns interactive editing behaviour such as:
 
-The obsolete standalone `historic_sensor.py` is retained unchanged under `dev_tests/legacy/` and is not imported by the active runtime.
+- drag and drop;
+- pan and zoom;
+- measurement;
+- resize and rotation;
+- stacking;
+- layer visibility;
+- plant spacing/footprint calculation;
+- plant-group quantity calculation;
+- temporary selection state.
 
----
+The Planner keeps its internal geometry in metric units.
 
-## Calibration Service
+### Persistence
 
-`gardenhub/services/calibration.py` owns the current soil-moisture calibration constants, the out-of-soil raw threshold, and the raw-to-percentage conversion helper.
+Saved Planner layouts are stored in `planner_layouts`.
 
-Current consumers:
+A layout contains the garden-level metadata and an ordered collection of objects. The backend validates the shape, supported object/layer combinations, dimensions, IDs, rotation, quantities and geometry bounds before saving.
 
-- `gardenhub/routes/receiver_routes.py` uses `OUT_OF_SOIL_RAW` and `raw_to_pct()` to preserve receiver filtering and stored percentage values.
-- `gardenhub/routes/automation_routes.py` uses `raw_to_pct()` for legacy raw-only slot values.
-- `gardenhub/services/watering_engine.py` uses `raw_to_pct()` for legacy raw-only slot values before calculating daily average moisture.
+Planner persistence is currently a whole-document save. It is effectively last-write-wins and has no revision history.
 
-The file is byte-identical to the former root `calibration.py`. The root module was removed and no compatibility copy or re-export remains.
+### Domain references
 
----
+Planner objects may preserve identifiers such as:
 
-## Garden Status Service
+- `plantId`;
+- `bedId`;
+- `sourcePlantingId`;
+- zone labels/references.
 
-`gardenhub/services/garden_status.py` owns the existing moisture-status interpretation, overall bed-status summary, and daily-average helper logic.
+These references are metadata links, not mutations.
 
-Current consumer:
+Saving a Planner layout does not create, update or delete beds, plantings or plants. Missing or stale references are deliberately preserved rather than silently deleting Planner objects.
 
-- `gardenhub/routes/automation_routes.py` uses `moisture_status()` and `overall_bed_status()` to preserve the moisture labels and bed summaries displayed by `/automation/beds`.
+This separation is important: Planner geometry and operational garden data are related, but they are not the same source of truth.
 
-The module's function signatures and bodies remain equivalent to the former root `garden_logic.py`. The unused `daily_average_moisture()` helper remains preserved, the root module was removed, and no compatibility copy or re-export remains.
+### Object catalogue
 
----
+Plant information used by Planner comes from the SQLite plant catalogue.
 
-## Watering Decision Service
+Most non-plant Planner object families are currently defined by the frontend catalogue rather than by dedicated backend domain tables.
 
-`gardenhub/services/watering_decision.py` owns the existing watering-input dataclass, soil-moisture factor, temperature factor, rain factor, and final minutes-based watering calculation.
+Irrigation lines and emitters are therefore saved as normal measured Planner objects. They are **not** currently a connected irrigation network.
 
-Current consumer:
+A future expansion of the object catalogue should move toward one central object/component definition source so metadata is not duplicated across template, JavaScript, CSS and backend validation.
 
-- `gardenhub/services/watering_engine.py` creates `WateringInputs`, runs `WateringDecision.calculate()`, and persists the returned final minutes and soil, temperature, and rain factors.
+## Garden Control
 
-The module's dataclass fields, class and function signatures, thresholds, formulas, rounding, minimum clamp, neutral fallbacks, and `(final_minutes, breakdown)` result remain equivalent to the former root `watering_decision.py`. The root module was removed and no compatibility copy or re-export remains.
+Garden Control is a read-only operational projection of the saved Planner layout.
 
----
+The backend reads the saved layout and converts its geometry into percentages for responsive display. It does not rewrite the Planner geometry.
 
-## Plant Routes
+When a saved Planner bed object contains a `bedId` that matches a current domain bed, Garden Control can attach operational information such as:
 
-The active plant Blueprint is organized under:
+- bed state;
+- plant names;
+- zone;
+- latest moisture;
+- configured sensors;
+- latest watering recommendation;
+- latest watering record;
+- relevant warning/error events.
 
-```text
-gardenhub/routes/plants/
-```
+Unlinked beds and non-bed objects remain visual context.
 
-`gardenhub/routes/plants/__init__.py` defines the single shared `plant_bp = Blueprint("plant", __name__)` and imports the three route modules after the Blueprint is created. `app.py` imports `plant_bp` directly from the package.
+Garden Control is not a second editor and should not become one. Planner owns geometry editing; Garden Control owns operational presentation.
 
-Responsibilities:
+## Workspace
 
-- `catalog.py` owns the encyclopedia list, plant detail, edit-selection redirect, plant delete selection, and plant delete confirmation routes.
-- `editor.py` owns the add-plant and edit-plant routes and preserves their separate form-processing and persistence logic.
-- `varieties.py` owns add-variety, variety delete selection, and variety delete confirmation.
-- `form_helpers.py` owns `parse_months()`, `derive_watering_defaults()`, and `plant_to_form_data()`.
+Workspace is composed from several read models rather than from a dedicated dashboard database.
 
-The former `gardenhub/routes/plant_routes.py` module was removed without a compatibility wrapper. The Blueprint namespace remains `plant`, all ten plant endpoints retain their existing names, and templates remain flat and unchanged.
+Its inputs include garden/domain summaries, Weather information and saved Planner state.
 
----
+The current Living Garden surface only knows whether a layout exists and can summarize its garden metadata and object counts. It does not render the saved Planner objects.
 
-## Plant Seeding
+A future Living Garden renderer should derive from the saved Planner geometry rather than introduce a second independent garden layout.
 
-Plant seeding is manual during development.
+## Plant system
 
-Supported command:
+Structured JSON files under `plants/` are the seed source for plant knowledge.
 
-```text
-python -B seeding/seed_plants.py
-```
+At runtime, SQLite is the application record store.
 
-The supported bulk flow:
+The plant domain includes:
 
-1. loads and validates plant JSON
-2. inserts all base plants
-3. inserts companions and varieties after the base plants exist
-4. commits the operation
+- plant definitions;
+- varieties;
+- companion relationships;
+- spacing and calendar data;
+- soil, nutrition and care information;
+- watering-related derived fields.
 
-Automatic startup seeding is intentionally not part of the current application initialization.
+Planner and the Encyclopedia read plant information from the runtime database rather than directly from JSON files.
 
-Future distributed versions may ship with pre-seeded plant data or a controlled first-run process.
+Web editing currently updates SQLite only. It does not rewrite the JSON seed sources.
 
----
+The current edit path can replace rich `plant_json` with a reduced document, so plant mutation remains an area requiring backend correction before it should be considered fully reliable.
+
+## Beds, plantings and zones
+
+Beds are domain records separate from Planner objects.
+
+A bed can contain multiple planting rows. A planting can hold a plant reference, optional variety reference, quantity, planted/removed dates, notes and override fields.
+
+The current frontend exposes only part of this lifecycle.
+
+Zones currently provide basic grouping through an ID/name/active record. They are not yet hydraulic irrigation zones and do not represent valve state.
+
+## Sensor ingestion
+
+The active sensor receiver accepts HTTP posts from ESP32/Arduino nodes.
+
+Current payload fields are based on:
+
+- bed ID;
+- sensor ID;
+- raw moisture.
+
+The receiver converts accepted raw values through the current calibration and persists both raw and percentage values.
+
+Sensor readings are currently organised into six daily slots at bed level.
+
+Known limitations include:
+
+- sensor/bed identity is not strictly enforced during ingestion;
+- configured active state is not a reliable online/offline signal;
+- calibration is global rather than per sensor;
+- there is no heartbeat, last-seen, stale-state, battery or network-health model;
+- multi-sensor slot semantics need improvement.
+
+These are backend reliability issues, not reasons to replace the ingestion architecture.
 
 ## Weather
 
-Current weather provider:
+Open-Meteo is the current Weather provider.
 
-```text
-Open-Meteo
-```
+GardenHub retrieves real current and daily forecast data and stores it in SQLite. Weather is consumed by:
 
-Current coordinates are hardcoded to the developer’s garden location.
+- the global application header;
+- Workspace;
+- the Weather page;
+- History;
+- watering recommendations;
+- the scheduler.
 
-This is intentional for the current prototype.
+The current Weather model is intentionally temporary.
 
-Future product behavior will allow the user to select a location, after which weather requests and frost/season recommendations can use that location.
+Important limitations are:
 
-Current flows:
+- backend coordinates still come from a fixed fallback garden context;
+- browser-selected location is session-only and does not configure backend retrieval;
+- hourly Weather is not yet implemented;
+- current and daily data share the existing storage approach;
+- stored past daily rows may represent forecasts rather than verified observations;
+- freshness currently relies on forecast dates rather than a trustworthy last-successful-retrieval timestamp;
+- timezone ownership is not fully consistent.
 
-- `gardenhub/services/weather.py` configures the Open-Meteo client, request cache, and retries; sends the fixed forecast request; transforms the response with Pandas; constructs weather records; saves them through `gardenhub/repositories/weather_repo.py`; and preserves the formatted console output
-- app startup checks stored-weather freshness before calling the weather service
-- manual refresh is available through `/refresh_weather` and calls the weather service
-- scheduler calls the weather service according to its own in-memory timing logic
-- dashboard reads today’s record
-- history reads recent records
-- watering engine reads today’s temperature and precipitation
+Weather is the first major backend area planned for the next development phase.
 
-Current weather-service consumers:
+## Watering recommendations
 
-- `app.py`
-- `scheduler.py`
-- the supported development diagnostic `dev_tests/debug_import.py`
+`watering_decision` contains the deterministic calculation.
 
-The quarantined `dev_tests/legacy/Main.py` retains its historical weather import unchanged, but it also imports removed menu code and is not a supported consumer or application entry point.
+The current inputs include:
 
-Weather SQL remains in `gardenhub/repositories/weather_repo.py`, while weather-table creation remains in `gardenhub/db/schema.py`. The root `get_weather_new.py` module was removed without a compatibility wrapper. The separate root `historic_weather.py` repository-backed CLI printer remains unchanged because it is not API orchestration and has not been approved as legacy.
+- average soil moisture;
+- plant-derived minimum/maximum moisture;
+- plant-derived base duration;
+- daily maximum temperature;
+- expected precipitation.
 
-The app freshness check and scheduler refresh timing have different behavior and must not be unified during movement-only refactoring.
+The result is a recommended duration plus the factor breakdown used to reach it.
 
----
+`watering_engine` orchestrates those calculations across beds and persists the resulting `watering_decisions`.
 
-## Watering Engine
+The current engine:
 
-`gardenhub/services/watering_engine.py` owns the current watering orchestration. The former root `watering_engine.py` was removed without a compatibility copy or re-export.
+- skips inactive beds;
+- skips beds without usable readings;
+- skips incomplete watering configuration;
+- uses neutral Weather factors when Weather is unavailable;
+- records warning events where appropriate.
 
-Inputs:
+Multiple plantings are currently collapsed into aggregate watering values. That behaviour needs a deliberate mixed-crop design rather than an accidental formula change.
 
-- active beds
-- plant-derived watering configuration
-- daily sensor slots
-- weather values
+## Watering events
 
-Behavior:
+`watering_events` are records of watering.
 
-- calculates average moisture
-- skips inactive beds
-- skips beds without readings
-- skips incomplete watering configurations
-- uses soil, temperature, and rain factors
-- saves watering decisions
-- logs warning events when weather is unavailable
+The current `/water_now` path creates a manual record. It does not send a command to physical hardware.
 
-Active dependencies:
+There is currently no:
 
-- `gardenhub/repositories/beds_repo.py` for ordered bed and plant watering configuration
-- `gardenhub/repositories/sensors_repo.py` for today's moisture slots
-- `gardenhub/repositories/weather_repo.py` for today's temperature and precipitation
-- `gardenhub/repositories/watering_repo.py` for watering-decision persistence
-- `gardenhub/repositories/system_events_repo.py` for warning events
-- `gardenhub/services/calibration.py` for legacy raw-only slot conversion
-- `gardenhub/services/watering_decision.py` for factor calculation and final minutes
+- relay or valve service;
+- controller state;
+- flow measurement;
+- delivered-volume confirmation;
+- automatic event creation from recommendations;
+- persisted watering schedule.
 
-Current consumers:
-
-- `scheduler.py`
-- `gardenhub/routes/automation_routes.py`
-- `gardenhub/routes/watering_routes.py`
-
-The move preserved `daily_average_moisture_from_slots()` and `run_watering_engine()` byte-for-byte. Repository calls, tuple unpacking, bed ordering, skip behavior, neutral missing-weather fallback, warning messages, decision fields, timestamps, return values, and console output remain unchanged.
-
-Current output is runtime in minutes.
-
-Future output should move toward target water volume, with runtime derived from measured flow.
-
-The engine does not create automatic `watering_events` rows or actuate physical hardware. `/water_now` continues to log only a manual watering event.
-
----
+Any later actuation layer should remain separate from recommendation calculation so the system can distinguish **recommended**, **commanded** and **actually delivered** water.
 
 ## Scheduler
 
-`scheduler.py` runs as a separate process.
+`scheduler.py` runs independently from the Flask process.
 
-Current behavior:
+Its current responsibilities are:
 
-- immediately refreshes weather after process start
-- refreshes again every three days while the same process remains alive
-- considers watering from 05:00 through 10:59
-- runs when slot 1 exists, or after the 09:00 fallback
-- runs at most once per date per scheduler process
-- sleeps one hour after an engine run
-- normally polls every 60 seconds
-- tracks run state in memory only
+- periodic Weather refresh;
+- running the watering recommendation engine during the morning window.
 
-These timing rules must remain unchanged during structural work.
+The scheduler is a recommendation scheduler, not an irrigation controller.
 
----
+Current run state is held in process memory, which creates known reliability problems:
 
-## Templates and Static Files
+- restart can lose the once-per-day guard;
+- an early reading from one bed can trigger the day's single run before later beds report;
+- recommendation runs are not durably idempotent.
 
-Templates remain flat during the backend structural refactor.
+Scheduler behaviour will be revisited after the Weather backend is corrected.
 
-All active pages use `base.html`.
+## History and notifications
 
-Active stylesheet:
+History is a read-only aggregation rather than a dedicated unified event table.
 
-```text
-static/css/main.css
-```
+It currently combines:
 
-The empty, unreferenced `templates/dashboard.html` and `static/style.css` placeholders were removed during Phase 5. No active template rendered the former dashboard placeholder, and all active pages continue to link `static/css/main.css` through `base.html`.
+- stored daily Weather/forecast records;
+- sensor readings;
+- watering events;
+- system events.
 
-Frontend redesign, template grouping, icons, visual garden-map work, and product design are separate future tasks.
+Notifications are another presentation over `system_events`.
 
----
+There is no separate notification entity or lifecycle for unread, acknowledged, active or resolved state.
 
-## Development-Only Files
+Future history work can add more domain events and correlations without requiring the existing tables to be replaced immediately.
 
-- `dev_tests/legacy/` retains obsolete or broken historical scripts that are not supported entry points.
-- `dev_tests/experiments/` contains the ML and external plant-API experiments; their API and schema assumptions are not production contracts.
-- `dev_tests/hardware/` contains manual sensor, network, and HTTP-post diagnostics. The paired test receiver and sender remain together.
-- `dev_tests/debug_import.py` remains a supported import-diagnostic tool.
-- `db_access.py` and `historic_weather.py` remain untouched because their future role is uncertain and they were not approved as legacy.
-- Primary firmware `arduino_send_final.cpp` and the `arduino_secrets.example.h` configuration template remain at repository root.
+## Garden context
 
-None of the legacy, experiment, or hardware diagnostic files is imported by the active Flask or scheduler runtime.
+GardenHub currently behaves as a single local garden, with a deterministic demo-garden mode for demonstrations/testing.
 
----
+The Planner layout uses a garden identifier, but operational tables such as beds, sensors, Weather, watering and events do not currently carry persisted garden ownership.
 
-## Current Structural Problems
+The browser can also hold a temporary garden/location preference, but this is presentation/session state rather than a backend multi-garden model.
 
-- no automated regression-test suite
-- uncertain standalone helpers still require a later keep/remove decision
-- some operational and top-level documentation still describes pre-refactor paths
+Real multi-garden support would require ownership to be introduced consistently across the operational domains.
 
-These are being addressed incrementally without changing behavior.
+## Frontend structure
 
----
+The application uses:
 
-## Target Structure
+- Jinja templates;
+- shared shell/header/sidebar components;
+- CSS;
+- vanilla JavaScript.
 
-```text
-ProjectGarden/
-├── app.py
-├── scheduler.py
-├── requirements.txt
-├── README.md
-│
-├── gardenhub/
-│   ├── __init__.py
-│   ├── db/
-│   │   ├── __init__.py
-│   │   ├── connection.py
-│   │   ├── schema.py
-│   │   └── initialization.py
-│   ├── repositories/
-│   │   ├── __init__.py
-│   │   ├── beds_repo.py
-│   │   ├── plants_repo.py
-│   │   ├── sensors_repo.py
-│   │   ├── weather_repo.py
-│   │   ├── watering_repo.py
-│   │   └── system_events_repo.py
-│   ├── routes/
-│   │   ├── __init__.py
-│   │   ├── automation_routes.py
-│   │   ├── receiver_routes.py
-│   │   ├── sensor_routes.py
-│   │   ├── watering_routes.py
-│   │   └── plants/
-│   │       ├── __init__.py
-│   │       ├── catalog.py
-│   │       ├── editor.py
-│   │       ├── varieties.py
-│   │       └── form_helpers.py
-│   └── services/
-│       ├── __init__.py
-│       ├── calibration.py
-│       ├── garden_status.py
-│       ├── watering_decision.py
-│       ├── watering_engine.py
-│       └── weather.py
-│
-├── seeding/
-├── plants/
-├── templates/
-├── static/
-├── docs/
-└── dev_tests/
-    ├── hardware/
-    ├── experiments/
-    └── legacy/
-```
+Most screens remain server-rendered.
 
-The target is intentionally modest. It does not include an ORM, dependency injection, async architecture, frontend framework, or enterprise-style abstractions.
+The Planner is intentionally more JavaScript-heavy because direct manipulation, geometry and canvas-like interaction are client concerns.
+
+There is currently no reason to introduce React or another frontend framework solely for architectural fashion. The existing approach is appropriate while the client-side modules remain understandable and testable.
+
+## Hardware boundary
+
+The current physical integration stops at soil-moisture ingestion.
+
+ESP32/Arduino firmware can submit readings to GardenHub, but the application has no controller/valve/relay/flow contract.
+
+Future hardware work may add:
+
+- registered device identity;
+- stronger delivery/retry behaviour;
+- per-sensor calibration and health;
+- controller/valve abstraction;
+- acknowledgements;
+- flow feedback;
+- safety state;
+- fail-safe behaviour.
+
+Physical actuation should only be introduced after the recommendation, scheduling and safety layers are reliable.
+
+## Known architectural debt
+
+The current architecture is sound for the prototype, but several issues remain:
+
+- no general migration system;
+- some routes/services still use positional repository tuples;
+- some presentation/domain ownership remains mixed;
+- application startup can still cause database/network side effects;
+- scheduler state is not durable;
+- Weather freshness/location semantics need correction;
+- sensor ingestion identity rules need correction;
+- plant mutation is not lossless;
+- some event/history relationships are deliberately weak;
+- the project is still single-garden;
+- testing is not yet as isolated or comprehensive as it should be.
+
+None of these currently justify an ORM, microservices, dependency injection or a wholesale application rewrite.
+
+## Architectural direction
+
+The preferred direction is incremental:
+
+1. keep Flask and SQLite;
+2. keep explicit routes, services and repositories;
+3. strengthen domain contracts where current tuple/JSON boundaries are fragile;
+4. fix Weather and scheduler reliability;
+5. correct plant and sensor integrity issues;
+6. add domain models only where a real feature requires them;
+7. design irrigation hydraulics as a separate connected domain before implementing it;
+8. introduce physical actuation only behind clear safety and execution boundaries;
+9. add multi-garden ownership only when that product phase begins.
+
+The architecture should grow in response to real GardenHub requirements rather than being made more complicated in anticipation of them.

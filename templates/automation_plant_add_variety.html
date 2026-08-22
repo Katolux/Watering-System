@@ -1,17 +1,18 @@
 {% extends "base.html" %}
+{% from "components/icons.html" import icon %}
+
+{% block title %}Add variety | GardenHub{% endblock %}
+{% block header_back %}<a class="button button--ghost button--icon" href="{{ url_for('plant.automation_plants') }}" aria-label="Back to Encyclopedia" title="Back to Encyclopedia">{{ icon("arrow-left") }}</a>{% endblock %}
 
 {% block content %}
-<p><a href="{{ url_for('plant.automation_plants') }}">← Back to Plant Encyclopedia</a></p>
-
-<h1>Add Variety</h1>
-
-<p><em>Only the fields you fill in will become overrides.</em></p>
+<header class="page-intro"><div><h1>Add variety</h1><p>Only completed optional fields become overrides for the selected parent plant.</p></div></header>
 
 {% if error %}
-  <p style="color:red;"><strong>{{ error }}</strong></p>
+  <p class="text-critical"><strong>{{ error }}</strong></p>
 {% endif %}
 
-<form method="POST" action="{{ url_for('plant.automation_plants_add_variety') }}">
+{% if plants %}
+<form class="card long-form" method="POST" action="{{ url_for('plant.automation_plants_add_variety') }}">
   <h2>Identity</h2>
 
   <p>
@@ -58,7 +59,10 @@
   <p><label>Pruning method<br><input type="text" name="pruning_method"></label></p>
   <p><label>Pruning notes<br><textarea name="pruning_notes" rows="3" cols="60"></textarea></label></p>
 
-  <p><button type="submit">Add variety</button></p>
+  <p class="long-form__actions"><button class="button button--primary" type="submit">Add variety</button></p>
 </form>
+{% else %}
+<section class="card"><div class="empty-inline">Add a plant to the Encyclopedia before creating a variety.</div><div class="card__footer"><a class="button button--primary" href="{{ url_for('plant.add_plant') }}">Add plant</a></div></section>
+{% endif %}
 
 {% endblock %}

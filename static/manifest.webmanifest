@@ -1,0 +1,17 @@
+{
+  "name": "GardenHub",
+  "short_name": "GardenHub",
+  "description": "Garden planning, monitoring, and intelligent watering.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#F5F3EE",
+  "theme_color": "#1D3322",
+  "icons": [
+    {
+      "src": "/static/images/brand/gardenhub-app-icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

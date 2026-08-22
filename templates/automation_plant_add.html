@@ -1,17 +1,17 @@
 {% extends "base.html" %}
+{% from "components/icons.html" import icon %}
+
+{% block title %}{% if mode == "edit" %}Edit plant{% else %}Add plant{% endif %} | GardenHub{% endblock %}
+{% block header_back %}<a class="button button--ghost button--icon" href="{{ url_for('plant.automation_plants') }}" aria-label="Back to Encyclopedia" title="Back to Encyclopedia">{{ icon("arrow-left") }}</a>{% endblock %}
 
 {% block content %}
-<p><a href="{{ url_for('plant.automation_plants') }}">← Back to Plant Encyclopedia</a></p>
-
-<h1>{% if mode == "edit" %}Edit Plant{% else %}Add New Plant{% endif %}</h1>
-
-<p><em>Moisture targets and base minutes are auto-derived from water need + root depth.</em></p>
+<header class="page-intro"><div><h1>{% if mode == "edit" %}Edit plant{% else %}Add plant{% endif %}</h1><p>Moisture targets and base minutes are derived by the existing backend from water need and root depth.</p></div></header>
 
 {% if error %}
-  <p style="color:red;"><strong>{{ error }}</strong></p>
+  <p class="text-critical"><strong>{{ error }}</strong></p>
 {% endif %}
 
-<form method="POST" action="{% if mode == 'edit' %}{{ url_for('plant.automation_plants_edit', plant_id=plant_id_locked) }}{% else %}{{ url_for('plant.add_plant') }}{% endif %}">
+<form class="card long-form" method="POST" action="{% if mode == 'edit' %}{{ url_for('plant.automation_plants_edit', plant_id=plant_id_locked) }}{% else %}{{ url_for('plant.add_plant') }}{% endif %}">
     <h2>Identity</h2>
 
     <p>
@@ -144,7 +144,7 @@
     <p><label>Pruning method<br><input type="text" name="pruning_method" value="{{ form_data.get('pruning_method', '') }}"></label></p>
     <p><label>Pruning notes<br><textarea name="pruning_notes" rows="3" cols="60">{{ form_data.get('pruning_notes', '') }}</textarea></label></p>
 
-    <p><button type="submit">{% if mode == "edit" %}Save changes{% else %}Add plant{% endif %}</button></p>
+    <p class="long-form__actions"><button class="button button--primary" type="submit">{% if mode == "edit" %}Save changes{% else %}Add plant{% endif %}</button></p>
 
 </form>
 {% endblock %}

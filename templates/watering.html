@@ -1,55 +1,192 @@
 {% extends "base.html" %}
+{% from "components/icons.html" import icon %}
+
+{% block title %}Watering | GardenHub{% endblock %}
+{% block body_class %}workspace-route watering-route{% endblock %}
+{% block extra_styles %}<link rel="stylesheet" href="{{ url_for('static', filename='css/workspace.css') }}"><link rel="stylesheet" href="{{ url_for('static', filename='css/watering.css') }}">{% endblock %}
+{% block header_back %}<a class="button button--ghost button--icon" href="{{ url_for('automation.automation') }}" aria-label="Back to Garden Control" title="Back to Garden Control">{{ icon("arrow-left") }}</a>{% endblock %}
 
 {% block content %}
-<h2>🚿 Watering Menu</h2>
-
-<form method="POST" action="{{ url_for('watering.water_now') }}">
-  <button type="submit">Water now</button>
-</form>
-
-<hr>
-<h3>🧠 Latest decision per bed</h3>
-
-<ul>
+{% set watering_counts = namespace(active_beds=0, decisions=0) %}
 {% for bed in beds %}
-  {% set bed_id = bed[0] %}
-  {% set d = latest_by_bed.get(bed_id) %}
-  <li>
-    <strong>{{ bed_id }}</strong>
-    {% if d %}
-      — {{ d[0] }} min
-      (soil ×{{ "%.2f"|format(d[1]) }}, temp ×{{ "%.2f"|format(d[2]) }}, rain ×{{ "%.2f"|format(d[3]) }})
-      <small style="color:#666;">{{ d[4][:10] }} {{ d[4][11:16] }}</small>
-    {% else %}
-      — <em>No decision yet</em>
-    {% endif %}
-  </li>
+  {% if bed[1] %}{% set watering_counts.active_beds = watering_counts.active_beds + 1 %}{% endif %}
+  {% if latest_by_bed.get(bed[0]) %}{% set watering_counts.decisions = watering_counts.decisions + 1 %}{% endif %}
 {% endfor %}
-</ul>
 
-<hr>
-<h3>🚿 Watering events (recent)</h3>
+<div class="watering-page">
+  <header class="watering-intro">
+    <div>
+      <span class="watering-intro__eyebrow">{{ icon("droplet") }} Garden watering</span>
+      <h1>Watering</h1>
+      <p>Record manual watering and review the latest stored decisions and watering history.</p>
+    </div>
+    <div class="watering-intro__counts" aria-label="Watering totals">
+      <span><strong>{{ beds|length }}</strong> beds</span>
+      <span><i class="status-dot status-dot--success"></i><strong>{{ watering_counts.decisions }}</strong> decisions</span>
+      <span><strong>{{ events|length }}</strong> events</span>
+    </div>
+  </header>
 
-{% if events %}
-<table border="1" cellpadding="5">
-  <tr>
-    <th>Time</th><th>Bed</th><th>Minutes</th><th>Mode</th><th>Decision</th><th>Note</th>
-  </tr>
-  {% for e in events %}
-  <tr>
-    <td>{{ e[0][:10] }} {{ e[0][11:16] }}</td>
-    <td>{{ e[1] }}</td>
-    <td><strong>{{ e[2] }}</strong></td>
-    <td>{{ e[3] }}</td>
-    <td>{{ e[4] }}</td>
-    <td>{{ e[5] }}</td>
-  </tr>
-  {% endfor %}
-</table>
-{% else %}
-  <p><em>No watering events yet.</em></p>
-{% endif %}
+  <div class="watering-layout">
+    <div class="watering-content">
+      <section aria-labelledby="watering-decisions-title">
+        <header class="watering-section-header">
+          <div>
+            <h2 id="watering-decisions-title">Latest decisions</h2>
+            <p>The most recent stored calculation for each configured bed.</p>
+          </div>
+          <span class="watering-section-header__count">{{ watering_counts.decisions }} of {{ beds|length }} available</span>
+        </header>
 
+        {% if beds %}
+          <div class="watering-decisions">
+            {% for bed in beds %}
+              {% set bed_id = bed[0] %}
+              {% set decision = latest_by_bed.get(bed_id) %}
+              <article class="card watering-decision-card">
+                <header class="watering-decision-card__header">
+                  <span class="watering-decision-card__icon">{{ icon("droplet") }}</span>
+                  <span class="watering-decision-card__identity">
+                    <small>Bed</small>
+                    <h3>{{ bed_id }}</h3>
+                  </span>
+                  <span class="badge{% if bed[1] %} badge--success{% else %} badge--muted{% endif %}">{{ 'Active' if bed[1] else 'Inactive' }}</span>
+                </header>
 
-<a href="/">⬅ Back</a>
+                <div class="watering-decision-card__plants">
+                  <span>{{ icon("sprout") }}</span>
+                  <span><small>Assigned plants</small><strong>{{ bed[2] or 'No plant assigned' }}</strong></span>
+                </div>
+
+                {% if decision %}
+                  <div class="watering-decision-card__result">
+                    <span>
+                      <small>Stored duration</small>
+                      <strong>{{ decision[0] }} min</strong>
+                    </span>
+                    <span>
+                      <small>Calculated</small>
+                      <strong>{{ decision[4][:10] if decision[4] else 'Unavailable' }}</strong>
+                      <em>{{ decision[4][11:16] ~ ' UTC' if decision[4] else '' }}</em>
+                    </span>
+                  </div>
+                  <dl class="watering-factors" aria-label="Watering decision factors">
+                    <div><dt>Soil</dt><dd>{{ ('x%.2f'|format(decision[1])) if decision[1] is not none else 'Unavailable' }}</dd></div>
+                    <div><dt>Temperature</dt><dd>{{ ('x%.2f'|format(decision[2])) if decision[2] is not none else 'Unavailable' }}</dd></div>
+                    <div><dt>Rain</dt><dd>{{ ('x%.2f'|format(decision[3])) if decision[3] is not none else 'Unavailable' }}</dd></div>
+                  </dl>
+                {% else %}
+                  <div class="watering-decision-card__empty">
+                    {{ icon("info") }}
+                    <span><strong>No stored decision</strong><small>A calculated watering decision is not available for this bed.</small></span>
+                  </div>
+                {% endif %}
+              </article>
+            {% endfor %}
+          </div>
+        {% else %}
+          <div class="watering-empty">
+            <span>{{ icon("droplet") }}</span>
+            <h3>No beds configured</h3>
+            <p>Add a bed before watering decisions or manual events can be associated with it.</p>
+          </div>
+        {% endif %}
+      </section>
+
+      <section class="card watering-history" aria-labelledby="watering-history-title">
+        <header class="watering-history__header">
+          <div>
+            <h2 id="watering-history-title">Recent watering events</h2>
+            <p>The existing backend returns up to 100 stored events, newest first.</p>
+          </div>
+          <span>{{ events|length }} event{{ '' if events|length == 1 else 's' }}</span>
+        </header>
+
+        {% if events %}
+          <div class="watering-history__table">
+            <table>
+              <thead>
+                <tr>
+                  <th>Time</th>
+                  <th>Bed</th>
+                  <th>Minutes</th>
+                  <th>Mode</th>
+                  <th>Decision</th>
+                  <th>Note</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for event in events %}
+                  <tr>
+                    <td data-label="Time"><span>{{ event[0][:10] }}<small>{{ event[0][11:16] }} UTC</small></span></td>
+                    <td data-label="Bed"><strong>{{ event[1] or 'Unavailable' }}</strong></td>
+                    <td data-label="Minutes"><span><strong>{{ event[2] }}</strong> min</span></td>
+                    <td data-label="Mode"><span class="badge badge--muted">{{ event[3]|title if event[3] else 'Unavailable' }}</span></td>
+                    <td data-label="Decision">{{ ('#' ~ event[4]) if event[4] is not none else 'Unavailable' }}</td>
+                    <td data-label="Note">{{ event[5] or 'Unavailable' }}</td>
+                  </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        {% else %}
+          <div class="watering-history__empty">
+            {{ icon("inbox") }}
+            <span><strong>No watering events recorded</strong><small>Manual watering records will appear here after they are stored.</small></span>
+          </div>
+        {% endif %}
+      </section>
+    </div>
+
+    <aside class="watering-management" aria-label="Watering management">
+      <section class="card watering-form-card">
+        <header class="watering-form-card__header">
+          <span>{{ icon("droplet") }}</span>
+          <div>
+            <h2>Record manual watering</h2>
+            <p>Store a manual event using the existing bed and duration fields.</p>
+          </div>
+        </header>
+        {% if beds %}
+          <form method="POST" action="{{ url_for('watering.water_now') }}">
+            <div class="field">
+              <label class="field__label" for="water-bed">Bed</label>
+              <select id="water-bed" name="bed_id" required>
+                {% for bed in beds %}
+                  <option value="{{ bed[0] }}">{{ bed[0] }}{% if bed[2] %} &middot; {{ bed[2] }}{% endif %}</option>
+                {% endfor %}
+              </select>
+            </div>
+            <div class="field">
+              <label class="field__label" for="water-minutes">Duration (minutes)</label>
+              <input id="water-minutes" type="number" name="minutes" min="1" placeholder="Minutes" required>
+              <small class="field__help">The existing action accepts whole minutes greater than zero.</small>
+            </div>
+            <div class="watering-form-card__actions">
+              <button class="button button--primary button--full" type="submit">{{ icon("droplet") }} Record watering</button>
+            </div>
+          </form>
+        {% else %}
+          <div class="watering-form-card__empty">
+            {{ icon("info") }}
+            <span>Add a bed before recording watering.</span>
+          </div>
+        {% endif %}
+      </section>
+
+      <section class="card watering-scope-card">
+        <header>
+          <span>{{ icon("info") }}</span>
+          <div><h2>Available controls</h2><p>This page records manual events only.</p></div>
+        </header>
+        <dl>
+          <div><dt>Scheduling</dt><dd>Unavailable</dd></div>
+          <div><dt>Valves and controllers</dt><dd>Unavailable</dd></div>
+          <div><dt>Zone configuration</dt><dd>Unavailable</dd></div>
+          <div><dt>Sensor automation</dt><dd>Unavailable</dd></div>
+        </dl>
+      </section>
+    </aside>
+  </div>
+</div>
 {% endblock %}

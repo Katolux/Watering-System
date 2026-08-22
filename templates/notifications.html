@@ -1,0 +1,143 @@
+{% extends "base.html" %}
+{% from "components/icons.html" import icon %}
+
+{% block title %}Notifications &middot; GardenHub{% endblock %}
+{% block body_class %}notifications-page{% endblock %}
+{% block extra_styles %}<link rel="stylesheet" href="{{ url_for('static', filename='css/notifications.css') }}">{% endblock %}
+
+{% block content %}
+<div class="notifications-shell">
+  <header class="notifications-hero">
+    <div>
+      <p class="notifications-hero__eyebrow">Garden activity</p>
+      <h1>Notifications &amp; System Events</h1>
+      <p>Stay informed about the real watering, sensor, weather, automation, and GardenHub events already recorded for your garden.</p>
+    </div>
+    <span class="notifications-hero__mark">{{ icon("bell") }}</span>
+  </header>
+
+  {% if notification_feed.load_error %}
+    <section class="card notifications-load-state" role="alert">
+      <span class="notifications-load-state__icon">{{ icon("alert") }}</span>
+      <div><h2>Notifications are temporarily unavailable</h2><p>GardenHub could not load the stored system-event history. Your other garden areas remain available.</p></div>
+    </section>
+  {% else %}
+    <section class="notifications-summary" aria-label="Notification summary">
+      <article class="notifications-summary__card notifications-summary__card--review">
+        <span class="notifications-summary__icon">{{ icon("alert") }}</span>
+        <span><small>Needs review</small><strong>{{ notification_feed.attention_count }}</strong><p>Warning or error records in the loaded history</p></span>
+      </article>
+      <article class="notifications-summary__card">
+        <span class="notifications-summary__icon">{{ icon("activity") }}</span>
+        <span><small>Recent activity</small><strong>{{ notification_feed.information_count }}</strong><p>Informational or successful system events</p></span>
+      </article>
+      <article class="notifications-summary__card">
+        <span class="notifications-summary__icon">{{ icon("layout") }}</span>
+        <span><small>Sources represented</small><strong>{{ notification_feed.category_count }}</strong><p>Categories derived from current event sources</p></span>
+      </article>
+    </section>
+
+    <aside class="notifications-boundary">
+      {{ icon("info") }}
+      <p><strong>About alert state</strong> GardenHub currently stores an event history, but does not track unread, acknowledged, active, or resolved state. Warning and error records are shown as <em>Needs review</em>, not as unresolved alerts.</p>
+    </aside>
+
+    {% if notification_feed.events %}
+      <section class="notifications-stream" aria-labelledby="notifications-stream-title">
+        <header class="notifications-stream__header">
+          <div><h2 id="notifications-stream-title">System Events</h2><p>The historical record of what GardenHub has done, newest first.</p></div>
+          <div class="notifications-filters" role="group" aria-label="Filter notifications">
+            <button type="button" class="notifications-filter is-active" data-notification-filter="all" aria-pressed="true">All <span>{{ notification_feed.events|length }}</span></button>
+            {% if notification_feed.attention_count %}<button type="button" class="notifications-filter" data-notification-filter="attention" aria-pressed="false">Needs review <span>{{ notification_feed.attention_count }}</span></button>{% endif %}
+            {% for category in notification_feed.available_categories %}
+              <button type="button" class="notifications-filter" data-notification-filter="{{ category|lower }}" aria-pressed="false">{{ category }}</button>
+            {% endfor %}
+          </div>
+        </header>
+
+        <div class="notifications-centre">
+          <div class="notifications-master">
+            <header class="notifications-master__header">
+              <span><strong>Historical record</strong><small>Select an event to inspect the data GardenHub stored.</small></span>
+              <span class="badge">{{ notification_feed.events|length }} event{{ '' if notification_feed.events|length == 1 else 's' }}</span>
+            </header>
+
+            <div class="notifications-list" data-notification-list>
+              {% for event in notification_feed.events %}
+                <article class="notification-card notification-card--{{ event.tone }}{% if loop.first %} is-selected{% endif %}" id="event-{{ event.id }}" data-notification-item data-event-id="{{ event.id }}" data-category="{{ event.category_key }}" data-attention="{{ 'true' if event.is_attention else 'false' }}">
+                  <button class="notification-card__select" type="button" data-notification-select="{{ event.id }}" aria-controls="notification-detail-{{ event.id }}" aria-expanded="{{ 'true' if loop.first else 'false' }}">
+                    <span class="notification-card__icon notification-card__icon--{{ event.category_key }}">{{ icon(event.category_icon) }}</span>
+                    <span class="notification-card__content">
+                      <span class="notification-card__topline"><span class="notification-card__category">{{ event.category }}</span><span class="badge badge--{{ event.tone }}">{{ event.level_label }}</span><time{% if event.timestamp_value %} datetime="{{ event.timestamp_value }}"{% endif %}>{{ event.timestamp_label }}</time></span>
+                      <strong>{{ event.message }}</strong>
+                      <small>From {{ event.source_label }}{% if event.bed_label %}<span aria-hidden="true"> &middot; </span>Bed: {{ event.bed_label }}{% endif %}</small>
+                    </span>
+                    <span class="notification-card__chevron">{{ icon("chevron-right") }}</span>
+                  </button>
+
+                  <div class="notification-card__mobile-details">
+                    <dl>
+                      <div><dt>Category</dt><dd>{{ event.category }}</dd></div>
+                      <div><dt>Source</dt><dd>{{ event.source_label }}</dd></div>
+                      {% if event.bed_label %}<div><dt>Bed</dt><dd>{{ event.bed_label }}</dd></div>{% endif %}
+                      {% for detail in event.detail_items %}<div><dt>{{ detail.label }}</dt><dd>{{ detail.value }}</dd></div>{% endfor %}
+                    </dl>
+                    {% if event.is_attention %}<p>{{ icon("info") }} This is a warning or error record; the backend does not report whether it remains active.</p>{% endif %}
+                    <a href="{{ event.destination_href }}">{{ event.destination_label }} {{ icon("chevron-right") }}</a>
+                  </div>
+                </article>
+              {% endfor %}
+            </div>
+
+            <div class="notifications-filter-empty" data-notification-empty hidden>
+              {{ icon("inbox") }}<div><h3>No notifications in this view</h3><p>Choose another filter to see the stored event history.</p></div>
+            </div>
+          </div>
+
+          <aside class="notifications-detail" aria-label="Selected system event details">
+            <header class="notifications-detail__header"><span>{{ icon("activity") }}</span><div><strong>Selected system event</strong><small>Stored backend data</small></div></header>
+            {% for event in notification_feed.events %}
+              <article class="notification-detail-pane" id="notification-detail-{{ event.id }}" data-notification-pane="{{ event.id }}"{% if not loop.first %} hidden{% endif %}>
+                <div class="notification-detail-pane__lead">
+                  <span class="notification-card__icon notification-card__icon--{{ event.category_key }}">{{ icon(event.category_icon) }}</span>
+                  <div><span class="badge badge--{{ event.tone }}">{{ event.level_label }}</span><span class="badge">{{ event.category }}</span></div>
+                </div>
+                <h3>{{ event.message }}</h3>
+                <time{% if event.timestamp_value %} datetime="{{ event.timestamp_value }}"{% endif %}>{{ icon("clock") }} {{ event.timestamp_label }}</time>
+
+                {% if event.is_attention %}<p class="notification-detail-pane__notice">{{ icon("info") }} Warning/error history only. Active or resolved state is not tracked.</p>{% endif %}
+
+                <dl class="notification-detail-pane__facts">
+                  <div><dt>Category</dt><dd>{{ event.category }}</dd></div>
+                  <div><dt>Source</dt><dd>{{ event.source_label }}</dd></div>
+                  <div><dt>Severity</dt><dd>{{ event.level_label }}</dd></div>
+                  {% if event.bed_label %}<div><dt>Related bed</dt><dd>{{ event.bed_label }}</dd></div>{% endif %}
+                </dl>
+
+                <section class="notification-detail-pane__recorded">
+                  <h4>Recorded details</h4>
+                  {% if event.detail_items %}
+                    <dl>{% for detail in event.detail_items %}<div><dt>{{ detail.label }}</dt><dd>{{ detail.value }}</dd></div>{% endfor %}</dl>
+                  {% else %}
+                    <p>No additional details were stored with this event.</p>
+                  {% endif %}
+                </section>
+
+                <a class="button button--secondary notification-detail-pane__action" href="{{ event.destination_href }}">{{ event.destination_label }} {{ icon("chevron-right") }}</a>
+              </article>
+            {% endfor %}
+          </aside>
+        </div>
+      </section>
+    {% else %}
+      <section class="card notifications-empty">
+        <span class="notifications-empty__icon">{{ icon("check") }}</span>
+        <h2>All quiet in the garden</h2>
+        <p>No system events have been recorded yet. Watering, weather, sensor, and GardenHub activity will appear here when the existing backend records it.</p>
+      </section>
+    {% endif %}
+  {% endif %}
+</div>
+{% endblock %}
+
+{% block extra_scripts %}<script src="{{ url_for('static', filename='js/notifications.js') }}" defer></script>{% endblock %}

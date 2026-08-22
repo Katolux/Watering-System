@@ -1,189 +1,56 @@
-# GardenHUB Architectural Decisions
+# GardenHub Architectural Decisions
 
-This document records decisions that should not be repeatedly reconsidered during the current structural refactor.
+This file records architectural choices that are still useful to remember.
 
----
+Older refactor-only decisions have either been folded into the current architecture or marked as historical so they are not mistaken for active restrictions.
 
-## ADR-001 — Keep `app.py` as the current Flask constructor
-
-**Status:** Accepted
-
-**Decision**
-
-Keep `app.py` as the Flask constructor and owner of:
-
-- `/`
-- `/refresh_weather`
-- `/history`
-
-Do not introduce an application factory during the current structural refactor.
-
-**Reason**
-
-`app.py` is already small. Introducing an application factory would add scope and endpoint/import risk without being required for the current organization work.
-
-**Future**
-
-An application factory may be reconsidered after the package structure and tests are stable.
-
----
-
-## ADR-002 — Structural refactor must preserve behavior
+## ADR-001 — Keep the current Flask application structure
 
 **Status:** Accepted
 
-**Decision**
+GardenHub keeps `app.py` as the current Flask application entry point.
 
-The v1.3 structural refactor may move and split code but must not change application behavior.
+There is no present need to introduce a full application factory.
 
-**Preserve**
+The existing structure is understandable and appropriate for the current local application. An application factory can be reconsidered later if testing, configuration or deployment requirements make it genuinely useful.
 
-- algorithms
-- SQL
-- schemas
-- route URLs
-- endpoint names
-- function signatures
-- return values
-- templates
-- plant JSON
-- seeding
-- sensor behavior
-- weather behavior
-- watering behavior
-- scheduler behavior
-- Arduino behavior
-
-**Reason**
-
-The objective is code organization, not functional redesign.
-
----
-
-## ADR-003 — Use explicit repository filenames
+## ADR-002 — Keep the backend simple and explicit
 
 **Status:** Accepted
 
-**Decision**
+GardenHub should prefer:
 
-Use:
+- Flask Blueprints and ordinary functions;
+- explicit services where orchestration/domain logic is useful;
+- explicit repository modules;
+- parameterized SQL;
+- SQLite for the current local application.
 
-- `beds_repo.py`
-- `plants_repo.py`
-- `sensors_repo.py`
-- `weather_repo.py`
-- `watering_repo.py`
-- `system_events_repo.py`
+Do not introduce an ORM, dependency-injection framework, microservices, async architecture or other large abstraction simply because it is considered more advanced.
 
-**Reason**
+Architecture should become more complex only when a real GardenHub requirement justifies it.
 
-Explicit filenames make responsibilities easier to understand and avoid confusion with the top-level `plants/` data folder.
-
----
-
-## ADR-004 — Keep templates flat during backend restructuring
+## ADR-003 — Use domain-specific repositories
 
 **Status:** Accepted
 
-**Decision**
+Database access is grouped into explicit domain repositories such as:
 
-Do not move templates into subfolders during the current structural refactor.
+- beds/plantings;
+- plants/varieties/companions;
+- sensors/readings;
+- Weather;
+- watering;
+- system events;
+- Planner layouts.
 
-**Reason**
+This is preferred over a generic repository framework because it keeps ownership easy to follow.
 
-Template relocation would change template names and expand the debugging surface without helping the immediate backend organization objective.
-
-**Future**
-
-Template structure may be reconsidered during the visual/product redesign.
-
----
-
-## ADR-005 — Keep plant seeding manual during development
+## ADR-004 — Keep product assets and frontend folders outside the Python package
 
 **Status:** Accepted
 
-**Decision**
-
-Do not seed plants automatically at Flask startup.
-
-Supported command:
-
-```text
-python -B seeding/seed_plants.py
-```
-
-**Reason**
-
-The development database is intentionally disposable while schemas and data models are changing. Manual seeding keeps the workflow explicit and prevents accidental overwrite behavior.
-
-**Future**
-
-A distributed product may ship with pre-seeded data or a controlled first-run seeding process.
-
----
-
-## ADR-006 — Keep hardcoded weather coordinates for the current prototype
-
-**Status:** Accepted
-
-**Decision**
-
-Do not replace current hardcoded coordinates during the structural refactor.
-
-**Reason**
-
-The prototype currently serves one garden. User-configurable location is a future product feature, not part of code organization.
-
-**Future**
-
-Location will belong to user/garden configuration and drive weather, frost-date, and seasonal recommendations.
-
----
-
-## ADR-007 — Distinguish legacy code from experiments
-
-**Status:** Accepted
-
-**Decision**
-
-- confirmed obsolete/broken historical code may move to `dev_tests/legacy/`
-- future ML/API experiments may move to `dev_tests/experiments/`
-- hardware diagnostics require a separate file-by-file workflow review before movement
-- uncertain helpers remain preserved
-
-**Reason**
-
-Experimental work may have future value and should not be treated as disposable legacy code.
-
----
-
-## ADR-008 — Plant-data inconsistencies are a separate task
-
-**Status:** Accepted
-
-**Decision**
-
-Do not correct plant filenames, index mismatches, or duplicate/wrong JSON content during the structural refactor.
-
-**Known examples**
-
-- filename mismatches in `plants_index.json`
-- `courgette_pation.json` containing duplicated borage data
-
-**Reason**
-
-Data correction and structural movement must remain separate for easier review and rollback.
-
----
-
-## ADR-009 — Keep product folders at repository root
-
-**Status:** Accepted
-
-**Decision**
-
-Keep these folders at root during the current refactor:
+Folders such as:
 
 - `plants/`
 - `seeding/`
@@ -192,51 +59,136 @@ Keep these folders at root during the current refactor:
 - `docs/`
 - `dev_tests/`
 
-**Reason**
+remain top-level project folders.
 
-They are clear, conventional, and do not need to move into the Python package for the current application.
+They do not need to live inside `gardenhub/` merely for structural consistency.
 
----
-
-## ADR-010 — One Codex task per structural objective
+## ADR-005 — Plant source data and runtime data have different roles
 
 **Status:** Accepted
 
-**Decision**
+Structured JSON files under `plants/` are the seed/source dataset.
 
-Each Codex task must have one narrow objective and must stop after completing it.
+SQLite is the active runtime record store.
 
-**Task format**
+Plant seeding remains an explicit development/data-management action rather than something Flask should silently perform on every startup.
 
-- read permanent project documents
-- inspect current repository state
-- identify current branch and completed phases
-- perform one requested phase
-- verify
-- report
-- stop
+Web edits currently affect SQLite only and do not rewrite the source JSON files.
 
-**Reason**
+This boundary must stay clear, especially while plant editing and reseeding behaviour are improved.
 
-Narrow tasks reduce unintended scope, improve reviewability, and align work with small Git commits.
-
----
-
-## ADR-011 — Separate hardware diagnostics from primary firmware
+## ADR-006 — Planner geometry is separate from garden domain truth
 
 **Status:** Accepted
 
-**Decision**
+The Planner owns editable garden geometry and stores it as a persisted layout.
 
-Keep manual sensor, network, and HTTP-post diagnostics under `dev_tests/hardware/` after their purposes and pairings have been reviewed.
+Beds, plantings, plants, sensors and other operational records remain separate domain data.
 
-Keep the primary firmware and hardware configuration template at repository root:
+Planner objects may keep references such as `bedId`, `plantId` and `sourcePlantingId`, but saving a layout must not silently create, modify or delete those domain records.
 
-- `arduino_send_final.cpp`
-- `arduino_secrets.example.h`
+Garden Control may project operational information onto matching Planner objects, but it remains read-only.
 
-The paired `arduino_send_test.cpp` and `python_receiver_test.py` diagnostics remain together, and diagnostics that use Wi-Fi credentials continue to follow the repository-root secrets-template workflow.
+This separation allows the garden drawing to evolve without turning Planner saves into hidden database mutations.
 
-**Reason**
+## ADR-007 — Garden Control is a projection, not a second editor
 
-The diagnostics remain useful during hardware development, but separating them from primary firmware makes their non-production role clear without changing firmware or upload behavior.
+**Status:** Accepted
+
+Planner is the geometry editor.
+
+Garden Control displays the saved Planner layout read-only and adds operational state where matching domain references exist.
+
+Editing geometry from Garden Control would create two competing layout owners and should not be added without deliberately revisiting this decision.
+
+## ADR-008 — Irrigation Planner and watering execution are separate domains
+
+**Status:** Accepted
+
+Current Planner irrigation lines and emitters are visual/measured objects only.
+
+A future hydraulic irrigation system must be designed as a real connected domain with concepts such as:
+
+- pipe segments and components;
+- tubing type/diameter;
+- connectivity;
+- flow;
+- pressure;
+- friction loss;
+- emitters;
+- zones;
+- source capacity;
+- demand;
+- warnings.
+
+Likewise, watering recommendations must remain distinct from physical execution.
+
+A future automation system should distinguish:
+
+1. recommended watering;
+2. commanded watering;
+3. confirmed delivered watering.
+
+Physical actuation should not be added by simply extending the current recommendation record.
+
+## ADR-009 — Single-garden remains the current backend contract
+
+**Status:** Accepted for current phase
+
+GardenHub currently operates as one local garden plus a deterministic demo context.
+
+Frontend garden/location selectors must not be mistaken for real multi-garden backend ownership.
+
+When multi-garden support is introduced, ownership must be added consistently across beds, plantings, sensors, Weather, watering, events and Planner layouts.
+
+Do not build partial multi-garden behaviour only in the UI.
+
+## ADR-010 — Weather location belongs to garden/domain configuration
+
+**Status:** Direction accepted; implementation pending
+
+Backend Weather currently uses a temporary fallback location.
+
+The future location model should be persisted as garden configuration and should drive server-side Weather retrieval and later frost/seasonal logic.
+
+Browser-session geolocation is useful for presentation/prototyping but is not the final source of truth.
+
+## ADR-011 — Keep legacy, experiments and hardware diagnostics distinct
+
+**Status:** Accepted
+
+Historical/broken reference code belongs under `dev_tests/legacy/`.
+
+Experimental work belongs under `dev_tests/experiments/`.
+
+Manual hardware/network diagnostics belong under `dev_tests/hardware/`.
+
+Primary firmware and its safe configuration template may remain separate from those diagnostics.
+
+The purpose is not merely tidiness: experimental or diagnostic code should never be mistaken for a supported runtime contract.
+
+## ADR-012 — Prefer small, reviewable changes
+
+**Status:** Accepted
+
+Structural, functional, data and visual changes should normally be kept separate when practical.
+
+This makes regressions easier to identify, Git history easier to understand and backend learning easier to follow.
+
+Large rewrites should be avoided unless the current architecture genuinely blocks progress.
+
+---
+
+# Historical decisions
+
+The following decisions were important during the v1.2 → v1.3 structural refactor but are no longer active project constraints:
+
+- the structural refactor had to preserve behaviour exactly;
+- templates had to remain untouched during that refactor;
+- Weather coordinates had to remain hardcoded during that refactor;
+- plant-data inconsistencies had to be left untouched during that refactor;
+- Codex work was divided into narrowly isolated structural phases.
+
+Those rules served their purpose: they allowed the package/repository/service/route reorganization to be reviewed without mixing it with functional changes.
+
+The structural refactor is complete, so these should now be treated as development history rather than instructions for future GardenHub work.

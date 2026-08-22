@@ -1,18 +1,46 @@
 {
-  "schema_version": 1,
+  "schema_version": 2,
+
   "id": "tomato",
+
   "names": {
     "common": "Tomato",
     "scientific": "Solanum lycopersicum",
     "de": "Tomate"
   },
+
   "category": "vegetable",
   "family": "Solanaceae",
 
   "ui": {
     "icon_key": "tomato",
     "emoji": "🍅",
-    "photo_key": "tomato_01"
+    "photo_key": "tomato_01",
+    "growth_habit_image": "tomato-growth-habit",
+    "mature_size_image": "tomato-mature-size"
+  },
+
+  "overview": {
+    "summary": "Tomatoes are warm-season fruiting plants that grow best in full sun, rich well-drained soil and consistent moisture. Indeterminate types continue growing through the season and normally need staking or trellising. They also perform well in large containers and benefit from keeping foliage relatively dry and well ventilated.",
+    "plant_type": "indeterminate",
+    "growth_habit": "upright_vining",
+    "lifecycle": "tender_perennial_grown_as_annual",
+    "hardiness": "frost_tender",
+    "container_suitable": true,
+    "rain_notes": "Rain itself is not harmful, but prolonged wet foliage and soil splash can increase fungal disease pressure. Good airflow and watering at soil level are preferred.",
+    "best_uses": [
+      "fresh_eating",
+      "salads",
+      "sauces",
+      "roasting",
+      "cooking",
+      "preserving"
+    ],
+    "interesting_facts": [
+      "Tomatoes are botanically fruits but are usually treated as vegetables in cooking.",
+      "Tomato stems readily form adventitious roots when buried, which is why seedlings can be planted deeper than they grew in their pots.",
+      "Indeterminate tomatoes continue producing new growth and flower clusters until cold weather or plant decline stops them."
+    ]
   },
 
   "spacing_cm": {
@@ -23,83 +51,240 @@
   "support": {
     "needs_trellis": true,
     "height_cm_range": [120, 250],
-    "notes": "Stake or trellis required for indeterminate types."
+    "spread_cm_range": [45, 60],
+    "methods": [
+      "stake",
+      "tomato_cage",
+      "trellis",
+      "string_support"
+    ],
+    "notes": "Indeterminate tomatoes continue elongating through the season and should normally be supported."
   },
 
   "roots": {
     "depth_cm_range": [40, 90],
-    "type": "mixed"
+    "type": "fibrous_adventitious",
+    "label": "Fibrous / adventitious",
+    "notes": "Tomatoes form a broad fibrous root system and readily produce additional roots from buried stem tissue."
+  },
+
+  "light": {
+    "requirement": "full_sun",
+    "minimum_hours": 6,
+    "preferred_hours": 8
   },
 
   "soil": {
-    "preferred_textures": ["loam", "humus_rich"],
+    "preferred_textures": [
+      "loam",
+      "humus_rich"
+    ],
     "drainage": "good",
     "pH_range": [6.0, 6.8],
     "organic_matter": "likes_high",
-    "notes": "Consistent moisture reduces blossom end rot."
+    "notes": "Rich, well-drained soil with stable moisture supports strong growth and fruit development."
   },
 
   "water_need": {
     "overall": "high",
+    "summary": "Water deeply and consistently. Avoid repeated dry-wet cycles, particularly during flowering and fruit development.",
     "stage_profile": {
-      "establishment": "high",
-      "vegetative": "medium",
-      "flowering_fruiting": "high",
-      "finish": "medium"
+      "establishment": {
+        "level": "high",
+        "notes": "Keep newly transplanted plants evenly moist while roots establish."
+      },
+      "vegetative": {
+        "level": "medium",
+        "notes": "Allow strong root development while maintaining steady moisture."
+      },
+      "flowering_fruiting": {
+        "level": "high",
+        "notes": "Consistent moisture is especially important during flowering and fruit swelling."
+      },
+      "finish": {
+        "level": "medium",
+        "notes": "Maintain regular moisture while avoiding unnecessary saturation late in the crop."
+      }
     }
   },
 
   "irrigation": {
-    "sensitivity": "balanced",
-    "mulch_helpful": true
+    "sensitivity": "consistent_moisture",
+    "mulch_helpful": true,
+    "preferred_method": "soil_level",
+    "foliage_notes": "Avoid routinely wetting foliage where possible, particularly in humid or protected conditions."
   },
 
   "calendar": {
     "base": {
       "sow_indoors": {
+        "recommended": true,
         "weeks_relative_to_last_frost": [-10, -6],
-        "months": [2, 3]
+        "months": [2, 3],
+        "notes": "Start indoors early enough to establish strong plants before outdoor conditions become warm enough."
       },
+
+      "sow_outdoors": {
+        "recommended": false,
+        "reason": "Direct sowing is generally not recommended in cool temperate climates because tomatoes require a long warm growing season."
+      },
+
       "transplant_out": {
+        "recommended": true,
         "weeks_relative_to_last_frost": [2, 6],
-        "months": [5, 6]
+        "months": [5, 6],
+        "notes": "Transplant after frost risk has passed and conditions are reliably mild."
       },
+
       "harvest": {
-        "weeks_relative_to_last_frost": [12, 22],
         "months": [7, 8, 9, 10]
       }
     },
-    "days_to_maturity_range": [60, 95]
+
+    "days_to_maturity_range": [60, 95],
+
+    "germination": {
+      "temperature_c_range": [20, 27]
+    },
+
+    "frost_tolerance": "none"
   },
 
   "nutrition": {
     "feeder": "heavy",
-    "emphasis": "K",
+
+    "emphasis": {
+      "early_growth": "balanced",
+      "flowering_fruiting": "potassium_support"
+    },
+
     "schedule_hint": "every_14_days",
-    "notes": "Switch to potassium-rich feeding once flowering begins."
+
+    "notes": "Feed regularly during active growth. Avoid excessive nitrogen once flowering begins because it can encourage foliage at the expense of fruit production."
   },
 
   "care": {
     "pruning": {
-      "required": true,
+      "recommended": true,
+      "required": false,
       "method": "suckers",
-      "notes": "Remove side shoots for single-stem growth."
+      "notes": "Side shoots can be removed when training indeterminate plants to one or a few main stems. Pruning method depends on the chosen support and training system."
     },
+
     "pollination": {
-      "type": "self",
-      "aid_notes": "In greenhouse, gently shake flowers to improve fruit set."
+      "type": "self_fertile",
+      "aid_notes": "Movement and vibration help release pollen. In protected greenhouses, gently shaking flower trusses can improve fruit set."
+    },
+
+    "mulch": {
+      "recommended": true,
+      "notes": "Mulch helps stabilise soil moisture and reduces soil splash onto lower foliage."
+    },
+
+    "containers": {
+      "suitable": true,
+      "notes": "Indeterminate tomatoes can grow successfully in large containers when provided with adequate root volume, water, nutrients and support."
     }
   },
 
   "companions": {
     "good": [
-      { "plant_id": "basil", "reason": "Common pairing and space-efficient.", "confidence": "medium", "mechanism": "pest" },
-      { "plant_id": "calendula", "reason": "Supports beneficial insects.", "confidence": "medium", "mechanism": "pollinator" },
-      { "plant_id": "onion", "reason": "Allium scent may help pest confusion.", "confidence": "low", "mechanism": "pest" }
+      {
+        "plant_id": "basil",
+        "reason": "Common pairing and space-efficient.",
+        "confidence": "medium",
+        "mechanism": "pest"
+      },
+      {
+        "plant_id": "calendula",
+        "reason": "Supports beneficial insects.",
+        "confidence": "medium",
+        "mechanism": "pollinator"
+      },
+      {
+        "plant_id": "onion",
+        "reason": "Allium scent may help pest confusion.",
+        "confidence": "low",
+        "mechanism": "pest"
+      }
     ],
+
     "avoid": [
-      { "plant_id": "potato", "reason": "Shared blight risk.", "confidence": "high", "mechanism": "disease" }
+      {
+        "plant_id": "potato",
+        "reason": "Shared blight risk.",
+        "confidence": "high",
+        "mechanism": "disease"
+      }
     ]
+  },
+
+  "pests_diseases": {
+    "common": [
+      {
+        "key": "blight",
+        "name": "Tomato blight",
+        "summary": "Fungal or fungus-like disease affecting foliage and fruit, favoured by prolonged damp conditions."
+      },
+      {
+        "key": "blossom_end_rot",
+        "name": "Blossom end rot",
+        "summary": "Dark sunken damage at the blossom end of fruit, commonly associated with calcium transport problems caused by uneven moisture."
+      },
+      {
+        "key": "aphids",
+        "name": "Aphids",
+        "summary": "Sap-feeding insects that can gather on young shoots and leaf undersides."
+      },
+      {
+        "key": "whitefly",
+        "name": "Whitefly",
+        "summary": "Small sap-feeding insects that can become troublesome particularly in greenhouses."
+      }
+    ]
+  },
+
+  "harvest_storage": {
+    "harvest_guidance": "Harvest when fruits have developed their mature colour and yield slightly to gentle pressure. Fruit may also be picked while beginning to colour and allowed to finish ripening indoors when weather or disease pressure makes this useful.",
+
+    "quality_notes": "For best flavour, allow fruit to ripen on the plant when conditions permit.",
+
+    "storage": {
+      "room_temperature": {
+        "recommended": true,
+        "notes": "Best for flavour. Use fully ripe fruit within several days."
+      },
+
+      "refrigeration": {
+        "recommended": "only_if_needed",
+        "notes": "Can extend the life of fully ripe tomatoes, although flavour and texture may be reduced. Allow chilled tomatoes to return to room temperature before eating."
+      },
+
+      "freezing": {
+        "recommended": true,
+        "notes": "Suitable for sauces and cooked dishes. Texture softens after thawing."
+      }
+    },
+
+    "preservation": {
+      "suitable": true,
+      "methods": [
+        "sauce",
+        "passata",
+        "canning",
+        "freezing",
+        "drying"
+      ]
+    }
+  },
+
+  "seed_saving": {
+    "possible": true,
+    "difficulty": "easy_to_moderate",
+    "method": "fermentation",
+    "notes": "Save seed from fully ripe, healthy fruit. Fermenting the seeds helps remove the gelatinous coating before rinsing and thorough drying.",
+    "pollination_notes": "Tomatoes are primarily self-pollinating, although occasional crossing can occur.",
+    "hybrid_warning": "Seeds saved from F1 hybrid cultivars will not reliably reproduce the characteristics of the parent plant."
   },
 
 "varieties": [

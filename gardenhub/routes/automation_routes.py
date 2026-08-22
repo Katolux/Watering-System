@@ -24,15 +24,26 @@ from gardenhub.services.garden_status import (
 from gardenhub.services.watering_engine import (
     daily_average_moisture_from_slots,
 )
+from gardenhub.services.overview import get_garden_snapshot
+from gardenhub.db.connection import is_demo_database
+from gardenhub.services.garden_context import get_garden_context
+from gardenhub.services.planner_projection import get_planner_projection
 
 automation_bp = Blueprint("automation", __name__)
 
 
 @automation_bp.route("/automation")
 def automation():
+    garden = get_garden_snapshot()
+    garden_context = get_garden_context(is_demo_database())
     return render_template(
         "automation.html",
-        system_events=get_recent_system_events(20)
+        system_events=get_recent_system_events(20),
+        garden=garden,
+        planner_projection=get_planner_projection(
+            garden_context["active_garden_id"], garden
+        ),
+        today=datetime.now(timezone.utc).date().isoformat(),
     )
 
 

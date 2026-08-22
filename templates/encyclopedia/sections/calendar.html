@@ -1,0 +1,26 @@
+{% from "components/icons.html" import icon %}
+{% from "encyclopedia/_macros.html" import section_heading %}
+
+<section class="knowledge-section" aria-labelledby="calendar-title">
+  {{ section_heading("Calendar", "The gardening year", "General base timing only; local dates are not calculated yet.", "calendar-title") }}
+  {% if plant.calendar.events %}
+  <div class="gardening-calendar" role="table" aria-label="Twelve month growing calendar">
+    <div class="calendar-months" role="row">
+      <span role="columnheader">Activity</span>
+      {% for month in ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"] %}<span role="columnheader">{{ month }}</span>{% endfor %}
+    </div>
+    {% for event in plant.calendar.events %}
+    <div class="calendar-row{% if not event.recommended %} calendar-row--not-recommended{% endif %}" role="row">
+      <div class="calendar-row__label" role="rowheader"><strong>{{ event.title }}</strong>{% if event.frost_label %}<small>{{ event.frost_label }}</small>{% endif %}</div>
+      {% for month in range(1, 13) %}<span role="cell" class="calendar-month-cell{% if month in event.months %} is-active{% endif %}"><i></i><b>{{ ["", "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"][month] }}</b></span>{% endfor %}
+      {% if not event.recommended %}<div class="calendar-row__message"><strong>Not recommended</strong>{% if event.reason %}<p>{{ event.reason }}</p>{% endif %}</div>{% endif %}
+      {% if event.recommended and event.notes %}<p class="calendar-row__note">{{ event.notes }}</p>{% endif %}
+    </div>
+    {% endfor %}
+  </div>
+  {% endif %}
+  <div class="calendar-supporting-facts">
+    {% if plant.calendar.germination_temperature %}<article><span>{{ icon("thermometer") }}</span><small>Germination temperature</small><strong>{{ plant.calendar.germination_temperature }}</strong></article>{% endif %}
+    {% if plant.calendar.frost_tolerance %}<article><span>{{ icon("snow") }}</span><small>Frost tolerance</small><strong>{{ plant.calendar.frost_tolerance }}</strong></article>{% endif %}
+  </div>
+</section>

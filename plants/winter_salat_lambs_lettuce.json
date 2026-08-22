@@ -1,0 +1,70 @@
+{
+  "schema_version": 1,
+  "id": "winter_salat_lambs_lettuce",
+  "names": { "common": "Lamb's Lettuce (Mâche)", "scientific": "Valerianella locusta", "de": "Nüsslisalat" },
+  "category": "vegetable",
+  "family": "Caprifoliaceae",
+
+  "ui": { "icon_key": "lambs_lettuce", "emoji": "🥬", "photo_key": "lambs_lettuce_01" },
+
+  "spacing_cm": { "in_row": 8, "between_rows": 15 },
+
+  "roots": { "depth_cm_range": [10, 20], "type": "fibrous" },
+
+  "soil": {
+    "preferred_textures": ["loam"],
+    "drainage": "medium",
+    "pH_range": [6.0, 7.5],
+    "organic_matter": "medium",
+    "notes": "Cold-tolerant salad green; grows slowly in low light/low temps."
+  },
+
+  "water_need": {
+    "overall": "low",
+    "stage_profile": { "establishment": "medium", "vegetative": "low", "flowering_fruiting": "low", "finish": "low" }
+  },
+
+  "irrigation": { "sensitivity": "wet_sensitive", "mulch_helpful": false },
+
+  "calendar": {
+    "base": {
+      "sow_outdoors": {
+        "weeks_relative_to_last_frost": null,
+        "weeks_of_year": [32, 40],
+        "months": [8, 9, 10],
+        "notes": "Best sown late summer to early autumn for autumn/winter harvest."
+      },
+      "harvest": {
+        "weeks_relative_to_last_frost": null,
+        "weeks_of_year": [40, 12],
+        "months": [10, 11, 12, 1, 2, 3],
+        "notes": "Harvest rosettes as needed; growth slows in deep winter."
+      }
+    }
+  },
+
+  "nutrition": {
+    "feeder": "light",
+    "emphasis": "balanced",
+    "schedule_hint": "none",
+    "notes": "Light feeder; avoid heavy nitrogen to reduce soft growth in cold/wet."
+  },
+
+  "care": {
+    "pruning": { "required": false, "method": "none", "notes": "Keep weed pressure low; avoid waterlogging. Great for overwintering beds." },
+    "pollination": { "type": "insect", "aid_notes": "Only relevant if letting plants flower for seed." }
+  },
+
+  "companions": {
+    "good": [
+      { "plant_id": "garlic", "reason": "Good winter bed pairing; different root zones and seasonal timing.", "confidence": "medium", "mechanism": "space" },
+      { "plant_id": "onion", "reason": "Similar seasonal compatibility; tidy interplant.", "confidence": "low", "mechanism": "space" },
+      { "plant_id": "calendula", "reason": "If still flowering in autumn, supports biodiversity.", "confidence": "low", "mechanism": "pollinator" }
+    ],
+    "avoid": [
+      { "plant_id": "pumpkin", "reason": "Completely different season and space requirements.", "confidence": "high", "mechanism": "space" }
+    ]
+  },
+
+  "varieties": []
+}

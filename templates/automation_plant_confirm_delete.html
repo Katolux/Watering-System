@@ -1,22 +1,7 @@
 {% extends "base.html" %}
-
+{% from "components/icons.html" import icon %}
+{% block title %}Delete plant | GardenHub{% endblock %}
+{% block header_back %}<a class="button button--ghost button--icon" href="{{ url_for('plant.automation_plants') }}" aria-label="Back to Encyclopedia" title="Back to Encyclopedia">{{ icon("arrow-left") }}</a>{% endblock %}
 {% block content %}
-<p><a href="{{ url_for('plant.automation_plants') }}">← Back to Plant Encyclopedia</a></p>
-
-<h1>Confirm Plant Deletion</h1>
-
-<p>You selected this plant for deletion:</p>
-
-<ul>
-  <li><strong>ID:</strong> {{ plant[0] }}</li>
-  <li><strong>Name:</strong> {{ plant[1] }}</li>
-  <li><strong>Scientific name:</strong> {{ plant[2] or "-" }}</li>
-</ul>
-
-<p><strong>This will remove the plant, its varieties, and its plantings.</strong></p>
-
-<form method="POST" action="{{ url_for('plant.automation_plant_delete_confirm', plant_id=plant[0]) }}">
-  <button type="submit">Yes, delete this plant</button>
-</form>
-
+<div class="content-grid"><section class="danger-callout"><h1>Delete {{ plant[1] }}?</h1><p>This permanently removes the plant, its varieties, and its plantings.</p><dl class="detail-list"><div class="detail-row"><dt>ID</dt><dd>{{ plant[0] }}</dd></div><div class="detail-row"><dt>Scientific name</dt><dd>{{ plant[2] or "Unavailable" }}</dd></div></dl><form method="POST" action="{{ url_for('plant.automation_plant_delete_confirm', plant_id=plant[0]) }}"><div class="form-actions"><a class="button button--secondary" href="{{ url_for('plant.automation_plants') }}">Cancel</a><button class="button button--danger" type="submit">{{ icon("trash") }} Delete plant</button></div></form></section></div>
 {% endblock %}

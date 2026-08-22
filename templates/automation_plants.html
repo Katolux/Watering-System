@@ -1,78 +1,99 @@
 {% extends "base.html" %}
+{% from "components/icons.html" import icon %}
+{% from "components/ui.html" import empty_state %}
+
+{% block title %}Plant Encyclopedia | GardenHub{% endblock %}
+{% block body_class %}encyclopedia-page encyclopedia-index-page{% endblock %}
+{% block extra_styles %}<link rel="stylesheet" href="{{ url_for('static', filename='css/encyclopedia.css') }}">{% endblock %}
+{% block extra_scripts %}<script src="{{ url_for('static', filename='js/encyclopedia.js') }}" defer></script>{% endblock %}
 
 {% block content %}
-<h1>🌿 Plant Encyclopedia</h1>
+<nav class="encyclopedia-breadcrumbs" aria-label="Breadcrumb">
+  <span>Encyclopedia</span>
+  <span aria-hidden="true">{{ icon("chevron-right") }}</span>
+  <strong>Plants</strong>
+</nav>
 
-<p><a href="{{ url_for('automation.automation') }}">← Back to Automation</a></p>
-
-<h2>Plant Management</h2>
-
-<p>
-  <a href="{{ url_for('plant.add_plant') }}">Add new plant</a> |
-  <a href="{{ url_for('plant.automation_plants_add_variety') }}">Add variety</a>
-</p>
-
-<form method="POST" action="{{ url_for('plant.automation_plants_edit_select') }}">
-  <label>Edit plant:
-    <select name="plant_id" required>
-      {% for p in plants %}
-        <option value="{{ p.plant_id }}">{{ p.name }}</option>
-      {% endfor %}
-    </select>
-  </label>
-  <button type="submit">Edit selected plant</button>
-</form>
-
-<br>
-
-<form method="POST" action="{{ url_for('plant.automation_plants_delete_select') }}">
-  <label>Delete plant:
-    <select name="plant_id" required>
-      {% for p in plants %}
-        <option value="{{ p.plant_id }}">{{ p.name }}</option>
-      {% endfor %}
-    </select>
-  </label>
-  <button type="submit">Delete selected plant</button>
-</form>
-
-<hr>
+<header class="encyclopedia-index-header">
+  <div>
+    <p class="encyclopedia-eyebrow">Garden knowledge</p>
+    <h1>Plant Encyclopedia</h1>
+    <p>Browse practical growing guidance for vegetables, herbs, fruit, and flowers.</p>
+  </div>
+</header>
 
 {% if plants %}
-  <table border="1" cellpadding="6" cellspacing="0">
-    <tr>
-      <th>Plant</th>
-      <th>Type</th>
-      <th>Water need</th>
-      <th>Sow indoors</th>
-      <th>Sow outdoors</th>
-      <th>Transplant out</th>
-      <th>Harvest</th>
-      <th>Details</th>
-    </tr>
-
-    {% for p in plants %}
-    <tr>
-      <td>
-        {% if p.emoji %}{{ p.emoji }} {% endif %}
-        {{ p.name }}
-      </td>
-      <td>
-        {{ p.category or "" }}
-        {% if p.family %}<br><small>{{ p.family }}</small>{% endif %}
-      </td>
-      <td>{{ p.water_need or "" }}</td>
-      <td>{{ p.sow_indoors | join(", ") if p.sow_indoors else "-" }}</td>
-      <td>{{ p.sow_outdoors | join(", ") if p.sow_outdoors else "-" }}</td>
-      <td>{{ p.transplant_out | join(", ") if p.transplant_out else "-" }}</td>
-      <td>{{ p.harvest | join(", ") if p.harvest else "-" }}</td>
-      <td>
-        <a href="{{ url_for('plant.automation_plant_detail', plant_id=p.plant_id) }}">View</a>
-      </td>
-    </tr>
+<section class="encyclopedia-browser" data-catalog-tools aria-label="Plant browser controls">
+  <label class="encyclopedia-search">
+    {{ icon("search") }}
+    <span class="sr-only">Search plants</span>
+    <input type="search" placeholder="Search by plant, family, or scientific name" data-catalog-search>
+  </label>
+  <div class="encyclopedia-filters" aria-label="Filter by category">
+    <button class="encyclopedia-filter is-active" type="button" data-catalog-category="all">All plants</button>
+    {% for category in plants|map(attribute='category')|select|unique %}
+    <button class="encyclopedia-filter" type="button" data-catalog-category="{{ category|lower }}">{{ category }}</button>
     {% endfor %}
-  </table>
+  </div>
+  <output class="encyclopedia-count" data-catalog-count>{{ plants|length }} plants</output>
+</section>
+
+<div class="encyclopedia-grid" aria-live="polite">
+  {% for plant in plants %}
+  <article
+    class="encyclopedia-card{% if plant.prefer_botanical %} encyclopedia-card--reference{% endif %}"
+    data-catalog-card
+    data-name="{{ plant.search_text }}"
+    data-category="{{ plant.category|lower }}"
+  >
+    <div class="encyclopedia-card__media">
+      {% if plant.prefer_botanical %}
+      <img class="encyclopedia-card__botanical" src="{{ url_for('static', filename=plant.botanical_image) }}" alt="Watercolour illustration of a ripe tomato">
+      {% elif plant.image %}
+      <img src="{{ url_for('static', filename=plant.image) }}" alt="{{ plant.name }}">
+      {% elif plant.botanical_image %}
+      <img class="encyclopedia-card__botanical" src="{{ url_for('static', filename=plant.botanical_image) }}" alt="">
+      {% else %}
+      <span class="plant-image-placeholder" aria-label="Plant image not yet available">
+        {{ icon("sprout") }}
+        <small>Botanical image coming later</small>
+      </span>
+      {% endif %}
+      <span class="encyclopedia-card__category">{{ plant.category or "Plant" }}</span>
+    </div>
+    <div class="encyclopedia-card__body">
+      <div>
+        <h2>{{ plant.name }}</h2>
+        <p class="encyclopedia-card__scientific">{{ plant.scientific_name or "Scientific name unavailable" }}</p>
+      </div>
+      <ul class="encyclopedia-card__highlights" aria-label="Plant highlights">
+        {% for highlight in plant.highlights %}
+        <li>{{ highlight }}</li>
+        {% else %}
+        <li>Growing highlights are not yet available</li>
+        {% endfor %}
+      </ul>
+      <a class="encyclopedia-card__link" href="{{ url_for('plant.automation_plant_detail', plant_id=plant.plant_id) }}">
+        Explore plant <span aria-hidden="true">{{ icon("chevron-right") }}</span>
+        <span class="sr-only">: {{ plant.name }}</span>
+      </a>
+    </div>
+  </article>
+  {% endfor %}
+</div>
+
+<div class="encyclopedia-no-results" data-catalog-empty hidden>
+  {{ icon("search") }}
+  <h2>No matching plants</h2>
+  <p>Try another name or choose a different category.</p>
+</div>
 {% else %}
-  <p><em>No plants found.</em></p>
+<section class="encyclopedia-empty">
+  {{ empty_state(
+    "Plant knowledge is not available yet",
+    "The Encyclopedia is ready, but this database does not contain plant records.",
+    "book"
+  ) }}
+</section>
 {% endif %}
 {% endblock %}

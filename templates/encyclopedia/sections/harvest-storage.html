@@ -1,0 +1,41 @@
+{% from "components/icons.html" import icon %}
+{% from "encyclopedia/_macros.html" import section_heading, fact_list, recommendation %}
+
+<section class="knowledge-section" aria-labelledby="harvest-storage-title">
+  {{ section_heading("Harvest & storage", "From garden to kitchen", "Quality, keeping and seed-saving guidance without repeating the calendar.", "harvest-storage-title") }}
+  <div class="harvest-guide-grid">
+    {% if plant.harvest_storage.harvest_guidance or plant.harvest_storage.quality_notes %}
+    <article class="knowledge-card harvest-guidance-card">
+      <div class="card-title-with-icon"><span>{{ icon("check") }}</span><h3>When to pick</h3></div>
+      {% if plant.harvest_storage.harvest_guidance %}<p>{{ plant.harvest_storage.harvest_guidance }}</p>{% endif %}
+      {% if plant.harvest_storage.quality_notes %}<p class="module-note"><strong>For best quality:</strong> {{ plant.harvest_storage.quality_notes }}</p>{% endif %}
+    </article>
+    {% endif %}
+    {% if plant.harvest_storage.storage %}
+    <article class="knowledge-card storage-card">
+      <div class="card-title-with-icon"><span>{{ icon("container") }}</span><h3>Storage</h3></div>
+      <div class="storage-options">
+        {% for option in plant.harvest_storage.storage %}
+        <div><div><strong>{{ option.label }}</strong>{{ recommendation(option.recommended) }}</div>{% if option.notes %}<p>{{ option.notes }}</p>{% endif %}</div>
+        {% endfor %}
+      </div>
+    </article>
+    {% endif %}
+    {% if plant.harvest_storage.preservation_methods %}
+    <article class="knowledge-card preservation-card">
+      <div class="card-title-with-icon"><span>{{ icon("flask") }}</span><h3>Preservation</h3></div>
+      <div class="inline-pills inline-pills--large">{% for method in plant.harvest_storage.preservation_methods %}<span>{{ method }}</span>{% endfor %}</div>
+    </article>
+    {% endif %}
+    {% if plant.harvest_storage.seed_saving.possible is not none %}
+    <article class="knowledge-card seed-saving-card">
+      <div class="card-title-with-icon"><span>{{ icon("sprout") }}</span><h3>Seed saving</h3></div>
+      {{ fact_list([("Feasibility", "Possible" if plant.harvest_storage.seed_saving.possible else "Not recommended"), ("Difficulty", plant.harvest_storage.seed_saving.difficulty), ("Method", plant.harvest_storage.seed_saving.method)]) }}
+      {% if plant.harvest_storage.seed_saving.notes %}<p>{{ plant.harvest_storage.seed_saving.notes }}</p>{% endif %}
+      {% if plant.harvest_storage.seed_saving.pollination_notes %}<p class="module-note"><strong>Pollination:</strong> {{ plant.harvest_storage.seed_saving.pollination_notes }}</p>{% endif %}
+      {% if plant.harvest_storage.seed_saving.hybrid_warning %}<p class="warning-note">{{ icon("alert") }}<span>{{ plant.harvest_storage.seed_saving.hybrid_warning }}</span></p>{% endif %}
+    </article>
+    {% endif %}
+  </div>
+  <aside class="future-community-slot"><span>{{ icon("message") }}</span><div><strong>Community recipes &amp; ideas</strong><p>Reserved for a future community module. No submissions are shown yet.</p></div></aside>
+</section>

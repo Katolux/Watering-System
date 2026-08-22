@@ -1,0 +1,70 @@
+{% from "components/icons.html" import icon %}
+{% from "encyclopedia/_macros.html" import section_heading, fact_list %}
+
+<section class="knowledge-section" aria-labelledby="growing-guide-title">
+  {{ section_heading("Growing guide", "How to grow " ~ plant.name, "Stage-aware care drawn from the base plant record.", "growing-guide-title") }}
+  <div class="responsive-card-grid guide-stack-layout">
+    {% if plant.growing.water_summary or plant.growing.water_stages %}
+    <article class="knowledge-card guide-card guide-card--watering">
+      <div class="card-title-with-icon"><span>{{ icon("droplet") }}</span><h3>Watering through the season</h3></div>
+      {% if plant.growing.water_summary %}<p class="feature-lead">{{ plant.growing.water_summary }}</p>{% endif %}
+      {% if plant.growing.water_stages %}
+      <div class="water-stage-list">
+        {% for stage in plant.growing.water_stages %}
+        <div><span><strong>{{ stage.stage }}</strong><small>{{ stage.level }} water</small></span>{% if stage.notes %}<p>{{ stage.notes }}</p>{% endif %}</div>
+        {% endfor %}
+      </div>
+      {% endif %}
+    </article>
+    {% endif %}
+
+    {% if plant.growing.irrigation.sensitivity or plant.growing.irrigation.foliage_notes or plant.growing.irrigation.rain_notes %}
+    <article class="knowledge-card guide-card guide-card--secondary guide-card--irrigation">
+      <div class="card-title-with-icon"><span>{{ icon("rain") }}</span><h3>Irrigation &amp; wet weather</h3></div>
+      {{ fact_list([("Moisture pattern", plant.growing.irrigation.sensitivity), ("Preferred method", plant.growing.irrigation.preferred_method)]) }}
+      {% if plant.growing.irrigation.foliage_notes %}<p>{{ plant.growing.irrigation.foliage_notes }}</p>{% endif %}
+      {% if plant.growing.irrigation.rain_notes %}<p class="module-note">{{ plant.growing.irrigation.rain_notes }}</p>{% endif %}
+    </article>
+    {% endif %}
+
+    {% if plant.growing.support.notes or plant.growing.support.methods %}
+    <article class="knowledge-card guide-card guide-card--secondary guide-card--support">
+      <div class="card-title-with-icon"><span>{{ icon("activity") }}</span><h3>Support &amp; training</h3></div>
+      {% if plant.growing.support.required is not none %}<p class="feature-lead">{{ "Support is required" if plant.growing.support.required else "Support is usually optional" }}</p>{% endif %}
+      {% if plant.growing.support.notes %}<p>{{ plant.growing.support.notes }}</p>{% endif %}
+      {% if plant.growing.support.methods %}<div class="inline-pills">{% for method in plant.growing.support.methods %}<span>{{ method }}</span>{% endfor %}</div>{% endif %}
+    </article>
+    {% endif %}
+
+    {% if plant.growing.pruning.notes or plant.growing.pruning.method %}
+    <article class="knowledge-card guide-card guide-card--compact guide-card--pruning">
+      <div class="card-title-with-icon"><span>{{ icon("sprout") }}</span><h3>Pruning</h3></div>
+      {{ fact_list([("Approach", "Recommended" if plant.growing.pruning.recommended else "Optional"), ("Method", plant.growing.pruning.method)]) }}
+      {% if plant.growing.pruning.notes %}<p>{{ plant.growing.pruning.notes }}</p>{% endif %}
+    </article>
+    {% endif %}
+
+    {% if plant.growing.pollination.type or plant.growing.pollination.notes %}
+    <article class="knowledge-card guide-card guide-card--compact guide-card--pollination">
+      <div class="card-title-with-icon"><span>{{ icon("sun") }}</span><h3>Pollination</h3></div>
+      {% if plant.growing.pollination.type %}<p class="feature-lead">{{ plant.growing.pollination.type }}</p>{% endif %}
+      {% if plant.growing.pollination.notes %}<p>{{ plant.growing.pollination.notes }}</p>{% endif %}
+    </article>
+    {% endif %}
+
+    {% if plant.growing.mulch %}
+    <article class="knowledge-card guide-card guide-card--compact guide-card--mulch">
+      <div class="card-title-with-icon"><span>{{ icon("layout") }}</span><h3>Mulch</h3></div>
+      {% if plant.growing.mulch.notes %}<p>{{ plant.growing.mulch.notes }}</p>{% endif %}
+    </article>
+    {% endif %}
+
+    {% if plant.growing.containers %}
+    <article class="knowledge-card guide-card guide-card--compact guide-card--containers">
+      <div class="card-title-with-icon"><span>{{ icon("container") }}</span><h3>Growing in containers</h3></div>
+      {% if plant.growing.containers.suitable is not none %}<p class="feature-lead">{{ "Suitable for containers" if plant.growing.containers.suitable else "Not recommended for containers" }}</p>{% endif %}
+      {% if plant.growing.containers.notes %}<p>{{ plant.growing.containers.notes }}</p>{% endif %}
+    </article>
+    {% endif %}
+  </div>
+</section>

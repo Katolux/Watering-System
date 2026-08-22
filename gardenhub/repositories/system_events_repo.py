@@ -1,4 +1,6 @@
 from datetime import datetime, timezone
+import sqlite3
+
 from gardenhub.db.connection import get_conn
 
 def log_system_event(level, source, message, bed_id=None, details=None):
@@ -48,3 +50,22 @@ def get_recent_system_events(limit=50):
             LIMIT ?
         """, (limit,))
         return cur.fetchall()
+
+
+def get_recent_system_event_records(limit=100):
+    """Return complete event records for user-facing notification views.
+
+    The existing tuple-returning helpers remain unchanged for the Home and
+    Garden Control templates. Notifications also need the stored record id,
+    date, and optional details so they can expose all information that already
+    exists without changing the database schema.
+    """
+    with get_conn() as conn:
+        conn.row_factory = sqlite3.Row
+        rows = conn.execute("""
+            SELECT id, timestamp, date, level, source, bed_id, message, details
+            FROM system_events
+            ORDER BY timestamp DESC
+            LIMIT ?
+        """, (limit,)).fetchall()
+        return [dict(row) for row in rows]

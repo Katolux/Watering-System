@@ -1,338 +1,289 @@
-🌱 GardenHUB – Autonomous IoT Watering System
----
-A real-world IoT automation system designed to manage irrigation for a ~70 m² home garden using sensor-driven logic, weather integration, and a Raspberry Pi backend.
+# GardenHub
 
-This project combines:
+GardenHub is a local garden-management application built around one idea: **understand the garden first, automate only where it actually helps**.
 
-- Software engineering
-- Electronics & wiring
-- IoT communication
-- Data logging & future ML experimentation
-- Automation logic design
+It started as a Raspberry Pi and Arduino soil-moisture/watering project and has grown into a broader application for planning a garden, organising plant knowledge, using Weather and sensor data, and producing explainable watering recommendations.
 
+GardenHub is still under active development. The current version is a working local prototype, not a finished commercial product or an unattended irrigation controller.
 
-It is both a functional irrigation system and an evolving engineering project.
+## What works today
 
----
+GardenHub currently includes:
 
-## 📸 System Preview
+- a measured 2D **Planner** with persistent layouts;
+- plant placement with spacing-aware footprints and quantities;
+- beds, structures, surfaces, utilities and visual irrigation objects;
+- a read-only **Garden Control** projection based on the saved Planner layout;
+- a **Workspace** dashboard combining stored garden, Weather, sensor and Planner information;
+- a SQLite-backed **Plant Encyclopedia** with varieties and companion relationships;
+- **Open-Meteo** Weather retrieval and stored daily forecast data;
+- **ESP32/Arduino soil-moisture ingestion** over HTTP;
+- raw-to-percentage moisture calibration;
+- explainable **watering recommendations**;
+- manual watering records;
+- combined **History** for Weather, sensors, watering and system events;
+- notification-style presentation of persisted system events;
+- a deterministic **demo mode** for development and demonstrations.
 
-### Control Box (Arduino Nano ESP32 Node)
+The application is designed so the useful parts do not depend on hardware. Planner, Encyclopedia and much of the garden-management experience can be used without sensors or irrigation equipment.
 
-![Control Box](docs/images/control_box.jpg)
+## Important current boundaries
 
-### Soil Moisture Sensor (Test Setup)
+A few distinctions are important when reading the code or trying the application.
 
-![Sensor](docs/images/sensor_test.jpg)
+### Watering recommendations are not irrigation execution
 
-### Raspberry Pi Controller
+GardenHub calculates and stores watering recommendations.
 
-![Raspberry Pi](docs/images/raspberry_pi.jpg)
+It does **not** currently energize valves, relays or pumps. A manual watering action records that watering occurred; it is not a command to hardware and does not verify delivered water.
 
----
+The scheduler is a **recommendation scheduler**, not a watering controller.
 
-## Context
+### Planner irrigation is currently visual geometry
 
-**Location**: Designed for a ~70 m² residential garden in Central Europe.
+The Planner can place and save measured irrigation lines and emitters.
 
-**Infrastructure**:
+These are not yet a hydraulic network. There is currently no connected pipe topology, flow/pressure calculation, friction-loss model, valve state or automatic shopping calculation.
 
-7 raised beds
+Those belong to a later irrigation-planning phase.
 
-Greenhouse
+### Garden Control is read-only
 
-Fruit trees
+Planner owns editable garden geometry.
 
-Mediterranean herb patch
+Garden Control reads the saved layout and attaches operational information to matching bed objects. It does not edit the layout or silently modify bed/planting records.
 
-Pots & strawberry section
+### GardenHub is currently single-garden
 
+The application currently operates as one local garden plus a deterministic demo context.
 
-The system supports seasonal vegetable production (salads, tomatoes, onions, garlic, broccoli, potatoes, etc.) with controlled and automated irrigation.
+Some frontend garden/location controls anticipate future behaviour, but operational data does not yet have full multi-garden ownership.
 
+## Technology
 
----
+The current stack is deliberately modest:
 
-## Project Goals
+- Python
+- Flask
+- SQLite
+- Jinja
+- CSS
+- vanilla JavaScript
+- Open-Meteo
+- optional ESP32/Arduino soil-moisture nodes
 
-### Phase 1 – Functional Automation (Current)
+The backend uses explicit routes, services and repositories rather than an ORM or a larger framework.
 
-Sensor-based moisture monitoring
+That simplicity is intentional. The project should become more complex only when a real product requirement justifies it.
 
-Multi-zone watering control
+## Architecture at a glance
 
-Web interface for monitoring & manual control
+```text
+Browser
+  |
+  v
+Flask routes / Blueprints
+  |
+  +--> services / presentation logic
+  |      |
+  |      +--> repositories --> SQLite
+  |
+  +--> Jinja templates
+  |
+  +--> Planner JSON endpoints
 
-Weather integration
-
-Historical logging in SQLite
-
-Reliable data ingest from ESP32 nodes
-
-
-### Phase 2 – Robust IoT Architecture
-
-Improve communication reliability
-
-Health monitoring of nodes
-
-Better scheduling & fault tolerance
-
-Expand to 6 watering zones
-
-
-### Phase 3 – ML-Assisted Irrigation
-
-Use historical moisture, weather, and watering events
-
-Optimize watering duration
-
-Improve water efficiency
-
-Extend architecture to controlled environments (e.g., mushroom chambers)
-
----
-
-## 🚧 Current Status
-
-The system is currently in an active development and stabilization phase.
-
-Working components:
-- Sensor → Raspberry Pi data pipeline
-- SQLite data storage
-- Watering decision engine (dry-run mode)
-- Web UI for monitoring and manual triggering
-- Weather data integration
-
-Ongoing work:
-- Backend refactoring (modular architecture)
-- Improved reliability and error handling
-- Preparation for real valve control (currently disabled)
-
-The system has completed a multi-week real-world test cycle in a home garden environment.
-
----
-
-## System Architecture
-
-### Central Controller
-
-Raspberry Pi 4B
-
-Raspberry Pi OS (64-bit)
-
-Python 3
-
-Flask backend
-
-SQLite database
-
-
-### Sensor Nodes
-
-Arduino Nano ESP32
-
-Wi-Fi communication (HTTP POST → Flask)
-
-DFRobot Waterproof Soil Moisture Sensor v2.0 (capacitive)
-
-
-### Irrigation Control
-
-24V AC solenoid valves (Hunter / RainBird – TBD)
-
-Relay module control
-
-Planned expansion: up to 6 zones
-
-Current test stage: 2–3 zones, 4–6 sensors
-
-
-### Power System
-
-Mains → 24V AC for valves
-
-Mains → 5V DC for Raspberry Pi & ESP32
-
-Relay isolation for valve actuation
-
----
-
-### Design Principles
-
-- Reliability over complexity
-- Fail-safe behavior (no watering on missing data)
-- Incremental automation (manual → assisted → autonomous)
-- Real-world testing before full deployment
-
----
-
-### Software Stack
-
-Backend: Python + Flask
-
-Database: SQLite
-
-Communication: HTTP POST (future: MQTT)
-
-Weather API: Open-Meteo
-
-Scheduler: standalone Python process (morning execution window)
-
-
-Plant configuration: JSON-based profiles
-
-Automation engine: custom watering logic module
-
-Planned: ML pipeline for predictive irrigation
-
-## Data & Observability
-
-GardenHUB logs time-series events in SQLite to support traceability and future analytics:
-
-- sensor_readings (timestamp, node_id, zone, moisture, temp/humidity optional)
-- watering_events (timestamp, zone, duration, reason/manual/auto)
-- weather_snapshots (timestamp, forecast/rain probability/temp)
-- system_health (node last_seen, error counts — planned)
-
-This data model supports:
-- historical trend analysis
-- watering effectiveness evaluation
-- future ML features (predictive duration / anomaly detection)
-
----
-
-### Repository Structure (pre-refactor)
-```
-.
-├── app.py                  # Flask entrypoint
-├── db.py                   # SQLite connection handler
-├── db_schema.py            # Database schema definitions
-├── db_init.py              # Table initialization
-├── repositories.py         # Data access layer
-├── watering_engine.py      # Core watering decision engine
-├── watering_decision.py    # Threshold & decision logic
-├── garden_logic.py         # Moisture interpretation logic
-├── get_weather_new.py      # Weather ingestion
-├── historic_weather.py     # Weather history queries
-├── python_receiver.py      # Sensor ingest endpoint
-├── plants/                 # Plant configuration (JSON)
-├── templates/              # Flask templates
-├── static/                 # CSS
-├── dev_tests/              # Experimental scripts (no secrets)
-└── arduino_secrets.example.h
+ESP32 / Arduino
+  |
+  | POST /sensor_data
+  v
+Sensor receiver
+  |
+  +--> calibration
+  |
+  +--> sensor repository
+          |
+          v
+        SQLite
+
+scheduler.py
+  |
+  +--> Weather refresh
+  |
+  +--> watering recommendation engine
 ```
 
----
+The main SQLite domains are beds/plantings, sensors/readings, plants/varieties/companions, Weather, watering decisions/events, system events and Planner layouts.
 
-### Security & Configuration
+See [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) for the current architecture and domain boundaries.
 
-Secrets are not stored in the repository.
+## Running locally
 
-Arduino credentials go in:
-```
-arduino_secrets.h
-```
-(ignored via .gitignore)
+Create and activate a virtual environment:
 
-Template provided:
+```bash
+python -m venv .venv
 ```
-arduino_secrets.example.h
-```
-Python API keys should be stored in environment variables (.env not committed).
 
+Linux/macOS:
 
----
-
-### Quick Start (Raspberry Pi)
-
-**1️⃣ Install system dependencies**
-```
-sudo apt update
-sudo apt install -y git python3-venv python3-pip sqlite3
-```
-**2️⃣ Clone the repository**
-```
-git clone https://github.com/Katolux/Watering-System.git
-cd Watering-System
-```
-**3️⃣ Create virtual environment**
-```
-python3 -m venv .venv
+```bash
 source .venv/bin/activate
+```
+
+Windows PowerShell:
+
+```powershell
+.venv\Scripts\Activate.ps1
+```
+
+Install dependencies:
+
+```bash
 pip install -r requirements.txt
 ```
-**4️⃣ Run the application**
-```
-python3 app.py
-```
-Access from another device on the same network:
-```
-http://<RASPBERRY_PI_IP>:5000
+
+Start the Flask application:
+
+```bash
+python app.py
 ```
 
----
+Run the scheduler separately when Weather/recommendation scheduling is needed:
 
-## Project Scope
+```bash
+python scheduler.py
+```
 
-This is a physical irrigation system deployed in a real garden environment.
+The application is normally available at:
 
-The system includes:
+```text
+http://localhost:5000
+```
 
-Live sensor ingestion
+For Raspberry Pi/local-network deployment, see [`docs/DEPLOYMENT.md`](docs/DEPLOYMENT.md).
 
-Backend decision logic
+## Demo mode
 
-Historical data storage
+GardenHub includes an isolated deterministic demo database.
 
-Weather-based logic
+Typical commands are:
 
-Expandable hardware architecture
+```bash
+python -m gardenhub.seeding.demo reset
+python -m gardenhub.seeding.demo seed
+python -m gardenhub.seeding.demo serve
+```
 
+Demo data is clearly labelled and should never be interpreted as live garden or hardware state.
 
-The project focuses on backend systems, automation logic, and applied IoT engineering.
+See [`docs/DEMO_EXPERIENCE.md`](docs/DEMO_EXPERIENCE.md) for the current demo contract.
 
+## Current development status
 
----
+The present frontend phase is effectively complete for the current version.
 
-## Roadmap
+The next development phase returns to backend work, beginning with Weather.
 
-- [x] Basic sensor ingest
+Current priority order:
 
-- [x] Database logging
+1. finish repository/documentation cleanup and update GitHub;
+2. correct Weather freshness, location and data semantics;
+3. make Weather scheduling reliable;
+4. fix scheduler per-bed/date recommendation behaviour;
+5. correct plant mutation and reference-integrity issues;
+6. harden sensor ingestion and identity;
+7. complete more of the beds/plantings lifecycle;
+8. revisit mixed-crop watering logic;
+9. improve operational reliability and testing;
+10. design the irrigation data model/calculations before building the hydraulic system.
 
-- [x] Web UI for monitoring
+Longer-term work includes the richer Living Garden, Encyclopedia v2, hydraulic irrigation planning, persisted garden location, multi-garden support and eventual safe physical irrigation control.
 
-- [x] Manual watering trigger
+See [`docs/ROADMAP.md`](docs/ROADMAP.md) for the maintained roadmap.
 
-- [ ] Hardware valve control integration
+## Known issues
 
-- [ ] MQTT-based communication
+The current codebase is intentionally being pushed as a real work-in-progress rather than presented as finished.
 
-- [ ] Node health monitoring
+Important known backend issues include:
 
-- [ ] Predictive ML irrigation model
+- plant editing can currently lose rich `plant_json` fields;
+- sensor ingestion does not yet enforce sensor/bed identity strongly enough;
+- the six-reading slot model needs review for multiple sensors in one bed;
+- scheduler run guards are process-memory only;
+- one bed can currently trigger the scheduler's only recommendation run for the day;
+- Weather freshness is based on forecast dates instead of a proper retrieval timestamp;
+- Weather timezone/current/history semantics need improvement;
+- manual watering validation is still weak;
+- mixed-crop watering uses simplified aggregate values;
+- variety references need stronger referential protection;
+- some frontend status wording is ahead of what the backend can prove;
+- there is not yet a general database migration system.
 
-- [ ] Mushroom growth chamber integration
+These are tracked development work, not hidden production guarantees.
 
+## Project documentation
 
+The maintained documentation is under `docs/`.
 
----
+Useful starting points:
 
-## Author
+- [`PROJECT_OVERVIEW.md`](docs/PROJECT_OVERVIEW.md) — what GardenHub currently is
+- [`ARCHITECTURE.md`](docs/ARCHITECTURE.md) — runtime and domain architecture
+- [`ROADMAP.md`](docs/ROADMAP.md) — current and future development order
+- [`DECISIONS.md`](docs/DECISIONS.md) — architectural decisions worth preserving
+- [`DEPLOYMENT.md`](docs/DEPLOYMENT.md) — local/Raspberry Pi deployment
+- [`OPERATIONS.md`](docs/OPERATIONS.md) — operating and troubleshooting the current prototype
+- [`DEMO_EXPERIENCE.md`](docs/DEMO_EXPERIENCE.md) — deterministic demo mode
+- [`BRAND.md`](docs/BRAND.md) — current product identity and assets
+- [`GARDENHUB_PLANNER_OBJECTLIBRARY.md`](docs/GARDENHUB_PLANNER_OBJECTLIBRARY.md) — Planner object/asset direction
 
-Alfonso Gómez-Jordana
-Switzerland 🇨🇭
+Older audits, plans and development notes may be kept separately as historical records. They should not be treated as the current source of truth.
 
-Background in operations and technical systems.
-Currently focused on backend development and IoT automation.
+## Development and AI assistance
 
-GitHub: @Katolux
+GardenHub is both a real software project and a learning project.
 
+I design the product, define the domain behaviour and architecture, and write the backend as part of learning and improving my Python, Flask, SQLite and general software-development skills.
 
----
+AI tools are used as development partners, but their role is not the same across the project.
 
-If you'd like feedback, collaboration, or discussion around IoT architecture, automation logic, or applied ML in small-scale agriculture, feel free to connect.
+The **backend and domain logic are primarily my own implementation**, developed with ChatGPT used for discussion, explanation, debugging, review and guidance.
 
+The **frontend has received substantially more AI-assisted implementation**. The product behaviour, UX requirements and visual direction are mine, while much of the advanced CSS and parts of the Jinja/HTML and JavaScript — particularly the more complex Planner/frontend work — have been implemented or refined with Codex.
 
----
+The **documentation represents my project, decisions and development history**. I write and define the underlying content and use ChatGPT to review it, challenge inconsistencies, reorganise outdated material and improve clarity.
+
+I keep this distinction explicit because I want the repository to represent both what I have built and understood myself and where modern AI-assisted development has been part of the implementation process.
+
+## Safety and deployment scope
+
+The current version is intended for local development and trusted local-network use.
+
+It does not currently include:
+
+- public-user authentication;
+- authorization;
+- CSRF protection;
+- hardened device authentication;
+- verified irrigation execution;
+- controller/valve safety state;
+- public-cloud deployment hardening.
+
+Do not expose the current Flask application directly to the public internet or rely on it for unattended physical irrigation.
+
+## Project direction
+
+GardenHub is not intended to become automation for automation's sake.
+
+The aim is to build a garden system that can:
+
+- help someone understand what is growing and where;
+- make planning easier;
+- combine plant knowledge with the real garden;
+- use sensor and Weather data when available;
+- explain why it recommends an action;
+- eventually design irrigation systems from real measurements;
+- later automate only when the system can do so safely and transparently.
+
+The project is still evolving, and the repository reflects that development openly.

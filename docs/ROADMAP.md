@@ -1,416 +1,363 @@
-# 🌱 GardenHUB Roadmap
+# GardenHub Roadmap
+
+## Current position
+
+GardenHub has moved well beyond the early irrigation-prototype stage.
+
+The current application already includes a working Planner, saved garden layouts, Garden Control, a plant Encyclopedia, Weather, sensor ingestion, watering recommendations, History, notifications, and a much more complete frontend.
+
+The immediate goal is not to add another large feature. It is to finish documenting the current system accurately, push the real work-in-progress state to GitHub, then return to backend development in a controlled order.
+
+## Current phase — Documentation and repository cleanup
+
+Before backend development resumes:
+
+- finish the current documentation pass;
+- remove or archive stale documentation;
+- review `.gitignore`;
+- keep private/internal development material out of the public repository;
+- review generated/demo/test artifacts;
+- confirm no secrets, disposable databases, logs or caches are being committed accidentally;
+- run final smoke/status checks;
+- push the current project state to GitHub.
+
+Known limitations should remain visible. The repository does not need to look “finished”; it needs to be accurate.
 
 ---
 
-## Current Status
+# Backend roadmap
 
-* Raspberry Pi deployment running
-* Arduino → WiFi → Flask → SQLite pipeline working
-* Sensor readings stored and processed
-* Scheduler + watering engine running
-* UI accessible remotely
-* ~1 month real-world test completed (sensor reliability + scheduler validation)
+## 1. Weather
 
-System is stable enough for iteration, but not yet production-safe.
+Weather is the first backend area to revisit.
 
----
+Current issues:
 
-## Version 1.2 – Plant System & Backend Cleanup (Current Work)
+- freshness is based on forecast horizon rather than last successful retrieval;
+- backend location still uses a fixed fallback;
+- browser location does not affect server-side Weather;
+- current and daily data share the existing storage model;
+- hourly Weather is not implemented;
+- past stored daily rows may be forecasts rather than observations;
+- timezone ownership is inconsistent between provider, persistence and scheduler.
 
-**Branch:** `v1.2-plants-seeding-cleanup`
+### Weather v2 direction
 
-### Purpose
+The next Weather model should support:
 
-Transition from simple plant model → structured JSON-based system
-while stabilizing backend before further expansion.
+- persisted garden location;
+- current Weather;
+- hourly 24–48 hour forecast;
+- daily forecast;
+- clear forecast-versus-observation semantics;
+- reliable retrieval/freshness metadata;
+- ET0 and other irrigation-relevant values.
 
-### What changed
-
-* JSON plant definitions (50+ plants)
-* Seeder system (bulk import)
-* Variety system with overrides
-* Rich plant metadata:
-
-  * soil
-  * calendar
-  * nutrition
-  * care
-  * companions
-* Full JSON stored in DB
-* New plant CRUD UI
-
-### Temporary compromise
-
-Watering still uses simplified values derived from JSON:
-
-* `min_moisture`
-* `max_moisture`
-* `base_minutes`
-
-### Current focus
-
-* Fix schema ↔ repository mismatches
-* Fix route/template inconsistencies
-* Prevent runtime crashes (watering engine, DB issues)
-* Remove silent DB failures (`INSERT OR IGNORE`)
-* Clean duplicate imports and legacy code
-* Improve project structure (pre-refactor stage)
-
-### Status
-
-Transitional phase (mixed old + new logic)
-Goal: stable enough to merge into `main`
+The existing daily model does not need to be thrown away blindly. The data contract should be redesigned first, then implemented in small steps.
 
 ---
 
-## Reliability & Calibration Workstream
+## 2. Scheduler reliability
 
-### 1️⃣ Sensor Calibration System
+Once Weather retrieval and freshness are reliable, review the scheduler.
 
-**Goals**
+Current problems include:
 
-* Convert raw sensor values → meaningful %
-* Allow early loose calibration
-* Later refine with accurate dry/wet reference
+- run state stored only in process memory;
+- restart can repeat a daily recommendation run;
+- one bed can trigger the only run before other beds report;
+- no durable per-bed/date idempotency;
+- Weather refresh and watering-run timing follow separate rules;
+- no first-class heartbeat/run record.
 
-**Tasks**
-
-* Store per-sensor:
-
-  * raw_dry
-  * raw_wet
-
-* Compute:
-
-```
-pct = (raw - raw_dry) / (raw_wet - raw_dry) * 100
-```
-
-* Store both raw + pct
-* UI shows both
-* Engine uses % instead of raw
+The immediate target is a reliable **recommendation scheduler**, not physical irrigation control.
 
 ---
 
-### 2️⃣ Engine Calibration & Rain Logic
+## 3. Plant and Encyclopedia backend integrity
 
-**Problem**
+The Encyclopedia UI can remain parked while the backend mutation contract is corrected.
 
-Rain occurred but watering still triggered.
+Important work:
 
-**Improvements**
+- make plant editing lossless;
+- define ownership between JSON seed sources and SQLite runtime records;
+- keep rich `plant_json` and relational data consistent;
+- make variety creation/resolution consistent;
+- protect variety references in existing plantings;
+- clarify plant deletion versus retained planting history.
 
-* Rain override rules:
-
-  * Forecast rain ≥ X mm → cap watering
-  * Yesterday rain ≥ Y mm → skip watering
-
-* Log override reasons (system_events)
-
-* Add safety caps:
-
-  * Max minutes per bed/day
-  * Max total watering per day
-
-* Add `DRY_RUN = True` safety mode
+Encyclopedia v2 remains a later product phase.
 
 ---
 
-### 3️⃣ Sensor Management Improvements
+## 4. Sensor integrity and health
 
-**Goals**
+The sensor ingestion path already works, but identity and state semantics need improvement.
 
-Make system usable without code changes.
+Near-term work:
 
-**Features**
+- validate sensor identity;
+- verify claimed bed assignment;
+- respect configured sensor/bed active state;
+- define correct multi-sensor slot behaviour;
+- tighten raw-value handling.
 
-* Auto-create sensor if unknown sensor_id posts
+Later sensor work:
 
-* Mark sensors:
+- per-sensor calibration;
+- last-seen timestamps;
+- stale/missing-reading states;
+- heartbeat/device health;
+- battery/network/firmware telemetry where useful;
+- stronger delivery/retry behaviour in firmware.
 
-  * unassigned
-  * active
-
-* UI table:
-
-  * sensor_id
-  * assigned bed
-  * active toggle
-  * last_seen timestamp
-  * status (OK / stale / offline)
-
-* Actions:
-
-  * assign to bed
-  * unassign
-  * rename sensor
-
-* Stale detection:
-
-  * no data for X hours → WARNING
+“Configured active” should remain distinct from “online”.
 
 ---
 
-### 4️⃣ Beds & Plants Improvements
+## 5. Beds, plantings and zones
 
-* Support multiple plantings per bed (correctly)
-* Remove plant assignment
-* Change plant quantity
-* Soft delete plantings
-* Safe delete bed
-* Display multiple plantings clearly
+The backend already stores more planting information than the current management UI exposes.
 
----
+Future work includes:
 
-### 5️⃣ Reliability Improvements (Critical)
+- individual planting management;
+- quantity display/editing;
+- variety selection;
+- planted date and notes;
+- remove/soft-remove planting;
+- bed active-state changes;
+- safe bed deletion;
+- moving beds between zones;
+- zone creation/editing.
 
-Replace `nohup` with `systemd`
-
-Services:
-
-* gardenhub-web
-* gardenhub-scheduler
-
-Requirements:
-
-* Auto start on boot
-* Auto restart on crash
-* Logs via `journalctl`
-* No manual terminal dependency
+Current `zones` are organizational records only. Hydraulic irrigation-zone meaning belongs to the irrigation-planning phase.
 
 ---
 
-### 6️⃣ Automatic Backups
+## 6. Watering model
 
-**Phase 1**
+The current deterministic recommendation model should remain understandable and explainable.
 
-* Daily SQLite backup
-* Stored locally in `/backups/`
+Near-term work:
 
-**Phase 2 (optional)**
+- improve backend validation for manual watering records;
+- make scheduler/engine execution idempotent per bed/date;
+- isolate failures per bed;
+- clarify recommendation/event relationships.
 
-* Sync via:
+### Mixed plantings
 
-  * rsync
-  * scp
-  * SMB
+Current watering configuration combines multiple active plantings into broad aggregate values.
 
-* Future: cloud backup
+That is a known simplification.
 
----
+Before changing it, define the actual domain rules for:
 
-## 🔮 Version 1.3 – Watering Model Redesign
+- main crop versus companion plants;
+- quantities;
+- varieties;
+- growth stage;
+- root depth;
+- sensor depth;
+- soil profile;
+- irrigation sensitivity.
 
-### Problem
-
-Current watering logic assumes:
-
-* one plant per bed
-* fixed thresholds
-
-This does not reflect real garden conditions.
-
----
-
-### Planned improvements
-
-* Multiple plantings per bed handled correctly
-* "Main crop" vs companion plants
-* Mixed crop logic (combine watering needs)
-* Sensor depth awareness:
-
-  * shallow (10 cm)
-  * deep (30 cm)
-* Soil type influence on moisture behavior
-* Growth-stage-based watering (from JSON)
+The calculation should be designed intentionally rather than patched incrementally.
 
 ---
 
-### Goal
+## 7. History and notifications
 
-Move from:
+History currently combines:
 
-simple rule engine
-→ **context-aware irrigation system**
+- stored Weather/forecast rows;
+- sensor readings;
+- watering records;
+- system events.
 
----
+Possible later additions:
 
-## Plant JSON System (Current Design)
+- watering decisions as timeline entries;
+- planting changes;
+- Planner saves/changes;
+- bed/sensor configuration changes;
+- rain/watering effects;
+- cross-domain correlation views.
 
-Current JSON structure includes:
+Notifications currently reuse `system_events`.
 
-* names (multi-language)
-* category & family
-* UI metadata
-* spacing
-* root depth & type
-* soil preferences
-* water need profile
-* irrigation sensitivity
-* calendar (months + weeks)
-* nutrition
-* care / pruning
-* companions
-* varieties with overrides
+A dedicated notification lifecycle should only be introduced if the product needs unread/read, acknowledgement, active/resolved state or delivery channels.
 
 ---
 
-### Current behavior
+# Planner and product roadmap
 
-Seeder converts JSON → simplified watering values:
+## Living Garden
 
-* `min_moisture`
-* `max_moisture`
-* `base_minutes`
+Workspace currently shows a saved-layout summary, not a rendered garden.
 
-Full JSON is stored for future logic (v1.3+)
+The future Living Garden should:
 
----
+- derive from the saved Planner layout;
+- remain read-only;
+- preserve exact Planner geometry;
+- potentially become richer or 3D;
+- eventually respond to season, planting state and garden history.
 
-## Version 2 – Climate & Portability
-
-### 7️⃣ Location Configuration in UI
-
-**Goals**
-
-Remove hardcoded weather location.
-
-**Features**
-
-* UI location setup
-* Store:
-
-  * latitude
-  * longitude
-* Weather uses stored coordinates
-
-**Future**
-
-* Map selector
-* Reverse geocoding
-* Hardiness zones
-* Frost estimation
+It should not become a second independent layout editor.
 
 ---
 
-## Version 2 – Irrigation Planner Module
+## Advanced irrigation Planner
 
-### 8️⃣ Water Flow Calculator
+The current Planner already stores measured irrigation lines and emitters as visual objects.
 
-* User inputs: time to fill 10L bucket
-* System outputs: L/min flow
+The future irrigation system is a separate domain.
 
----
+Planned concepts include:
 
-### 9️⃣ Zone Designer
+- irrigation-planning mode;
+- connected network nodes and segments;
+- tubing type and internal diameter;
+- physical pipe length derived from Planner scale;
+- bucket-test flow input;
+- source pressure/flow;
+- friction-loss calculations;
+- emitters and emitter flow;
+- valves, T-junctions, elbows, couplers, filters and regulators;
+- hydraulic zones;
+- connected demand;
+- runtime/volume calculations;
+- layout-derived shopping quantities;
+- warnings for insufficient flow/pressure or unsuitable runs.
 
-Inputs:
+Before this work expands, the Planner should move toward a central object/component registry so catalogue metadata is not duplicated across frontend and backend files.
 
-* tube length
-* diameter
-* emitter spacing
-* emitter flow (L/h)
-
-Outputs:
-
-* total flow requirement
-* runtime
-* zone compatibility
-
----
-
-### 🔟 Pressure Loss Model
-
-* Hazen-Williams (preferred)
-* or Darcy-Weisbach
-
-Warnings:
-
-* excessive pressure loss
-* long 1/4” runs
-* uneven emitter output
+Hydraulic formulas and the underlying data model should be designed before implementation.
 
 ---
 
-### 1️⃣1️⃣ Bed Water Volume
+## Physical irrigation control
 
-Given:
+Physical actuation remains a later phase.
 
-* bed dimensions
+It may eventually include:
 
-Calculate:
+- controller abstraction;
+- relays/valves;
+- acknowledgements;
+- flow feedback;
+- verified delivered volume;
+- schedules;
+- controller state;
+- fail-safe behaviour;
+- panic stop;
+- hard watering limits.
 
-* liters required
-* runtime needed
+A future system should clearly distinguish:
 
----
+1. recommended watering;
+2. commanded watering;
+3. confirmed delivered watering.
 
-## Version 2 – UI Enhancements
-
-* Clean dashboard
-* Graphs:
-
-  * sensor trends
-  * weather
-  * watering history
-* CSV export
-* Excel export
-* Garden layout planner
-* Zone types:
-
-  * bed
-  * pot
-  * greenhouse
+Live unattended control should only come after the recommendation, scheduler, sensor-health and safety layers are reliable.
 
 ---
 
-## Version 2 – System Monitoring
+## Encyclopedia v2
 
-* Scheduler heartbeat
-* Last engine run
-* Last weather update
-* Sensor health
-* System warnings
+The current Encyclopedia v1 remains usable and parked.
 
----
+The future design follows the **Fast first, deep second** principle.
 
-## Safety Rules (Critical)
+The first view should answer common questions quickly:
 
-Before enabling valves:
+- Can I grow this here?
+- When do I sow/transplant?
+- How much space does it need?
+- Sun or shade?
+- When can I harvest?
+- What grows well beside it?
 
-* DRY_RUN = True by default
-* Hard cap minutes per bed/day
-* Hard cap total minutes/day
-* Panic stop toggle in UI
-* Fail-safe mode if sensors fail:
-
-  * fallback watering
-  * log warnings
-  * enforce caps
+Deeper sections can then cover growing technique, care/problems, harvest/use, varieties and personal garden history.
 
 ---
 
-## Long-Term Vision
+## Multi-garden
 
-GardenHUB becomes:
+GardenHub currently has a single local/demo garden context.
 
-* Modular irrigation controller
-* Multi-zone system
-* Climate-aware
-* Data-driven
-* Portable globally
-* Potential SaaS / knowledge layer
+Real multi-garden support is deliberately deferred.
+
+When implemented, garden ownership must be introduced consistently across:
+
+- beds;
+- plantings;
+- sensors;
+- Weather;
+- watering decisions/events;
+- system events;
+- Planner layouts;
+- location/configuration.
+
+It should not be simulated only in the frontend.
+
+---
+
+# Reliability and operations
+
+Operational improvements remain important before real hardware control.
+
+Future work includes:
+
+- dependable `systemd` services for Flask and scheduler;
+- automatic SQLite backups;
+- restore procedure;
+- process health/heartbeat;
+- structured logs where useful;
+- clearer startup/shutdown procedure;
+- improved test isolation;
+- schema migration/versioning strategy.
+
+These do not all need to happen before normal backend development, but they become increasingly important before GardenHub is trusted to operate unattended.
 
 ---
 
-## Current Priority Order
+# Longer-term possibilities
 
-1. Stabilize v1.2 branch
-2. Merge v1.2 into `main`
-3. Add systemd services
-4. Add backups
-5. Improve sensor onboarding
-6. Implement calibration layer
-7. Redesign watering model (v1.3)
+Not current priorities:
+
+- seasonal crop planning;
+- crop rotation assistance;
+- frost/region-based recommendations;
+- multi-language UI;
+- appearance preferences;
+- richer export/reporting;
+- hardware OTA/configuration improvements;
+- cloud or SaaS deployment;
+- premium planning/analysis features;
+- AI-assisted observations based on a user's own historical garden data.
+
+These should only be developed when the underlying GardenHub data is good enough to make them useful.
 
 ---
+
+# Current priority order
+
+1. Finish documentation.
+2. Clean repository/Git state.
+3. Push the current work-in-progress version.
+4. Rework Weather.
+5. Make Weather scheduling reliable.
+6. Fix scheduler per-bed/date recommendation behaviour.
+7. Correct plant mutation/integrity issues.
+8. Harden sensor ingestion and identity.
+9. Complete more of the beds/plantings lifecycle.
+10. Revisit mixed-crop watering logic.
+11. Improve operational reliability and testing as needed.
+12. Design the irrigation data model and calculations before building the hydraulic system.
+13. Return to larger future features such as Living Garden, Encyclopedia v2, multi-garden and physical automation when their phase begins.
+
+This file replaces the older `NEXT_STEPS.md`. Short-term next actions and longer-term direction should now stay together here so the project has one maintained roadmap rather than two documents that drift apart.

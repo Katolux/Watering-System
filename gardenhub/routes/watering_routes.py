@@ -44,6 +44,6 @@ def water_now():
             note="Triggered from web UI"
         )
 
-        print(f"WATER NOW → {bed_id} for {minutes} min")
+        print(f"WATER NOW -> {bed_id} for {minutes} min")
 
     return redirect(url_for("watering.watering"))

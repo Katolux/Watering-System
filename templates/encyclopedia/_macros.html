@@ -1,0 +1,26 @@
+{% from "components/icons.html" import icon %}
+
+{% macro section_heading(eyebrow, title, copy=None, heading_id=None) -%}
+<header class="knowledge-section__heading">
+  <p class="encyclopedia-eyebrow">{{ eyebrow }}</p>
+  <h2{% if heading_id %} id="{{ heading_id }}"{% endif %}>{{ title }}</h2>
+  {% if copy %}<p>{{ copy }}</p>{% endif %}
+</header>
+{%- endmacro %}
+
+{% macro fact_list(items) -%}
+<dl class="compact-facts">
+  {% for label, value in items if value %}
+  <div class="encyclopedia-fact-row"><dt>{{ label }}</dt><dd>{{ value }}</dd></div>
+  {% endfor %}
+</dl>
+{%- endmacro %}
+
+{% macro recommendation(value) -%}
+  {% if value is sameas true %}<span class="status-pill status-pill--yes">Recommended</span>
+  {% elif value == "only_if_needed" %}<span class="status-pill status-pill--limited">Only if needed</span>
+  {% elif value is sameas false %}<span class="status-pill status-pill--no">Not recommended</span>
+  {% endif %}
+{%- endmacro %}
+
+{% macro module_icon(name) -%}<span class="module-icon">{{ icon(name) }}</span>{%- endmacro %}

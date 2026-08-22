@@ -1,0 +1,2831 @@
+.encyclopedia-page .app-main {
+  max-width: 100rem;
+  padding-top: var(--gh-space-5);
+}
+
+.encyclopedia-breadcrumbs {
+  display: flex;
+  min-height: 2.5rem;
+  align-items: center;
+  gap: var(--gh-space-2);
+  margin-bottom: var(--gh-space-4);
+  color: var(--gh-text-muted);
+  font-size: var(--gh-font-size-sm);
+}
+
+.encyclopedia-breadcrumbs .icon {
+  width: 1rem;
+  height: 1rem;
+}
+
+.encyclopedia-breadcrumbs a {
+  color: var(--gh-text-muted);
+  text-decoration: none;
+}
+
+.encyclopedia-breadcrumbs strong {
+  overflow: hidden;
+  color: var(--gh-text);
+  font-weight: var(--gh-weight-semibold);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.encyclopedia-eyebrow {
+  margin-bottom: var(--gh-space-1);
+  color: var(--gh-primary);
+  font-size: var(--gh-font-size-xs);
+  font-weight: var(--gh-weight-bold);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.encyclopedia-index-header {
+  display: flex;
+  min-height: 6.5rem;
+  align-items: center;
+  margin-bottom: var(--gh-space-4);
+  padding: clamp(var(--gh-space-3), 1.5vw, var(--gh-space-4));
+  border: 1px solid var(--gh-border);
+  border-radius: var(--gh-radius-lg);
+  background: var(--gh-surface);
+}
+
+.encyclopedia-index-header h1 {
+  margin-bottom: var(--gh-space-1);
+  font-size: clamp(1.75rem, 3vw, 2.45rem);
+}
+
+.encyclopedia-index-header p:last-child {
+  max-width: 42rem;
+  margin: 0;
+  color: var(--gh-text-muted);
+}
+
+.encyclopedia-browser {
+  position: sticky;
+  top: calc(var(--gh-header-height) + var(--gh-space-2));
+  z-index: 12;
+  display: grid;
+  grid-template-columns: minmax(18rem, 1fr) minmax(0, 2fr) auto;
+  gap: var(--gh-space-4);
+  align-items: center;
+  margin-bottom: var(--gh-space-5);
+  padding: var(--gh-space-3);
+  border: 1px solid var(--gh-border);
+  border-radius: var(--gh-radius-lg);
+  background: rgba(255, 255, 255, 0.96);
+  box-shadow: var(--gh-shadow-sm);
+}
+
+.encyclopedia-search {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.encyclopedia-search .icon {
+  position: absolute;
+  left: var(--gh-space-3);
+  z-index: 1;
+  color: var(--gh-text-muted);
+  pointer-events: none;
+}
+
+.encyclopedia-search input {
+  width: 100%;
+  min-height: var(--gh-control-height);
+  padding: 0 var(--gh-space-3) 0 2.75rem;
+  border: 1px solid var(--gh-border);
+  border-radius: var(--gh-radius-md);
+  background: var(--gh-surface);
+  color: var(--gh-text);
+}
+
+.encyclopedia-filters {
+  display: flex;
+  min-width: 0;
+  gap: var(--gh-space-2);
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.encyclopedia-filters::-webkit-scrollbar,
+.plant-section-nav::-webkit-scrollbar {
+  display: none;
+}
+
+.encyclopedia-filter {
+  min-height: 2.5rem;
+  flex: 0 0 auto;
+  padding: 0 var(--gh-space-3);
+  border: 1px solid var(--gh-border);
+  border-radius: var(--gh-radius-round);
+  background: var(--gh-surface);
+  color: var(--gh-text-muted);
+  font-size: var(--gh-font-size-sm);
+  font-weight: var(--gh-weight-medium);
+  cursor: pointer;
+}
+
+.encyclopedia-filter:hover,
+.encyclopedia-filter.is-active {
+  border-color: var(--gh-primary);
+  background: var(--gh-primary-soft);
+  color: var(--gh-primary-hover);
+}
+
+.encyclopedia-count {
+  color: var(--gh-text-muted);
+  font-size: var(--gh-font-size-sm);
+  white-space: nowrap;
+}
+
+.encyclopedia-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--gh-space-5);
+}
+
+.encyclopedia-card {
+  position: relative;
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  overflow: hidden;
+  border: 1px solid var(--gh-border);
+  border-radius: var(--gh-radius-lg);
+  background: var(--gh-surface);
+  transition: border-color var(--gh-motion-fast) ease, box-shadow var(--gh-motion-fast) ease, transform var(--gh-motion-fast) ease;
+}
+
+.encyclopedia-card:hover {
+  border-color: var(--gh-border-strong);
+  box-shadow: var(--gh-shadow-md);
+  transform: translateY(-2px);
+}
+
+.encyclopedia-card[hidden] {
+  display: none;
+}
+
+.encyclopedia-card__media {
+  position: relative;
+  display: grid;
+  min-height: 11rem;
+  overflow: hidden;
+  place-items: center;
+  border-bottom: 1px solid var(--gh-border);
+  background: var(--gh-surface-subtle);
+}
+
+.encyclopedia-card__media > img {
+  width: 100%;
+  height: 11rem;
+  object-fit: cover;
+}
+
+.encyclopedia-card__media > img.encyclopedia-card__botanical {
+  width: 7rem;
+  height: 7rem;
+  object-fit: contain;
+}
+
+.encyclopedia-card--reference .encyclopedia-card__media {
+  background: radial-gradient(circle at 52% 44%, #ffffff 0, #f5f7f1 58%, #edf2e8 100%);
+}
+
+.encyclopedia-card--reference .encyclopedia-card__media > img.encyclopedia-card__botanical {
+  width: 9rem;
+  height: 9rem;
+  filter: drop-shadow(0 0.65rem 0.7rem rgba(47, 67, 41, 0.16));
+}
+
+.plant-image-placeholder {
+  display: grid;
+  min-height: 8rem;
+  place-items: center;
+  color: var(--gh-primary);
+  text-align: center;
+}
+
+.plant-image-placeholder .icon {
+  width: 3.25rem;
+  height: 3.25rem;
+  padding: 0.55rem;
+  border: 1px solid var(--gh-primary-soft-strong);
+  border-radius: 50%;
+  background: var(--gh-primary-soft);
+}
+
+.plant-image-placeholder small {
+  margin-top: var(--gh-space-2);
+  color: var(--gh-text-muted);
+}
+
+.encyclopedia-card__category {
+  position: absolute;
+  top: var(--gh-space-3);
+  left: var(--gh-space-3);
+  padding: 0.3rem 0.65rem;
+  border: 1px solid rgba(255, 255, 255, 0.78);
+  border-radius: var(--gh-radius-round);
+  background: rgba(255, 255, 255, 0.9);
+  color: var(--gh-primary-hover);
+  font-size: var(--gh-font-size-xs);
+  font-weight: var(--gh-weight-semibold);
+}
+
+.encyclopedia-card__body {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: var(--gh-space-4);
+  padding: var(--gh-space-5);
+}
+
+.encyclopedia-card__body h2 {
+  margin: 0;
+  font-size: 1.25rem;
+}
+
+.encyclopedia-card__scientific {
+  margin: var(--gh-space-1) 0 0;
+  color: var(--gh-text-muted);
+  font-size: var(--gh-font-size-sm);
+  font-style: italic;
+}
+
+.encyclopedia-card__highlights {
+  display: grid;
+  gap: var(--gh-space-2);
+  margin: 0;
+  padding: 0;
+  color: var(--gh-text-muted);
+  font-size: var(--gh-font-size-sm);
+  list-style: none;
+}
+
+.encyclopedia-card__highlights li {
+  display: flex;
+  align-items: center;
+  gap: var(--gh-space-2);
+}
+
+.encyclopedia-card__highlights li::before {
+  width: 0.42rem;
+  height: 0.42rem;
+  flex: 0 0 auto;
+  border-radius: 50%;
+  background: var(--gh-primary-soft-strong);
+  content: "";
+}
+
+.encyclopedia-card__link {
+  display: inline-flex;
+  align-items: center;
+  align-self: flex-start;
+  gap: var(--gh-space-1);
+  margin-top: auto;
+  color: var(--gh-primary-hover);
+  font-size: var(--gh-font-size-sm);
+  font-weight: var(--gh-weight-semibold);
+  text-decoration: none;
+}
+
+.encyclopedia-card__link::after {
+  position: absolute;
+  inset: 0;
+  content: "";
+}
+
+.encyclopedia-card__link .icon {
+  width: 1rem;
+  height: 1rem;
+}
+
+.encyclopedia-no-results,
+.encyclopedia-empty {
+  display: grid;
+  min-height: 18rem;
+  margin-top: var(--gh-space-5);
+  place-items: center;
+  padding: var(--gh-space-8);
+  border: 1px dashed var(--gh-border-strong);
+  border-radius: var(--gh-radius-lg);
+  background: var(--gh-surface);
+  color: var(--gh-text-muted);
+  text-align: center;
+}
+
+.encyclopedia-no-results[hidden] {
+  display: none;
+}
+
+.encyclopedia-no-results .icon {
+  width: 2rem;
+  height: 2rem;
+}
+
+.encyclopedia-no-results h2 {
+  margin: var(--gh-space-3) 0 var(--gh-space-1);
+}
+
+.encyclopedia-no-results p {
+  margin: 0;
+}
+
+/* Plant detail */
+.plant-knowledge {
+  overflow: clip;
+  border: 1px solid var(--gh-border);
+  border-radius: var(--gh-radius-lg);
+  background: var(--gh-surface);
+}
+
+.plant-hero {
+  position: relative;
+  min-height: 25rem;
+  overflow: hidden;
+  padding: clamp(var(--gh-space-6), 4vw, var(--gh-space-10));
+  background-color: #33452f;
+  background-image: var(--plant-hero-image);
+  background-position: center;
+  background-size: cover;
+  color: #ffffff;
+}
+
+.plant-hero--placeholder {
+  background-color: #40523b;
+}
+
+.plant-hero--placeholder::before,
+.plant-hero--placeholder::after {
+  position: absolute;
+  width: 24rem;
+  height: 24rem;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 50%;
+  content: "";
+}
+
+.plant-hero--placeholder::before {
+  top: -10rem;
+  right: -5rem;
+}
+
+.plant-hero--placeholder::after {
+  right: 12rem;
+  bottom: -18rem;
+}
+
+.plant-hero__scrim {
+  position: absolute;
+  inset: 0;
+  background: rgba(15, 25, 14, 0.55);
+}
+
+.plant-hero--reference {
+  min-height: 20rem;
+  background-position: 50% 52%;
+}
+
+.plant-hero--reference .plant-hero__scrim {
+  background: linear-gradient(90deg, rgba(13, 25, 13, 0.9) 0%, rgba(15, 27, 14, 0.7) 42%, rgba(15, 25, 14, 0.22) 78%, rgba(15, 25, 14, 0.34) 100%);
+}
+
+.plant-hero--reference .plant-hero__identity {
+  padding-top: var(--gh-space-3);
+}
+
+.plant-hero--reference .plant-hero__tags {
+  margin-top: var(--gh-space-5);
+}
+
+.plant-hero__identity,
+.plant-hero__tags {
+  position: relative;
+  z-index: 1;
+}
+
+.plant-hero__identity {
+  display: flex;
+  max-width: 48rem;
+  align-items: center;
+  gap: clamp(var(--gh-space-5), 3vw, var(--gh-space-8));
+  padding-top: clamp(var(--gh-space-8), 7vw, 6rem);
+}
+
+.plant-hero__botanical {
+  display: grid;
+  width: clamp(7rem, 12vw, 10rem);
+  height: clamp(7rem, 12vw, 10rem);
+  flex: 0 0 auto;
+  overflow: hidden;
+  place-items: center;
+  border: 4px solid rgba(255, 255, 255, 0.82);
+  border-radius: 50%;
+  background: #ffffff;
+  color: var(--gh-primary);
+  box-shadow: var(--gh-shadow-md);
+}
+
+.plant-hero__botanical img {
+  width: 86%;
+  height: 86%;
+  object-fit: contain;
+}
+
+.plant-hero__botanical .icon {
+  width: 4rem;
+  height: 4rem;
+}
+
+.plant-hero__category {
+  display: inline-flex;
+  padding: 0.35rem 0.75rem;
+  border-radius: var(--gh-radius-round);
+  background: rgba(255, 255, 255, 0.92);
+  color: #31442d;
+  font-size: var(--gh-font-size-xs);
+  font-weight: var(--gh-weight-semibold);
+}
+
+.plant-hero h1 {
+  max-width: 42rem;
+  margin: var(--gh-space-3) 0 var(--gh-space-2);
+  color: #ffffff;
+  font-size: clamp(2.25rem, 5vw, 4rem);
+  line-height: 1.05;
+}
+
+.plant-hero__copy p {
+  margin: 0;
+  color: rgba(255, 255, 255, 0.88);
+  font-size: clamp(1rem, 2vw, 1.2rem);
+  font-style: italic;
+}
+
+.plant-hero__tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--gh-space-2);
+  margin: clamp(var(--gh-space-8), 5vw, 4rem) 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.plant-hero__tags li {
+  padding: 0.45rem 0.8rem;
+  border: 1px solid rgba(255, 255, 255, 0.78);
+  border-radius: var(--gh-radius-round);
+  background: rgba(15, 25, 14, 0.3);
+  color: #ffffff;
+  font-size: var(--gh-font-size-sm);
+}
+
+.plant-section-nav {
+  position: sticky;
+  top: var(--gh-header-height);
+  z-index: 10;
+  display: flex;
+  min-width: 0;
+  gap: var(--gh-space-2);
+  overflow-x: auto;
+  padding: 0 var(--gh-space-4);
+  border-bottom: 1px solid var(--gh-border);
+  background: rgba(255, 255, 255, 0.97);
+  scrollbar-width: none;
+}
+
+.plant-section-nav a {
+  display: inline-flex;
+  min-height: 3.5rem;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: var(--gh-space-2);
+  padding: 0 var(--gh-space-3);
+  border-bottom: 2px solid transparent;
+  color: var(--gh-text);
+  font-size: var(--gh-font-size-sm);
+  font-weight: var(--gh-weight-medium);
+  text-decoration: none;
+}
+
+.plant-section-nav a:hover,
+.plant-section-nav a:first-child {
+  border-bottom-color: var(--gh-primary);
+  color: var(--gh-primary-hover);
+}
+
+.plant-section-nav .icon {
+  width: 1.1rem;
+  height: 1.1rem;
+}
+
+.plant-detail-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(17rem, 21rem);
+  align-items: start;
+}
+
+.plant-detail-main {
+  min-width: 0;
+  padding: clamp(var(--gh-space-5), 3vw, var(--gh-space-8));
+  border-right: 1px solid var(--gh-border);
+}
+
+.plant-detail-sidebar {
+  position: sticky;
+  top: calc(var(--gh-header-height) + 4rem);
+  display: grid;
+  gap: var(--gh-space-4);
+  padding: var(--gh-space-4);
+}
+
+.knowledge-section {
+  scroll-margin-top: calc(var(--gh-header-height) + 4.5rem);
+  padding: var(--gh-space-8) 0;
+  border-bottom: 1px solid var(--gh-border);
+}
+
+.knowledge-section:first-child {
+  padding-top: 0;
+}
+
+.knowledge-section:last-child {
+  border-bottom: 0;
+}
+
+.knowledge-section__heading {
+  margin-bottom: var(--gh-space-5);
+}
+
+.knowledge-section__heading h2 {
+  margin: 0;
+}
+
+.plant-overview-copy {
+  max-width: 52rem;
+  margin-bottom: var(--gh-space-6);
+  color: var(--gh-text);
+  font-size: 1.08rem;
+  line-height: 1.65;
+}
+
+.plant-stat-grid {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: var(--gh-space-3);
+  margin-bottom: var(--gh-space-6);
+}
+
+.plant-stat {
+  display: flex;
+  min-width: 0;
+  min-height: 10rem;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--gh-space-4);
+  border: 1px solid var(--gh-border);
+  border-radius: var(--gh-radius-lg);
+  background: var(--gh-surface);
+  text-align: center;
+}
+
+.plant-stat__icon {
+  display: grid;
+  width: 2.6rem;
+  height: 2.6rem;
+  margin-bottom: var(--gh-space-2);
+  place-items: center;
+  border-radius: 50%;
+  background: var(--gh-primary-soft);
+  color: var(--gh-primary);
+}
+
+.plant-stat__label {
+  color: var(--gh-text-muted);
+  font-size: var(--gh-font-size-xs);
+}
+
+.plant-stat strong {
+  margin-top: var(--gh-space-2);
+  color: var(--gh-text-strong);
+  font-size: var(--gh-font-size-sm);
+}
+
+.plant-stat small {
+  margin-top: var(--gh-space-1);
+  font-size: 0.7rem;
+}
+
+.plant-knowledge--reference .plant-stat-grid {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.knowledge-card-grid,
+.companion-columns {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--gh-space-4);
+}
+
+.knowledge-card,
+.sidebar-knowledge-card {
+  min-width: 0;
+  padding: var(--gh-space-5);
+  border: 1px solid var(--gh-border);
+  border-radius: var(--gh-radius-lg);
+  background: var(--gh-surface);
+}
+
+.knowledge-card h3,
+.sidebar-knowledge-card h2 {
+  margin-bottom: var(--gh-space-4);
+}
+
+.sidebar-knowledge-card h2 {
+  font-size: var(--gh-font-size-md);
+}
+
+.knowledge-list {
+  display: grid;
+  gap: var(--gh-space-2);
+  margin: 0;
+  padding-left: 1.15rem;
+  font-size: var(--gh-font-size-sm);
+}
+
+.knowledge-placeholder {
+  display: flex;
+  min-height: 5rem;
+  align-items: flex-start;
+  gap: var(--gh-space-3);
+  padding: var(--gh-space-4);
+  border: 1px dashed var(--gh-border-strong);
+  border-radius: var(--gh-radius-md);
+  background: var(--gh-surface-subtle);
+  color: var(--gh-text-muted);
+}
+
+.knowledge-placeholder .icon {
+  width: 1.15rem;
+  height: 1.15rem;
+  margin-top: 0.1rem;
+  flex: 0 0 auto;
+  color: var(--gh-primary);
+}
+
+.knowledge-placeholder span {
+  display: grid;
+  gap: var(--gh-space-1);
+}
+
+.knowledge-placeholder strong {
+  color: var(--gh-text);
+  font-size: var(--gh-font-size-sm);
+}
+
+.knowledge-placeholder small {
+  line-height: 1.4;
+}
+
+.knowledge-placeholder--compact {
+  min-height: 0;
+  padding: var(--gh-space-3);
+}
+
+.knowledge-card--visual {
+  overflow: hidden;
+  padding: 0;
+  background: linear-gradient(135deg, #f7f8f3, #ffffff);
+}
+
+.growth-habit-card {
+  display: grid;
+  grid-template-columns: minmax(16rem, 0.85fr) minmax(0, 1.15fr);
+  align-items: stretch;
+}
+
+.growth-habit-card__figure {
+  display: grid;
+  min-height: 23rem;
+  margin: 0;
+  place-items: center;
+  padding: var(--gh-space-3);
+  background: radial-gradient(circle at 50% 45%, #ffffff 0, #f0f4eb 72%);
+}
+
+.growth-habit-card__figure img {
+  width: 100%;
+  height: 100%;
+  max-height: 26rem;
+  object-fit: contain;
+}
+
+.growth-habit-card__copy {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: clamp(var(--gh-space-5), 4vw, var(--gh-space-8));
+}
+
+.growth-habit-card__copy h3 {
+  margin: 0 0 var(--gh-space-3);
+  font-size: clamp(1.35rem, 2vw, 1.75rem);
+}
+
+.growth-habit-card__copy > p:not(.encyclopedia-eyebrow) {
+  margin: 0 0 var(--gh-space-4);
+  color: var(--gh-text-muted);
+  line-height: 1.6;
+}
+
+.value-unavailable {
+  color: var(--gh-text-muted) !important;
+  font-style: normal;
+  font-weight: var(--gh-weight-medium) !important;
+}
+
+.compact-facts,
+.sidebar-knowledge-card dl {
+  display: grid;
+  gap: var(--gh-space-3);
+  margin: 0;
+}
+
+.encyclopedia-fact-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(7rem, auto);
+  gap: var(--gh-space-3);
+  align-items: start;
+}
+
+.encyclopedia-fact-row dt {
+  color: var(--gh-text-muted);
+  font-size: var(--gh-font-size-sm);
+}
+
+.encyclopedia-fact-row dd {
+  margin: 0;
+  color: var(--gh-text-strong);
+  font-size: var(--gh-font-size-sm);
+  font-weight: var(--gh-weight-medium);
+  text-align: right;
+}
+
+.knowledge-note {
+  margin: var(--gh-space-4) 0 0;
+  color: var(--gh-text-muted);
+  font-size: var(--gh-font-size-sm);
+}
+
+.stage-profile {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--gh-space-2);
+  margin-top: var(--gh-space-4);
+}
+
+.stage-profile span {
+  display: grid;
+  gap: var(--gh-space-1);
+  padding: var(--gh-space-3);
+  border-radius: var(--gh-radius-md);
+  background: var(--gh-primary-soft);
+}
+
+.stage-profile strong {
+  font-size: var(--gh-font-size-sm);
+}
+
+.variety-list {
+  display: grid;
+  max-height: 20rem;
+  gap: var(--gh-space-2);
+  overflow-y: auto;
+}
+
+.variety-row {
+  display: grid;
+  gap: var(--gh-space-1);
+  padding: var(--gh-space-3);
+  border-radius: var(--gh-radius-md);
+  background: var(--gh-surface-subtle);
+}
+
+.variety-row strong {
+  font-size: var(--gh-font-size-sm);
+}
+
+.variety-row span {
+  color: var(--gh-text-muted);
+  font-size: var(--gh-font-size-xs);
+}
+
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--gh-space-4);
+}
+
+.calendar-card {
+  display: grid;
+  gap: var(--gh-space-2);
+  padding: var(--gh-space-5);
+  border: 1px solid var(--gh-border);
+  border-radius: var(--gh-radius-lg);
+}
+
+.calendar-card__icon {
+  display: grid;
+  width: 2.5rem;
+  height: 2.5rem;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--gh-primary-soft);
+  color: var(--gh-primary);
+}
+
+.calendar-card h3 {
+  margin: var(--gh-space-1) 0 0;
+  font-size: var(--gh-font-size-md);
+}
+
+.calendar-card > strong {
+  color: var(--gh-primary-hover);
+  font-size: 1.15rem;
+}
+
+.calendar-card p {
+  margin: 0;
+  color: var(--gh-text-muted);
+  font-size: var(--gh-font-size-sm);
+}
+
+.month-strip {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  gap: 2px;
+  margin: var(--gh-space-2) 0;
+}
+
+.month-strip span {
+  display: grid;
+  aspect-ratio: 1;
+  place-items: center;
+  border-radius: 3px;
+  background: var(--gh-surface-subtle);
+  color: var(--gh-text-muted);
+  font-size: 0.58rem;
+}
+
+.month-strip span.is-active {
+  background: var(--gh-primary);
+  color: #ffffff;
+}
+
+.companion-heading {
+  display: flex;
+  align-items: center;
+  gap: var(--gh-space-2);
+}
+
+.companion-heading--good {
+  color: var(--gh-primary-hover);
+}
+
+.companion-heading--avoid {
+  color: var(--gh-critical);
+}
+
+.companion-list {
+  display: grid;
+  gap: var(--gh-space-3);
+}
+
+.companion-item {
+  padding: var(--gh-space-3);
+  border-radius: var(--gh-radius-md);
+  background: var(--gh-surface-subtle);
+}
+
+.companion-item > div {
+  display: grid;
+}
+
+.companion-item small {
+  font-style: italic;
+}
+
+.companion-item p {
+  margin: var(--gh-space-2) 0;
+  color: var(--gh-text);
+  font-size: var(--gh-font-size-sm);
+}
+
+.companion-item > span {
+  color: var(--gh-text-muted);
+  font-size: var(--gh-font-size-xs);
+}
+
+.harvest-window {
+  margin: 0 0 var(--gh-space-2);
+  color: var(--gh-primary-hover);
+  font-size: 1.35rem;
+  font-weight: var(--gh-weight-semibold);
+}
+
+.mature-size-visual {
+  display: grid;
+  min-height: 9rem;
+  place-items: center;
+  border-radius: var(--gh-radius-md);
+  background: var(--gh-surface-subtle);
+  text-align: center;
+}
+
+.mature-size-visual span {
+  color: var(--gh-primary);
+}
+
+.mature-size-visual .icon {
+  width: 4rem;
+  height: 4rem;
+}
+
+.mature-size-visual strong {
+  margin-top: -1.5rem;
+  font-size: var(--gh-font-size-sm);
+}
+
+.sidebar-knowledge-card--visual {
+  padding: var(--gh-space-3);
+}
+
+.sidebar-card-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--gh-space-2);
+  padding: var(--gh-space-2) var(--gh-space-2) var(--gh-space-3);
+}
+
+.sidebar-card-heading h2,
+.sidebar-card-heading .encyclopedia-eyebrow {
+  margin: 0;
+}
+
+.sidebar-card-heading > span {
+  flex: 0 0 auto;
+  padding: 0.25rem 0.5rem;
+  border-radius: var(--gh-radius-round);
+  background: var(--gh-primary-soft);
+  color: var(--gh-primary-hover);
+  font-size: 0.65rem;
+  font-weight: var(--gh-weight-semibold);
+}
+
+.mature-size-reference {
+  overflow: hidden;
+  margin: 0;
+  border-radius: var(--gh-radius-md);
+  background: #f7f7f1;
+}
+
+.mature-size-reference img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 1;
+  object-fit: contain;
+}
+
+.mature-size-reference__data {
+  margin: var(--gh-space-3) var(--gh-space-2) 0 !important;
+  color: var(--gh-text-muted);
+}
+
+.sidebar-knowledge-card > p {
+  margin: var(--gh-space-3) 0 0;
+  font-size: var(--gh-font-size-sm);
+}
+
+@media (max-width: 78rem) {
+  .encyclopedia-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .encyclopedia-browser {
+    grid-template-columns: minmax(16rem, 1fr) minmax(0, 1.5fr);
+  }
+
+  .encyclopedia-count {
+    display: none;
+  }
+
+  .plant-stat-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .plant-knowledge--reference .plant-stat-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 64rem) {
+  .encyclopedia-page .app-main {
+    padding: var(--gh-space-4);
+  }
+
+  .encyclopedia-browser {
+    position: static;
+    grid-template-columns: 1fr;
+  }
+
+  .plant-detail-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .plant-detail-main {
+    border-right: 0;
+  }
+
+  .plant-detail-sidebar {
+    position: static;
+    max-height: none;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    border-top: 1px solid var(--gh-border);
+  }
+}
+
+@media (max-width: 42rem) {
+  .encyclopedia-breadcrumbs {
+    margin-bottom: var(--gh-space-2);
+  }
+
+  .encyclopedia-index-header {
+    min-height: 6.5rem;
+    padding: var(--gh-space-4);
+  }
+
+  .encyclopedia-grid,
+  .knowledge-card-grid,
+  .companion-columns,
+  .calendar-grid,
+  .plant-detail-sidebar {
+    grid-template-columns: 1fr;
+  }
+
+  .plant-hero {
+    min-height: 23rem;
+    padding: var(--gh-space-5);
+  }
+
+  .plant-hero--reference {
+    min-height: 20rem;
+    background-position: 58% 50%;
+  }
+
+  .plant-hero--reference .plant-hero__scrim {
+    background: linear-gradient(90deg, rgba(13, 25, 13, 0.9), rgba(15, 27, 14, 0.72) 62%, rgba(15, 25, 14, 0.4));
+  }
+
+  .plant-hero--reference .plant-hero__identity {
+    align-items: center;
+    flex-direction: row;
+    gap: var(--gh-space-4);
+    padding-top: 0;
+  }
+
+  .plant-hero--reference .plant-hero__botanical {
+    width: 5.5rem;
+    height: 5.5rem;
+  }
+
+  .plant-hero--reference .plant-hero__tags {
+    margin-top: var(--gh-space-5);
+  }
+
+  .plant-hero__identity {
+    align-items: flex-start;
+    flex-direction: column;
+    padding-top: var(--gh-space-6);
+  }
+
+  .plant-hero__botanical {
+    width: 6.5rem;
+    height: 6.5rem;
+  }
+
+  .plant-hero h1 {
+    font-size: 2.3rem;
+  }
+
+  .plant-hero__tags {
+    margin-top: var(--gh-space-6);
+  }
+
+  .plant-section-nav {
+    top: var(--gh-header-height);
+  }
+
+  .plant-detail-main {
+    padding: var(--gh-space-4);
+  }
+
+  .knowledge-section {
+    padding: var(--gh-space-6) 0;
+  }
+
+  .plant-stat-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .plant-stat {
+    min-height: 9rem;
+  }
+
+  .plant-stat:last-child {
+    grid-column: 1 / -1;
+  }
+
+  .stage-profile {
+    grid-template-columns: 1fr;
+  }
+
+  .growth-habit-card {
+    grid-template-columns: 1fr;
+  }
+
+  .growth-habit-card__figure {
+    min-height: 18rem;
+  }
+
+  .growth-habit-card__copy {
+    padding: var(--gh-space-5);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .encyclopedia-card {
+    transition: none;
+  }
+}
+
+/* Encyclopedia v1 shared plant detail */
+.plant-hero {
+  min-height: 18.5rem;
+  padding: clamp(var(--gh-space-5), 3vw, var(--gh-space-8));
+  background-color: #263923;
+  background-position: 80% 48%;
+  background-repeat: no-repeat;
+  background-size: auto 130%;
+}
+
+.plant-hero__scrim {
+  background: linear-gradient(90deg, rgba(16, 28, 15, 0.96) 0%, rgba(18, 31, 17, 0.84) 42%, rgba(18, 31, 17, 0.42) 72%, rgba(18, 31, 17, 0.25) 100%);
+}
+
+.plant-hero__identity {
+  gap: clamp(var(--gh-space-4), 2.5vw, var(--gh-space-7));
+  padding-top: 0;
+}
+
+.plant-hero__botanical {
+  width: clamp(6.5rem, 10vw, 8.5rem);
+  height: clamp(6.5rem, 10vw, 8.5rem);
+}
+
+.plant-hero h1 {
+  font-size: clamp(2.2rem, 4vw, 3.5rem);
+}
+
+.plant-hero__tags {
+  margin-top: var(--gh-space-5);
+}
+
+.plant-hero__tags li {
+  display: inline-flex;
+  min-height: 2.25rem;
+  align-items: center;
+  padding: 0.4rem 0.8rem;
+  border-width: 1px;
+  background: rgba(13, 27, 13, 0.52);
+  font-size: var(--gh-font-size-xs);
+  font-weight: var(--gh-weight-medium);
+  line-height: 1;
+}
+
+.plant-tab-nav {
+  position: sticky;
+  top: var(--gh-header-height);
+  z-index: 10;
+  display: flex;
+  min-width: 0;
+  gap: var(--gh-space-1);
+  overflow-x: auto;
+  padding: 0 var(--gh-space-4);
+  border-bottom: 1px solid var(--gh-border);
+  background: rgba(255, 255, 255, 0.98);
+  scrollbar-width: none;
+}
+
+.plant-tab-nav::-webkit-scrollbar {
+  display: none;
+}
+
+.plant-tab-nav a {
+  display: inline-flex;
+  min-height: 3.65rem;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: var(--gh-space-2);
+  padding: 0 var(--gh-space-3);
+  border-bottom: 2px solid transparent;
+  color: var(--gh-text);
+  font-size: var(--gh-font-size-sm);
+  font-weight: var(--gh-weight-medium);
+  text-decoration: none;
+}
+
+.plant-tab-nav a:hover,
+.plant-tab-nav a.is-active {
+  border-bottom-color: var(--gh-primary);
+  color: var(--gh-primary-hover);
+}
+
+.plant-tab-nav .icon {
+  width: 1.05rem;
+  height: 1.05rem;
+}
+
+.plant-tab-content {
+  min-width: 0;
+  padding: clamp(var(--gh-space-5), 3vw, var(--gh-space-8));
+}
+
+.plant-tab-content .knowledge-section {
+  padding: 0;
+  border: 0;
+}
+
+.knowledge-section__heading > p:last-child {
+  max-width: 48rem;
+  margin: var(--gh-space-2) 0 0;
+  color: var(--gh-text-muted);
+}
+
+.overview-intro-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(19rem, 23rem);
+  gap: clamp(var(--gh-space-5), 3vw, var(--gh-space-8));
+  align-items: start;
+  margin-bottom: var(--gh-space-6);
+}
+
+.overview-introduction h2 {
+  margin: 0;
+}
+
+.overview-introduction .plant-overview-copy {
+  max-width: 56rem;
+  margin: var(--gh-space-4) 0 0;
+}
+
+.quick-facts-card {
+  padding: var(--gh-space-5);
+  border: 1px solid var(--gh-border);
+  border-radius: var(--gh-radius-lg);
+  background: var(--gh-surface-subtle);
+}
+
+.quick-facts-card h3 {
+  margin: 0 0 var(--gh-space-4);
+  font-size: var(--gh-font-size-md);
+}
+
+.quick-facts-card .compact-facts {
+  gap: var(--gh-space-2);
+}
+
+.quick-facts-card .encyclopedia-fact-row {
+  grid-template-columns: minmax(0, 0.85fr) minmax(8rem, 1.15fr);
+  padding-bottom: var(--gh-space-2);
+  border-bottom: 1px solid var(--gh-border);
+}
+
+.quick-facts-card .encyclopedia-fact-row:last-child {
+  padding-bottom: 0;
+  border-bottom: 0;
+}
+
+.plant-stat-grid {
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  margin-bottom: var(--gh-space-5);
+}
+
+.plant-stat {
+  min-height: 9rem;
+  padding: var(--gh-space-3);
+}
+
+.plant-stat strong {
+  font-size: var(--gh-font-size-sm);
+}
+
+.feature-module {
+  display: grid;
+  min-width: 0;
+  overflow: hidden;
+  margin-top: var(--gh-space-5);
+  border: 1px solid var(--gh-border);
+  border-radius: var(--gh-radius-lg);
+  background: linear-gradient(135deg, #f4f7f0, #ffffff);
+}
+
+.feature-module--growth {
+  grid-template-columns: minmax(20rem, 0.8fr) minmax(0, 1.2fr);
+}
+
+.feature-module--size {
+  grid-template-columns: minmax(16rem, 0.65fr) minmax(22rem, 1.35fr);
+}
+
+.feature-module__visual {
+  display: grid;
+  min-height: 26rem;
+  margin: 0;
+  place-items: center;
+  padding: var(--gh-space-4);
+  background: radial-gradient(circle at center, #ffffff 0%, #eff4e9 76%);
+}
+
+.feature-module--size .feature-module__visual {
+  grid-column: 2;
+  grid-row: 1;
+  min-height: 30rem;
+}
+
+.feature-module__visual img {
+  width: 100%;
+  height: 100%;
+  max-height: 31rem;
+  object-fit: contain;
+}
+
+.feature-module__copy {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  justify-content: center;
+  padding: clamp(var(--gh-space-5), 4vw, var(--gh-space-8));
+}
+
+.feature-module__copy h3 {
+  margin: 0 0 var(--gh-space-3);
+  font-size: clamp(1.4rem, 2vw, 1.85rem);
+}
+
+.feature-module__copy > p {
+  line-height: 1.6;
+}
+
+.feature-lead {
+  color: var(--gh-primary-hover);
+  font-weight: var(--gh-weight-semibold);
+}
+
+.inline-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--gh-space-2);
+  margin-top: var(--gh-space-3);
+}
+
+.inline-pills span {
+  display: inline-flex;
+  min-height: 1.9rem;
+  align-items: center;
+  padding: 0.25rem 0.65rem;
+  border-radius: var(--gh-radius-round);
+  background: var(--gh-primary-soft);
+  color: var(--gh-primary-hover);
+  font-size: var(--gh-font-size-xs);
+  font-weight: var(--gh-weight-medium);
+}
+
+.inline-pills--large span {
+  min-height: 2.35rem;
+  padding-inline: var(--gh-space-3);
+  font-size: var(--gh-font-size-sm);
+}
+
+.module-note {
+  margin-top: var(--gh-space-4);
+  padding: var(--gh-space-3);
+  border-left: 3px solid var(--gh-primary);
+  border-radius: 0 var(--gh-radius-sm) var(--gh-radius-sm) 0;
+  background: var(--gh-primary-soft);
+  color: var(--gh-text);
+  font-size: var(--gh-font-size-sm);
+  line-height: 1.55;
+}
+
+.module-title-line {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--gh-space-2);
+  align-items: center;
+}
+
+.module-title-line h3 {
+  margin: 0;
+}
+
+.module-title-line > span {
+  padding: 0.25rem 0.6rem;
+  border-radius: var(--gh-radius-round);
+  background: var(--gh-primary-soft);
+  color: var(--gh-primary-hover);
+  font-size: var(--gh-font-size-xs);
+  font-weight: var(--gh-weight-semibold);
+}
+
+.size-values {
+  display: grid;
+  gap: var(--gh-space-4);
+  margin-top: var(--gh-space-6);
+}
+
+.size-values div {
+  display: grid;
+  gap: var(--gh-space-1);
+}
+
+.size-values small {
+  color: var(--gh-text-muted);
+  font-size: var(--gh-font-size-xs);
+  text-transform: uppercase;
+}
+
+.size-values strong {
+  color: var(--gh-primary-hover);
+  font-size: clamp(1.4rem, 2vw, 2rem);
+}
+
+.overview-module-grid {
+  display: grid;
+  grid-template-columns: minmax(17rem, 0.7fr) minmax(0, 1.3fr);
+  gap: var(--gh-space-4);
+  margin-top: var(--gh-space-5);
+}
+
+.best-use-list {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--gh-space-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.best-use-list li {
+  display: flex;
+  align-items: center;
+  gap: var(--gh-space-2);
+  font-size: var(--gh-font-size-sm);
+}
+
+.best-use-list li span,
+.interesting-facts-card__heading > .icon,
+.card-title-with-icon > span {
+  display: grid;
+  width: 2rem;
+  height: 2rem;
+  flex: 0 0 auto;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--gh-primary-soft);
+  color: var(--gh-primary);
+}
+
+.best-use-list .icon,
+.card-title-with-icon .icon {
+  width: 1rem;
+  height: 1rem;
+}
+
+.interesting-facts-card {
+  background: linear-gradient(135deg, var(--gh-primary-soft), #fff);
+}
+
+.interesting-facts-card__heading,
+.card-title-with-icon {
+  display: flex;
+  align-items: center;
+  gap: var(--gh-space-3);
+}
+
+.interesting-facts-card__heading h3,
+.card-title-with-icon h3 {
+  margin: 0;
+}
+
+.interesting-facts-card ul {
+  display: grid;
+  gap: var(--gh-space-2);
+  margin: var(--gh-space-4) 0 0;
+  padding-left: 1.2rem;
+  font-size: var(--gh-font-size-sm);
+  line-height: 1.55;
+}
+
+.responsive-card-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--gh-space-4);
+  align-items: start;
+}
+
+.responsive-card-grid .knowledge-card {
+  height: auto;
+}
+
+.responsive-card-grid .knowledge-card--wide {
+  grid-column: span 2;
+}
+
+.knowledge-card > .card-title-with-icon {
+  margin-bottom: var(--gh-space-4);
+}
+
+.knowledge-card > p {
+  line-height: 1.58;
+}
+
+.water-stage-list {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--gh-space-3);
+  margin-top: var(--gh-space-4);
+}
+
+.water-stage-list > div {
+  padding: var(--gh-space-3);
+  border-radius: var(--gh-radius-md);
+  background: var(--gh-surface-subtle);
+}
+
+.water-stage-list span {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--gh-space-2);
+}
+
+.water-stage-list span small {
+  color: var(--gh-primary-hover);
+  font-weight: var(--gh-weight-semibold);
+}
+
+.water-stage-list p {
+  margin: var(--gh-space-2) 0 0;
+  color: var(--gh-text-muted);
+  font-size: var(--gh-font-size-sm);
+  line-height: 1.5;
+}
+
+.gardening-calendar {
+  min-width: 0;
+  overflow-x: auto;
+  border: 1px solid var(--gh-border);
+  border-radius: var(--gh-radius-lg);
+}
+
+.calendar-months,
+.calendar-row {
+  display: grid;
+  min-width: 54rem;
+  grid-template-columns: minmax(10rem, 1.65fr) repeat(12, minmax(2.75rem, 1fr));
+}
+
+.calendar-months {
+  padding: 0 var(--gh-space-3);
+  background: var(--gh-surface-subtle);
+}
+
+.calendar-months span {
+  padding: var(--gh-space-3) var(--gh-space-1);
+  color: var(--gh-text-muted);
+  font-size: var(--gh-font-size-xs);
+  font-weight: var(--gh-weight-semibold);
+  text-align: center;
+}
+
+.calendar-months span:first-child {
+  text-align: left;
+}
+
+.calendar-row {
+  padding: var(--gh-space-3);
+  border-top: 1px solid var(--gh-border);
+  align-items: center;
+}
+
+.calendar-row__label {
+  display: grid;
+  gap: var(--gh-space-1);
+  padding-right: var(--gh-space-3);
+  font-size: var(--gh-font-size-sm);
+}
+
+.calendar-row__label small {
+  color: var(--gh-text-muted);
+  font-size: 0.7rem;
+}
+
+.calendar-month-cell {
+  display: grid;
+  min-height: 2.3rem;
+  place-items: center;
+  padding-inline: 2px;
+}
+
+.calendar-month-cell i {
+  display: block;
+  width: 100%;
+  height: 0.65rem;
+  border-radius: var(--gh-radius-round);
+  background: var(--gh-surface-subtle);
+}
+
+.calendar-month-cell.is-active i {
+  background: var(--gh-primary);
+}
+
+.calendar-month-cell b {
+  display: none;
+}
+
+.calendar-row__message,
+.calendar-row__note {
+  grid-column: 2 / -1;
+  margin: var(--gh-space-2) 0 0;
+  color: var(--gh-text-muted);
+  font-size: var(--gh-font-size-xs);
+}
+
+.calendar-row__message {
+  padding: var(--gh-space-3);
+  border-radius: var(--gh-radius-md);
+  background: #fff6ee;
+}
+
+.calendar-row__message strong {
+  color: #9d5017;
+}
+
+.calendar-row__message p {
+  margin: var(--gh-space-1) 0 0;
+}
+
+.calendar-supporting-facts {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--gh-space-4);
+  margin-top: var(--gh-space-4);
+}
+
+.calendar-supporting-facts article {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0 var(--gh-space-3);
+  align-items: center;
+  padding: var(--gh-space-4);
+  border: 1px solid var(--gh-border);
+  border-radius: var(--gh-radius-lg);
+}
+
+.calendar-supporting-facts article > span {
+  grid-row: span 2;
+  color: var(--gh-primary);
+}
+
+.calendar-supporting-facts small {
+  color: var(--gh-text-muted);
+}
+
+.companion-group h3 {
+  display: flex;
+  align-items: center;
+  gap: var(--gh-space-2);
+}
+
+.companion-group--good h3 {
+  color: var(--gh-primary-hover);
+}
+
+.companion-group--avoid h3 {
+  color: var(--gh-critical);
+}
+
+.troubleshooting-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--gh-space-4);
+}
+
+.troubleshooting-card {
+  display: grid;
+  min-width: 0;
+  overflow: hidden;
+  border: 1px solid var(--gh-border);
+  border-radius: var(--gh-radius-lg);
+  background: var(--gh-surface);
+}
+
+.troubleshooting-card figure {
+  margin: 0;
+}
+
+.troubleshooting-card figure img {
+  width: 100%;
+  aspect-ratio: 16 / 8;
+  object-fit: cover;
+}
+
+.troubleshooting-card__body {
+  position: relative;
+  padding: var(--gh-space-5);
+}
+
+.troubleshooting-card__icon {
+  display: grid;
+  width: 2.2rem;
+  height: 2.2rem;
+  place-items: center;
+  border-radius: 50%;
+  background: #fff3e8;
+  color: #a65018;
+}
+
+.troubleshooting-card__body h3 {
+  margin: var(--gh-space-3) 0 var(--gh-space-2);
+}
+
+.troubleshooting-card__body p {
+  margin: 0;
+  color: var(--gh-text-muted);
+  line-height: 1.55;
+}
+
+.troubleshooting-card__body > div {
+  margin-top: var(--gh-space-4);
+}
+
+.soil-nutrition-grid,
+.harvest-guide-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--gh-space-4);
+  align-items: start;
+}
+
+.nutrition-phases {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--gh-space-3);
+  margin-top: var(--gh-space-5);
+}
+
+.nutrition-phases div {
+  display: grid;
+  gap: var(--gh-space-1);
+  padding: var(--gh-space-3);
+  border-radius: var(--gh-radius-md);
+  background: var(--gh-primary-soft);
+}
+
+.nutrition-phases small {
+  color: var(--gh-text-muted);
+}
+
+.harvest-guidance-card,
+.storage-card {
+  grid-column: span 2;
+}
+
+.storage-options {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--gh-space-3);
+}
+
+.storage-options > div {
+  padding: var(--gh-space-3);
+  border-radius: var(--gh-radius-md);
+  background: var(--gh-surface-subtle);
+}
+
+.storage-options > div > div {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--gh-space-2);
+  justify-content: space-between;
+}
+
+.storage-options p {
+  margin: var(--gh-space-2) 0 0;
+  color: var(--gh-text-muted);
+  font-size: var(--gh-font-size-sm);
+  line-height: 1.5;
+}
+
+.status-pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.18rem 0.5rem;
+  border-radius: var(--gh-radius-round);
+  font-size: 0.66rem;
+  font-weight: var(--gh-weight-semibold);
+}
+
+.status-pill--yes {
+  background: var(--gh-primary-soft);
+  color: var(--gh-primary-hover);
+}
+
+.status-pill--limited {
+  background: #fff6dc;
+  color: #876517;
+}
+
+.status-pill--no {
+  background: #fff0ee;
+  color: var(--gh-critical);
+}
+
+.warning-note {
+  display: flex;
+  gap: var(--gh-space-2);
+  margin-top: var(--gh-space-4);
+  padding: var(--gh-space-3);
+  border-radius: var(--gh-radius-md);
+  background: #fff3e8;
+  color: #8c4718;
+  font-size: var(--gh-font-size-sm);
+  line-height: 1.5;
+}
+
+.warning-note .icon {
+  flex: 0 0 auto;
+}
+
+.future-community-slot {
+  display: flex;
+  gap: var(--gh-space-3);
+  align-items: flex-start;
+  margin-top: var(--gh-space-5);
+  padding: var(--gh-space-4);
+  border: 1px dashed var(--gh-border-strong);
+  border-radius: var(--gh-radius-lg);
+  color: var(--gh-text-muted);
+}
+
+.future-community-slot > span {
+  color: var(--gh-primary);
+}
+
+.future-community-slot p {
+  margin: var(--gh-space-1) 0 0;
+  font-size: var(--gh-font-size-sm);
+}
+
+@media (max-width: 78rem) {
+  .plant-stat-grid {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+  }
+
+  .responsive-card-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 64rem) {
+  .overview-intro-grid {
+    grid-template-columns: minmax(0, 1fr) minmax(18rem, 21rem);
+  }
+
+  .plant-stat-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .plant-stat:last-child:nth-child(5) {
+    grid-column: auto;
+  }
+
+  .feature-module--growth,
+  .feature-module--size {
+    grid-template-columns: minmax(16rem, 0.85fr) minmax(0, 1.15fr);
+  }
+
+  .storage-options {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 48rem) {
+  .plant-hero {
+    min-height: 19rem;
+    background-position: 82% 50%;
+    background-size: auto 115%;
+  }
+
+  .plant-hero__scrim {
+    background: linear-gradient(90deg, rgba(16, 28, 15, 0.96), rgba(18, 31, 17, 0.79) 64%, rgba(18, 31, 17, 0.48));
+  }
+
+  .plant-hero__identity {
+    flex-direction: row;
+    align-items: center;
+    padding-top: 0;
+  }
+
+  .plant-hero__botanical {
+    width: 5.5rem;
+    height: 5.5rem;
+  }
+
+  .plant-hero h1 {
+    font-size: 2.25rem;
+  }
+
+  .plant-hero__tags {
+    margin-top: var(--gh-space-5);
+  }
+
+  .plant-tab-content {
+    padding: var(--gh-space-4);
+  }
+
+  .overview-intro-grid,
+  .overview-module-grid,
+  .feature-module--growth,
+  .feature-module--size,
+  .responsive-card-grid,
+  .troubleshooting-grid,
+  .soil-nutrition-grid,
+  .harvest-guide-grid,
+  .companion-columns {
+    grid-template-columns: 1fr;
+  }
+
+  .quick-facts-card {
+    order: 2;
+  }
+
+  .plant-stat-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .plant-stat:last-child:nth-child(5) {
+    grid-column: 1 / -1;
+  }
+
+  .feature-module--size .feature-module__visual {
+    grid-column: 1;
+    grid-row: 2;
+    min-height: 24rem;
+  }
+
+  .feature-module__visual {
+    min-height: 23rem;
+  }
+
+  .responsive-card-grid .knowledge-card--wide,
+  .harvest-guidance-card,
+  .storage-card {
+    grid-column: auto;
+  }
+
+  .water-stage-list,
+  .calendar-supporting-facts,
+  .nutrition-phases {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 30rem) {
+  .plant-hero {
+    min-height: 21rem;
+    padding: var(--gh-space-4);
+  }
+
+  .plant-hero__identity {
+    gap: var(--gh-space-3);
+  }
+
+  .plant-hero__botanical {
+    width: 4.75rem;
+    height: 4.75rem;
+  }
+
+  .plant-hero h1 {
+    font-size: 1.9rem;
+  }
+
+  .plant-hero__tags li {
+    min-height: 2rem;
+    font-size: 0.7rem;
+  }
+
+  .best-use-list {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 22rem) {
+  .plant-stat-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .plant-stat:last-child:nth-child(5) {
+    grid-column: auto;
+  }
+}
+
+/* Responsive Encyclopedia refinement */
+.plant-knowledge {
+  --ency-font-plant-title: clamp(2.2rem, 4vw, 3.5rem);
+  --ency-font-section: clamp(1.35rem, 1.6vw, 1.65rem);
+  --ency-font-module: 1rem;
+  --ency-font-body: 0.925rem;
+  --ency-font-support: 0.85rem;
+  --ency-font-meta: 0.78rem;
+  --ency-font-value: 1.05rem;
+  --ency-font-chip: 0.78rem;
+  --ency-icon-container: 1.9rem;
+  --ency-icon-size: 0.95rem;
+  --ency-card-padding: 1.25rem;
+  --ency-card-radius: var(--gh-radius-lg);
+  --ency-card-gap: var(--gh-space-4);
+  --ency-section-gap: var(--gh-space-5);
+}
+
+.plant-hero h1 {
+  font-size: var(--ency-font-plant-title);
+}
+
+.plant-tab-content .knowledge-section__heading h2,
+.overview-introduction h2 {
+  font-size: var(--ency-font-section);
+}
+
+.plant-tab-content .knowledge-card h3,
+.plant-tab-content .quick-facts-card h3,
+.plant-tab-content .feature-module__copy h3,
+.plant-tab-content .module-title-line h3,
+.plant-tab-content .troubleshooting-card__body h3,
+.plant-tab-content .companion-group h3 {
+  font-size: var(--ency-font-module);
+  line-height: 1.3;
+}
+
+.plant-tab-content .knowledge-card,
+.plant-tab-content .quick-facts-card {
+  padding: var(--ency-card-padding);
+  border-radius: var(--ency-card-radius);
+}
+
+.plant-tab-content .feature-module,
+.plant-tab-content .troubleshooting-card {
+  border-radius: var(--ency-card-radius);
+}
+
+.plant-tab-content .troubleshooting-card__body {
+  padding: var(--ency-card-padding);
+}
+
+.plant-tab-content .knowledge-card > p,
+.plant-tab-content .feature-module__copy > p,
+.plant-overview-copy,
+.plant-tab-content .troubleshooting-card__body p,
+.plant-tab-content .companion-item p,
+.plant-tab-content .storage-options p {
+  font-size: var(--ency-font-body);
+}
+
+.plant-tab-content small,
+.plant-stat__label,
+.plant-tab-content .encyclopedia-fact-row dt,
+.plant-tab-content .encyclopedia-fact-row dd,
+.plant-tab-content .companion-item > span,
+.plant-tab-content .calendar-row__note {
+  font-size: var(--ency-font-meta);
+}
+
+.plant-hero__tags li,
+.inline-pills span,
+.module-title-line > span {
+  font-size: var(--ency-font-chip);
+}
+
+.plant-hero__tags {
+  align-items: center;
+}
+
+.plant-hero__tags li {
+  box-sizing: border-box;
+  height: 2.25rem;
+  min-height: 2.25rem;
+  margin: 0;
+  padding: 0 0.7rem;
+}
+
+.plant-stat__icon,
+.best-use-list li span,
+.interesting-facts-card__heading > .icon,
+.card-title-with-icon > span {
+  width: var(--ency-icon-container);
+  height: var(--ency-icon-container);
+}
+
+.plant-stat__icon .icon,
+.best-use-list .icon,
+.card-title-with-icon .icon {
+  width: var(--ency-icon-size);
+  height: var(--ency-icon-size);
+}
+
+.plant-hero__photo {
+  display: none;
+  margin: 0;
+}
+
+.overview-top-grid {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gh-space-5);
+  margin-bottom: var(--gh-space-5);
+}
+
+.overview-top-grid .plant-stat-grid {
+  margin: 0;
+}
+
+.overview-feature-grid {
+  display: grid;
+  gap: var(--gh-space-5);
+}
+
+.overview-feature-grid .feature-module {
+  margin: 0;
+}
+
+@media (min-width: 48.01rem) {
+  .plant-hero {
+    min-height: 19rem;
+    background-image: none;
+  }
+
+  .plant-hero__photo {
+    position: absolute;
+    inset: 0 0 0 auto;
+    z-index: 0;
+    display: block;
+    width: 47%;
+    height: 100%;
+    overflow: hidden;
+  }
+
+  .plant-hero__photo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: 50% 46%;
+  }
+
+  .plant-hero__scrim {
+    inset: 0 auto 0 0;
+    z-index: 1;
+    width: 55%;
+    background: linear-gradient(90deg, #10230f 0%, #10230f 82%, rgba(16, 35, 15, 0.84) 100%);
+  }
+
+  .plant-hero__identity,
+  .plant-hero__tags {
+    z-index: 2;
+    width: 52%;
+    max-width: 52%;
+  }
+
+  .plant-hero__identity {
+    gap: var(--gh-space-5);
+  }
+
+  .plant-hero__tags {
+    margin-top: var(--gh-space-5);
+  }
+
+  .overview-top-grid {
+    display: grid;
+    grid-template-areas:
+      "introduction quick-facts"
+      "metrics quick-facts";
+    grid-template-columns: minmax(0, 1fr) minmax(19rem, 22rem);
+    gap: var(--gh-space-4) var(--gh-space-5);
+    align-items: start;
+    margin-bottom: var(--gh-space-4);
+  }
+
+  .overview-introduction {
+    grid-area: introduction;
+  }
+
+  .overview-top-grid .quick-facts-card {
+    grid-area: quick-facts;
+    align-self: start;
+  }
+
+  .overview-top-grid .plant-stat-grid {
+    grid-area: metrics;
+    align-self: start;
+  }
+
+  .plant-stat {
+    min-height: 6.5rem;
+    padding: 0.55rem 0.45rem;
+  }
+
+  .plant-stat__icon {
+    margin-bottom: var(--gh-space-1);
+  }
+
+  .plant-stat strong {
+    margin-top: var(--gh-space-1);
+  }
+
+  .feature-module__copy {
+    padding: var(--ency-card-padding);
+  }
+
+  .plant-tab-content {
+    padding: var(--gh-space-6);
+  }
+
+  .knowledge-section__heading {
+    margin-bottom: var(--gh-space-4);
+  }
+
+  .feature-module__visual,
+  .feature-module--size .feature-module__visual {
+    min-height: 17rem;
+  }
+
+  .overview-module-grid,
+  .troubleshooting-grid,
+  .companion-columns {
+    align-items: start;
+  }
+
+  .guide-stack-layout {
+    display: block;
+    columns: 2;
+    column-gap: var(--ency-card-gap);
+  }
+
+  .guide-stack-layout .guide-card {
+    display: inline-block;
+    width: 100%;
+    margin: 0 0 var(--ency-card-gap);
+    break-inside: avoid;
+    vertical-align: top;
+  }
+
+  .guide-card--secondary {
+    border-color: transparent;
+    background: var(--gh-surface-subtle);
+  }
+
+  .guide-card--compact {
+    padding: var(--gh-space-3) 0 var(--gh-space-2);
+    border: 0;
+    border-top: 1px solid var(--gh-border);
+    border-radius: 0;
+    background: transparent;
+  }
+
+  .guide-card--compact .card-title-with-icon > span {
+    background: transparent;
+  }
+
+  .water-stage-list > div {
+    padding: var(--gh-space-2);
+  }
+
+  .water-stage-list p {
+    font-size: var(--ency-font-meta);
+    line-height: 1.4;
+  }
+
+  .preservation-card {
+    align-self: start;
+    padding: var(--gh-space-3) 0 var(--gh-space-2);
+    border: 0;
+    border-top: 1px solid var(--gh-border);
+    border-radius: 0;
+    background: transparent;
+  }
+
+  .future-community-slot {
+    margin-top: var(--gh-space-3);
+    padding: var(--gh-space-3);
+    border-radius: var(--gh-radius-md);
+  }
+}
+
+@media (min-width: 75rem) {
+  .overview-feature-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    align-items: start;
+  }
+
+  .overview-feature-grid .feature-module {
+    grid-template-columns: 1fr;
+    grid-template-rows: 12.5rem auto;
+  }
+
+  .overview-feature-grid .feature-module__visual,
+  .overview-feature-grid .feature-module--size .feature-module__visual {
+    grid-column: 1;
+    grid-row: 1;
+    min-height: 0;
+    height: 12.5rem;
+    overflow: hidden;
+  }
+
+  .overview-feature-grid .feature-module__visual img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    min-height: 0;
+    max-height: 100%;
+    object-fit: contain;
+  }
+
+  .overview-feature-grid .feature-module__copy,
+  .overview-feature-grid .feature-module--size .feature-module__copy {
+    grid-column: 1;
+    grid-row: 2;
+    justify-content: flex-start;
+  }
+
+  .overview-module-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .water-stage-list {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .water-stage-list span {
+    display: grid;
+    gap: 0.15rem;
+  }
+
+}
+
+@media (max-width: 48rem) {
+  .plant-knowledge {
+    --ency-font-body: 1rem;
+    --ency-card-padding: var(--gh-space-5);
+  }
+
+  .overview-top-grid {
+    display: flex;
+  }
+
+  .overview-introduction { order: 1; }
+  .overview-top-grid .quick-facts-card { order: 2; }
+  .overview-top-grid .plant-stat-grid { order: 3; }
+
+  .overview-feature-grid {
+    grid-template-columns: 1fr;
+  }
+
+}
+
+/* Encyclopedia v1 density lock: shared scale and natural-height modules. */
+.plant-tab-content .knowledge-section__heading > p:last-child,
+.plant-tab-content .module-note,
+.plant-tab-content .warning-note,
+.plant-tab-content .future-community-slot p,
+.plant-tab-content .interesting-facts-card li,
+.plant-tab-content .best-use-list li,
+.plant-tab-content .calendar-supporting-facts small,
+.plant-tab-content .nutrition-phases small {
+  font-size: var(--ency-font-support);
+}
+
+.plant-tab-content .plant-stat strong,
+.plant-tab-content .calendar-card > strong,
+.plant-tab-content .harvest-window,
+.plant-tab-content .size-values strong {
+  font-size: var(--ency-font-value);
+}
+
+.plant-tab-content .knowledge-card > p,
+.plant-tab-content .feature-module__copy > p,
+.plant-tab-content .plant-overview-copy,
+.plant-tab-content .troubleshooting-card__body p,
+.plant-tab-content .companion-item p,
+.plant-tab-content .storage-options p,
+.plant-tab-content .water-stage-list p {
+  line-height: 1.5;
+}
+
+.plant-tab-content .knowledge-card h3,
+.plant-tab-content .quick-facts-card h3,
+.plant-tab-content .feature-module__copy h3,
+.plant-tab-content .troubleshooting-card__body h3,
+.plant-tab-content .companion-group h3 {
+  margin-top: 0;
+}
+
+.plant-tab-content .plant-stat__icon,
+.plant-tab-content .best-use-list li span,
+.plant-tab-content .interesting-facts-card__heading > .icon,
+.plant-tab-content .card-title-with-icon > span,
+.plant-tab-content .troubleshooting-card__icon,
+.plant-tab-content .calendar-card__icon {
+  display: grid;
+  width: var(--ency-icon-container);
+  height: var(--ency-icon-container);
+  flex: 0 0 auto;
+  place-items: center;
+  border-radius: 50%;
+}
+
+.plant-tab-content .plant-stat__icon .icon,
+.plant-tab-content .best-use-list .icon,
+.plant-tab-content .interesting-facts-card__heading > .icon,
+.plant-tab-content .card-title-with-icon .icon,
+.plant-tab-content .troubleshooting-card__icon .icon,
+.plant-tab-content .calendar-card__icon .icon,
+.plant-tab-content .calendar-supporting-facts .icon,
+.plant-tab-content .future-community-slot .icon {
+  width: var(--ency-icon-size);
+  height: var(--ency-icon-size);
+  stroke-width: 1.8;
+}
+
+.plant-tab-content .card-title-with-icon {
+  gap: var(--gh-space-2);
+}
+
+.plant-tab-content .knowledge-card > .card-title-with-icon {
+  margin-bottom: var(--gh-space-3);
+}
+
+.plant-tab-content .status-pill,
+.plant-tab-content .calendar-row__label small {
+  font-size: var(--ency-font-meta);
+}
+
+@media (min-width: 48.01rem) {
+  .plant-knowledge {
+    --ency-card-padding: 1rem;
+    --ency-card-gap: 0.75rem;
+    --ency-section-gap: 1rem;
+  }
+
+  .overview-top-grid,
+  .overview-feature-grid,
+  .overview-module-grid,
+  .responsive-card-grid,
+  .troubleshooting-grid,
+  .soil-nutrition-grid,
+  .harvest-guide-grid,
+  .companion-columns {
+    gap: var(--ency-card-gap);
+  }
+
+  .overview-feature-grid,
+  .overview-module-grid {
+    margin-top: var(--ency-section-gap);
+  }
+
+  .overview-introduction .plant-overview-copy {
+    margin-top: var(--gh-space-3);
+  }
+
+  .interesting-facts-card ul,
+  .size-values,
+  .water-stage-list,
+  .nutrition-phases {
+    margin-top: var(--gh-space-3);
+  }
+
+  .quick-facts-card h3 {
+    margin-bottom: var(--gh-space-3);
+  }
+
+  .quick-facts-card .compact-facts,
+  .compact-facts {
+    gap: var(--gh-space-2);
+  }
+
+  .feature-module__visual,
+  .feature-module--size .feature-module__visual {
+    padding: var(--gh-space-2);
+  }
+
+  .feature-module__copy > p,
+  .knowledge-card > p {
+    margin-block: var(--gh-space-2);
+  }
+
+  .module-note,
+  .warning-note {
+    margin-top: var(--gh-space-3);
+    padding: var(--gh-space-2) var(--gh-space-3);
+  }
+
+  .inline-pills {
+    margin-top: var(--gh-space-2);
+  }
+
+  .inline-pills--large span {
+    min-height: 1.9rem;
+    padding-inline: 0.65rem;
+    font-size: var(--ency-font-chip);
+  }
+
+  .water-stage-list {
+    gap: var(--gh-space-2);
+  }
+
+  .water-stage-list > div {
+    border: 1px solid color-mix(in srgb, var(--gh-border) 68%, transparent);
+  }
+
+  .water-stage-list span {
+    align-items: baseline;
+  }
+
+  .storage-options,
+  .nutrition-phases,
+  .calendar-supporting-facts {
+    gap: var(--gh-space-2);
+  }
+
+  .storage-options > div,
+  .nutrition-phases div,
+  .calendar-supporting-facts article {
+    padding: var(--gh-space-3);
+  }
+
+  .harvest-guide-grid {
+    grid-auto-rows: min-content;
+  }
+
+  .preservation-card .card-title-with-icon {
+    margin-bottom: var(--gh-space-2);
+  }
+
+  .future-community-slot > span {
+    display: grid;
+    width: var(--ency-icon-container);
+    height: var(--ency-icon-container);
+    flex: 0 0 auto;
+    place-items: center;
+    border-radius: 50%;
+    background: var(--gh-surface-subtle);
+  }
+}
+
+/* Final Encyclopedia v1 desktop lock. */
+.plant-tab-content .knowledge-section__heading h2,
+.plant-tab-content .knowledge-card h3,
+.plant-tab-content .quick-facts-card h3,
+.plant-tab-content .feature-module__copy h3,
+.plant-tab-content .troubleshooting-card__body h3,
+.plant-tab-content .companion-group h3 {
+  font-weight: var(--gh-weight-semibold);
+}
+
+.plant-tab-content .encyclopedia-fact-row dt,
+.plant-tab-content .plant-stat__label,
+.plant-tab-content .calendar-row__label small,
+.plant-tab-content .companion-item > span {
+  line-height: 1.35;
+}
+
+.plant-tab-content .plant-stat__icon,
+.plant-tab-content .best-use-list li span,
+.plant-tab-content .interesting-facts-card__heading > .icon,
+.plant-tab-content .card-title-with-icon > span,
+.plant-tab-content .troubleshooting-card__icon,
+.plant-tab-content .calendar-card__icon,
+.plant-tab-content .future-community-slot > span {
+  overflow: visible;
+  line-height: 0;
+}
+
+.plant-tab-content .icon {
+  overflow: visible;
+  vertical-align: middle;
+}
+
+.companion-item {
+  display: block;
+  border: 1px solid transparent;
+  color: inherit;
+  text-decoration: none;
+}
+
+a.companion-item:hover,
+a.companion-item:focus-visible {
+  border-color: var(--gh-border-strong);
+  background: var(--gh-primary-soft);
+  outline: none;
+}
+
+@media (min-width: 48.01rem) {
+  .plant-hero {
+    box-sizing: border-box;
+    height: 20rem;
+    min-height: 20rem;
+    overflow: hidden;
+  }
+
+  .plant-hero__photo {
+    width: 40%;
+  }
+
+  .plant-hero__photo img {
+    object-fit: cover;
+    object-position: 50% 42%;
+  }
+
+  .plant-hero__scrim {
+    width: 62%;
+  }
+
+  .plant-hero__identity,
+  .plant-hero__tags {
+    width: 59%;
+    max-width: 59%;
+  }
+
+  .calendar-months span,
+  .calendar-row {
+    padding-block: var(--gh-space-2);
+  }
+
+  .calendar-month-cell {
+    min-height: 1.9rem;
+  }
+
+  .calendar-supporting-facts {
+    margin-top: var(--gh-space-3);
+  }
+
+  .companion-columns,
+  .soil-nutrition-grid,
+  .harvest-guide-grid,
+  .troubleshooting-grid {
+    align-items: start;
+  }
+
+  .companion-list {
+    gap: var(--gh-space-2);
+  }
+
+  .companion-item {
+    padding: var(--gh-space-2) var(--gh-space-3);
+  }
+
+  .troubleshooting-card {
+    align-self: start;
+  }
+
+  .troubleshooting-card__body {
+    display: grid;
+    grid-template-columns: var(--ency-icon-container) minmax(0, 1fr);
+    gap: var(--gh-space-2) var(--gh-space-3);
+    align-items: center;
+  }
+
+  .troubleshooting-card__body h3 {
+    margin: 0;
+  }
+
+  .troubleshooting-card__body > p,
+  .troubleshooting-card__body > div {
+    grid-column: 1 / -1;
+  }
+
+  .troubleshooting-card__body > div {
+    margin-top: var(--gh-space-2);
+  }
+
+  .soil-card {
+    background: var(--gh-surface);
+  }
+
+  .nutrition-card {
+    border-color: transparent;
+    background: var(--gh-surface-subtle);
+  }
+
+  .nutrition-phases div {
+    padding: var(--gh-space-2) var(--gh-space-3);
+    border-left: 2px solid var(--gh-primary);
+    border-radius: var(--gh-radius-sm);
+    background: var(--gh-surface);
+  }
+
+  .harvest-guidance-card {
+    border-color: transparent;
+    background: var(--gh-surface-subtle);
+  }
+
+  .seed-saving-card {
+    align-self: start;
+  }
+}
+
+@media (min-width: 75rem) {
+  .overview-feature-grid .feature-module {
+    min-height: 0;
+    grid-template-rows: 1fr;
+    align-items: stretch;
+  }
+
+  .overview-feature-grid .feature-module--growth {
+    grid-template-columns: minmax(11rem, 38fr) minmax(0, 62fr);
+  }
+
+  .overview-feature-grid .feature-module--size {
+    grid-template-columns: minmax(0, 36fr) minmax(18rem, 64fr);
+  }
+
+  .overview-feature-grid .feature-module__visual,
+  .overview-feature-grid .feature-module--size .feature-module__visual {
+    height: 16rem;
+    min-height: 0;
+    align-self: start;
+  }
+
+  .overview-feature-grid .feature-module--growth .feature-module__visual {
+    grid-column: 1;
+    grid-row: 1;
+  }
+
+  .overview-feature-grid .feature-module--growth .feature-module__copy {
+    grid-column: 2;
+    grid-row: 1;
+  }
+
+  .overview-feature-grid .feature-module--size .feature-module__copy {
+    grid-column: 1;
+    grid-row: 1;
+  }
+
+  .overview-feature-grid .feature-module--size .feature-module__visual {
+    grid-column: 2;
+    grid-row: 1;
+  }
+
+  .overview-feature-grid .feature-module__visual img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+
+  .overview-feature-grid .feature-module--growth .feature-module__copy {
+    padding: var(--gh-space-3);
+  }
+
+  .overview-feature-grid .feature-module--growth .feature-module__copy > p {
+    margin-block: var(--gh-space-1);
+    line-height: 1.42;
+  }
+
+  .overview-feature-grid .feature-module--growth .inline-pills {
+    gap: var(--gh-space-1);
+    margin-top: var(--gh-space-1);
+  }
+
+  .overview-feature-grid .feature-module--growth .inline-pills span {
+    min-height: 1.7rem;
+    padding: 0.18rem 0.5rem;
+  }
+
+  .overview-feature-grid .feature-module--growth .module-note {
+    margin-top: var(--gh-space-2);
+    padding: var(--gh-space-2);
+  }
+}

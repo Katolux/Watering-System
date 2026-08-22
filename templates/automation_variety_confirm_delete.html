@@ -1,25 +1,7 @@
 {% extends "base.html" %}
-
+{% from "components/icons.html" import icon %}
+{% block title %}Delete variety | GardenHub{% endblock %}
+{% block header_back %}<a class="button button--ghost button--icon" href="{{ url_for('plant.automation_plant_detail', plant_id=plant[0]) }}" aria-label="Back to plant detail" title="Back to plant detail">{{ icon("arrow-left") }}</a>{% endblock %}
 {% block content %}
-<p>
-  <a href="{{ url_for('plant.automation_plant_detail', plant_id=plant[0]) }}">
-    ← Back to Plant Detail
-  </a>
-</p>
-
-<h1>Confirm Variety Deletion</h1>
-
-<p>You selected this variety for deletion:</p>
-
-<ul>
-  <li><strong>Plant:</strong> {{ plant[1] }}</li>
-  <li><strong>Variety ID:</strong> {{ variety[0] }}</li>
-  <li><strong>Variety name:</strong> {{ variety[1] }}</li>
-  <li><strong>Notes:</strong> {{ variety[2] or "-" }}</li>
-</ul>
-
-<form method="POST" action="{{ url_for('plant.automation_variety_delete_confirm', plant_id=plant[0], variety_id=variety[0]) }}">
-  <button type="submit">Yes, delete this variety</button>
-</form>
-
+<div class="content-grid"><section class="danger-callout"><h1>Delete {{ variety[1] }}?</h1><p>This removes the selected variety from {{ plant[1] }}.</p><dl class="detail-list"><div class="detail-row"><dt>Variety ID</dt><dd>{{ variety[0] }}</dd></div><div class="detail-row"><dt>Notes</dt><dd>{{ variety[2] or "Unavailable" }}</dd></div></dl><form method="POST" action="{{ url_for('plant.automation_variety_delete_confirm', plant_id=plant[0], variety_id=variety[0]) }}"><div class="form-actions"><a class="button button--secondary" href="{{ url_for('plant.automation_plant_detail', plant_id=plant[0]) }}">Cancel</a><button class="button button--danger" type="submit">{{ icon("trash") }} Delete variety</button></div></form></section></div>
 {% endblock %}

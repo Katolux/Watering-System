@@ -1,25 +1,36 @@
+from datetime import datetime, timezone
+
 import openmeteo_requests
 import pandas as pd
 import requests_cache
 from retry_requests import retry
+
 from gardenhub.db.schema import init_weather_db
-from gardenhub.repositories.weather_repo import save_weather_record
+from gardenhub.repositories.weather_repo import save_current_weather, save_weather_record
 
 
-def refresh_weather():
-    print("\n=== REFRESH WEATHER===")
+def refresh_weather(latitude, longitude, timezone_name="UTC"):
+    """Fetch Open-Meteo data for coordinates resolved from the active garden."""
+    print("\n=== REFRESH WEATHER ===")
 
     init_weather_db()
 
-    cache_session = requests_cache.CachedSession('.cache', expire_after=3600)
+    cache_session = requests_cache.CachedSession(".cache", expire_after=3600)
     retry_session = retry(cache_session, retries=5, backoff_factor=0.2)
     openmeteo = openmeteo_requests.Client(session=retry_session)
 
     url = "https://api.open-meteo.com/v1/forecast"
     params = {
-
-        "latitude": 47.4455,
-        "longitude": 9.342,
+        "latitude": latitude,
+        "longitude": longitude,
+        "current": [
+            "temperature_2m",
+            "relative_humidity_2m",
+            "surface_pressure",
+            "weather_code",
+            "wind_speed_10m",
+            "wind_direction_10m",
+        ],
         "daily": [
             "temperature_2m_max",
             "temperature_2m_min",
@@ -30,13 +41,13 @@ def refresh_weather():
             "daylight_duration",
             "wind_speed_10m_max",
             "wind_direction_10m_dominant",
+            "weather_code",
         ],
         "models": "best_match",
-        "timezone": "UTC",
+        "timezone": timezone_name,
     }
 
     response = openmeteo.weather_api(url, params=params)[0]
-
     daily = response.Daily()
 
     temp_max = daily.Variables(0).ValuesAsNumpy()
@@ -46,6 +57,7 @@ def refresh_weather():
     daylight = daily.Variables(6).ValuesAsNumpy()
     wind_max = daily.Variables(7).ValuesAsNumpy()
     wind_dir = daily.Variables(8).ValuesAsNumpy()
+    weather_code = daily.Variables(9).ValuesAsNumpy()
 
     dates = pd.date_range(
         start=pd.to_datetime(daily.Time(), unit="s"),
@@ -54,13 +66,12 @@ def refresh_weather():
         inclusive="left",
     )
 
-    print("\n🌤️  Daily Forecast (Formatted)")
+    print("\nDaily Forecast (Formatted)")
     print("-------------------------------------------")
 
     for i in range(len(dates)):
         sunshine_minutes = float(sunshine[i]) / 60
         daylight_minutes = float(daylight[i]) / 60
-
         record = {
             "date": str(dates[i].date()),
             "temp_max": float(temp_max[i]),
@@ -70,20 +81,32 @@ def refresh_weather():
             "daylight": daylight_minutes,
             "wind_max": float(wind_max[i]),
             "wind_dir": float(wind_dir[i]),
+            "weather_code": int(weather_code[i]),
         }
-
         save_weather_record(record)
-
         print(
             f"{record['date']} | "
-            f"Max {record['temp_max']:.1f}°C | "
-            f"Min {record['temp_min']:.1f}°C | "
+            f"Max {record['temp_max']:.1f} C | "
+            f"Min {record['temp_min']:.1f} C | "
             f"Rain {record['precipitation']:.2f} mm | "
             f"Sun {sunshine_minutes:.0f} min | "
             f"Daylight {daylight_minutes:.0f} min | "
             f"Wind max {record['wind_max']:.1f} km/h | "
-            f"Dir {record['wind_dir']:.0f}°"
+            f"Dir {record['wind_dir']:.0f} deg"
         )
+
+    current = response.Current()
+    current_timestamp = datetime.fromtimestamp(current.Time(), tz=timezone.utc)
+    save_current_weather({
+        "date": current_timestamp.date().isoformat(),
+        "timestamp": current_timestamp.isoformat(),
+        "temperature": float(current.Variables(0).Value()),
+        "humidity": float(current.Variables(1).Value()),
+        "pressure": float(current.Variables(2).Value()),
+        "weather_code": int(current.Variables(3).Value()),
+        "wind_speed": float(current.Variables(4).Value()),
+        "wind_direction": float(current.Variables(5).Value()),
+    })
 
     print("-" * 70)
     print("Weather data saved in SQLite.")

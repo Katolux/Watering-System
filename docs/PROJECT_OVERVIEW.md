@@ -1,125 +1,170 @@
-# GardenHUB Project Overview
+# GardenHub Project Overview
 
-## Purpose
+## What GardenHub is
 
-GardenHUB is an evolving gardening platform for hobby gardeners. It began as a personal Raspberry Pi and Arduino irrigation project, but the long-term product vision is broader: one connected system for planning a garden, understanding plants, designing irrigation, using local weather, collecting sensor data, and producing explainable watering recommendations.
+GardenHub is a local garden-management application for planning a garden, keeping plant knowledge in one place, using weather and sensor data, and producing explainable watering recommendations.
 
-GardenHUB should eventually help a user answer questions such as:
+The project started as a personal Raspberry Pi and Arduino irrigation experiment and gradually grew into a broader garden platform.
 
-- What is planted in each bed?
-- What can be planted now in this location and season?
-- How much water does each bed need?
-- How long should an irrigation zone run?
-- How do tubing length, diameter, emitters, flow, and pressure affect runtime?
-- Did a moisture increase come from rain, manual watering, or the automatic system?
-- How did plants, watering, and weather perform over time?
+The long-term idea is simple: GardenHub should remain useful to someone who only wants to plan and understand their garden, while also supporting sensors and automation for users who want them.
 
-The project should remain useful without hardware. Hardware and automation are optional extensions, not requirements for using the planner, encyclopedia, weather, and recommendation features.
+Hardware is therefore an extension of the product, not a requirement for using it.
 
----
+The official product identity and logo assets are documented in [`BRAND.md`](BRAND.md).
 
-## Current Product Scope
+## Current application
 
-The current application is a Flask and SQLite prototype with:
+GardenHub currently runs as a Flask/SQLite application with a server-rendered Jinja frontend.
 
-- Raspberry Pi deployment
-- Arduino/ESP32 sensor ingestion
-- soil-moisture calibration
-- SQLite data storage
-- weather integration through Open-Meteo
-- a standalone scheduler
-- explainable watering decisions
-- manual and dry-run watering events
-- bed and sensor management
-- a JSON-based plant encyclopedia
-- plant varieties and companion relationships
-- a responsive Jinja/CSS web interface
+The main product areas are:
 
-Current physical actuation remains disabled. Watering output is still a dry-run/logging workflow.
+- Workspace
+- Planner
+- Garden Control
+- Weather
+- History
+- Notifications
+- Encyclopedia
+- Beds and plantings
+- Sensors
+- Watering recommendations and records
 
----
+### Planner
 
-## Long-Term Product Vision
+The Planner is a real measured 2D garden editor.
 
-GardenHUB may evolve into a commercial gardening platform containing:
+It supports garden dimensions, orientation, layers, plant placement, non-plant objects, measurement, resizing, rotation, stacking, spacing-aware plant groups and persistent saved layouts.
 
-### Garden planning
+Planner layouts are stored in SQLite and can preserve references to beds, plantings and plants without directly modifying those domain records.
 
-- mobile-first visual garden map
-- beds, pots, greenhouse, paths, trees, compost, water tanks, and other objects
-- real dimensions and scale
-- plant placement using spacing rules
-- seasonal planting plans
-- crop rotation and companion planting support
+The non-plant object catalogue is still evolving. Irrigation lines and emitters currently exist as visual Planner objects only; they are not yet a hydraulic irrigation network.
 
-### Irrigation planning
+### Garden Control
 
-- irrigation zones
-- tubing paths and measured lengths
-- tubing diameter
-- emitter spacing and flow
-- bucket-test input
-- flow and pressure-aware runtime calculations
-- water-volume targets per bed
-- optional hardware control
+Garden Control uses the saved Planner layout as a read-only garden projection.
 
-### Plant knowledge
+Planner bed objects that reference real GardenHub beds can be joined with current operational information such as moisture readings, sensors, watering recommendations, watering records and system events.
 
-- professional plant encyclopedia
-- varieties
-- sowing, transplanting, and harvest calendars
-- soil, nutrition, care, pruning, support, roots, and watering information
-- companion planting
-- regional frost-date and seasonal recommendations
+Other Planner objects remain visual context.
 
-### Monitoring and recommendations
+### Workspace
 
-- weather-aware watering
-- sensor history
-- stale/offline sensor detection
-- automatic detection of rain or manual watering from moisture jumps
-- explainable recommendations
-- future AI-assisted observations based on the user’s own garden history
+Workspace is the main dashboard and entry point into the application.
 
-### Product capabilities
+It combines stored garden, Weather, sensor and Planner information with clear unavailable states where a backend feature does not yet exist.
 
-- user accounts
-- configurable garden location
-- multiple gardens
-- light and dark appearance
-- multiple languages
-- phone, tablet, and desktop support
-- optional subscriptions and premium planning/analysis features
+The current **Living Garden** area is a saved-layout summary rather than a rendered garden. A richer read-only garden visualization is planned for a later phase.
 
-These are future directions, not instructions to implement during the current structural refactor.
+### Plant Encyclopedia
 
----
+GardenHub includes a SQLite-backed plant knowledge system seeded from structured JSON plant sources.
 
-## Current Development Priority
+The current database supports plant identity, varieties, companion relationships, spacing, calendar information, soil, nutrition, care, watering information and other growing data.
 
-The current branch is focused on structural organization only.
+The existing Encyclopedia is functional and currently parked while a future version is designed around a “fast first, deep second” approach.
 
-The immediate objective is to reorganize the existing working Python code into a clear, professional, maintainable package structure while preserving all current behavior.
+Plant editing exists, but the mutation path still needs backend work before it can safely preserve every rich field in the source plant document.
 
-This is not a rewrite.
+### Weather
 
-This is not a functional redesign.
+GardenHub retrieves real Weather data from Open-Meteo.
 
-This is not frontend work.
+Current and daily forecast fields are stored and used across Workspace, Weather, History and watering recommendations.
 
-This is not the moment to add new product features.
+Weather is still a prototype contract in several areas. Garden location is not yet persistently owned by the backend, hourly forecasts are not implemented, and stored historical daily rows should not be treated as a reliable observation archive because they may represent forecasts retrieved earlier.
 
----
+Weather is one of the next backend areas scheduled for improvement.
 
-## Development Principles
+### Sensors
 
-- Reliability over complexity
-- Simple, explicit Python over clever abstractions
-- Preserve working behavior during structural changes
-- Prefer moving existing code over rewriting it
-- Separate structural, functional, and visual work
-- Test after every small phase
-- Keep commits narrow and reversible
-- Real-world testing before live valve control
-- Explainable decisions rather than opaque automation
-- Hardware-independent product value
+GardenHub accepts soil-moisture readings from ESP32/Arduino hardware over HTTP.
+
+Raw values are converted to moisture percentages and stored in SQLite. These readings are used in bed summaries, Garden Control, History and watering recommendations.
+
+Basic sensor registration and bed assignment are implemented.
+
+Health concepts such as online/offline state, stale readings, heartbeat, battery/network status and per-sensor calibration are not yet part of the backend model.
+
+### Watering recommendations
+
+GardenHub calculates explainable watering recommendations using stored soil moisture together with plant moisture targets, base duration, forecast temperature and expected precipitation.
+
+The result is stored as a recommendation with its contributing factors.
+
+This is **not physical irrigation execution**.
+
+Manual watering actions in the current application create watering records only. GardenHub does not currently control valves, relays, pumps or irrigation controllers, and the recommendation scheduler does not create verified watering events.
+
+### History and notifications
+
+History combines stored Weather, sensor readings, watering records and system events into one chronological view.
+
+Notifications are currently a presentation layer over persisted system events. There is no separate notification lifecycle for unread, acknowledged, active or resolved state.
+
+## Current technical shape
+
+GardenHub intentionally uses a relatively simple stack:
+
+- Python
+- Flask
+- SQLite
+- Jinja templates
+- CSS
+- vanilla JavaScript
+- Open-Meteo
+- optional ESP32/Arduino soil sensors
+
+The backend is separated into routes, services, repositories and database/schema code without introducing a heavy ORM or frontend framework.
+
+SQLite remains appropriate for the current local single-garden application.
+
+## Current limitations
+
+GardenHub is still under active development.
+
+Important current limitations include:
+
+- single local/demo garden context rather than real multi-garden ownership;
+- browser-session location preferences that do not yet configure backend Weather;
+- no hydraulic irrigation model;
+- no physical watering controller or actuation;
+- no persisted watering schedules;
+- incomplete sensor identity/health semantics;
+- Weather freshness and forecast/history semantics that need improvement;
+- incomplete bed/planting lifecycle management;
+- plant editing that is not yet lossless;
+- mixed-crop watering logic that still uses simplified aggregate thresholds.
+
+These are tracked development areas rather than reasons to replace the current architecture.
+
+## Direction
+
+The next phase is focused on completing documentation and repository cleanup, followed by backend work.
+
+Weather is the first major backend area to revisit, followed by scheduler reliability and then the remaining plant, sensor and watering issues.
+
+Longer-term work includes:
+
+- richer Living Garden visualization;
+- persisted garden location;
+- Weather current/hourly/daily modelling;
+- stronger sensor health and calibration;
+- safer scheduling and eventual physical irrigation control;
+- hydraulic irrigation planning using real pipe lengths, diameters, flow, pressure, fittings and connected demand;
+- more complete bed and planting management;
+- Encyclopedia v2;
+- multi-garden support.
+
+## Development principles
+
+GardenHub should remain understandable and practical as it grows.
+
+The main principles are:
+
+- reliability before complexity;
+- simple and explicit Python;
+- clear separation between product truth and future-facing UI;
+- explainable recommendations rather than opaque automation;
+- small changes that can be tested independently;
+- real-world validation before unattended irrigation control;
+- no architectural rewrite unless the existing structure genuinely stops serving the project.

@@ -1,0 +1,36 @@
+{% from "components/icons.html" import icon %}
+{% from "encyclopedia/_macros.html" import section_heading %}
+
+<section class="knowledge-section" aria-labelledby="companions-title">
+  {{ section_heading("Companions", "Companion planting", heading_id="companions-title") }}
+  <div class="companion-columns">
+    {% if plant.good_companions %}
+    <article class="knowledge-card companion-group companion-group--good">
+      <h3>{{ icon("check") }} Good companions</h3>
+      <div class="companion-list">
+        {% for companion in plant.good_companions %}
+        <a class="companion-item" href="{{ url_for('plant.automation_plant_detail', plant_id=companion.plant_id) }}">
+          <div><strong>{{ companion.name }}</strong>{% if companion.scientific_name %}<small>{{ companion.scientific_name }}</small>{% endif %}</div>
+          {% if companion.reason %}<p>{{ companion.reason }}</p>{% endif %}
+          {% if companion.mechanism or companion.confidence %}<span>{{ companion.mechanism or "Companion relationship" }}{% if companion.confidence %} · {{ companion.confidence }} confidence{% endif %}</span>{% endif %}
+        </a>
+        {% endfor %}
+      </div>
+    </article>
+    {% endif %}
+    {% if plant.avoid_companions %}
+    <article class="knowledge-card companion-group companion-group--avoid">
+      <h3>{{ icon("alert") }} Keep apart</h3>
+      <div class="companion-list">
+        {% for companion in plant.avoid_companions %}
+        <a class="companion-item" href="{{ url_for('plant.automation_plant_detail', plant_id=companion.plant_id) }}">
+          <div><strong>{{ companion.name }}</strong>{% if companion.scientific_name %}<small>{{ companion.scientific_name }}</small>{% endif %}</div>
+          {% if companion.reason %}<p>{{ companion.reason }}</p>{% endif %}
+          {% if companion.mechanism or companion.confidence %}<span>{{ companion.mechanism or "Companion relationship" }}{% if companion.confidence %} · {{ companion.confidence }} confidence{% endif %}</span>{% endif %}
+        </a>
+        {% endfor %}
+      </div>
+    </article>
+    {% endif %}
+  </div>
+</section>

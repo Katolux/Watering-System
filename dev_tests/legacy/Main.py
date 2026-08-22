@@ -7,6 +7,7 @@ Not used in production runtime.
 
 
 from gardenhub.services.weather import refresh_weather
+from gardenhub.services.garden_context import get_garden_context, get_weather_coordinates
 from historic_weather import print_last_days_weather 
 from repositories import add_bed_menu
 from gardenhub.repositories.sensors_repo import list_beds_with_sensors
@@ -30,7 +31,12 @@ def main_menu():
         action = input("Select an option: ")
 
         if action == "1":
-            refresh_weather()
+            coordinates = get_weather_coordinates(get_garden_context(False))
+            refresh_weather(
+                coordinates["latitude"],
+                coordinates["longitude"],
+                coordinates["timezone"],
+            )
 
         elif action == "2":
             watering_menu()

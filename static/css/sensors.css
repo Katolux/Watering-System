@@ -1,0 +1,354 @@
+.sensors-route .app-main {
+  overflow-x: clip;
+}
+
+.sensors-page,
+.sensors-page * {
+  box-sizing: border-box;
+}
+
+.sensors-page {
+  display: grid;
+  min-width: 0;
+  gap: var(--gh-space-5);
+}
+
+.sensors-intro {
+  display: flex;
+  min-width: 0;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--gh-space-5);
+}
+
+.sensors-intro > div:first-child {
+  min-width: 0;
+}
+
+.sensors-intro h1 {
+  margin: 0;
+  color: var(--gh-text-strong);
+  font-size: clamp(1.65rem, 2vw, 2.2rem);
+  line-height: var(--gh-line-height-tight);
+}
+
+.sensors-intro p {
+  max-width: 48rem;
+  margin: var(--gh-space-2) 0 0;
+  color: var(--gh-text-muted);
+  font-size: var(--gh-font-size-sm);
+}
+
+.sensors-intro__eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--gh-space-2);
+  margin-bottom: var(--gh-space-2);
+  color: var(--gh-primary);
+  font-size: var(--gh-font-size-xs);
+  font-weight: var(--gh-weight-semibold);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.sensors-intro__counts {
+  display: flex;
+  flex: 0 0 auto;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: var(--gh-space-2);
+}
+
+.sensors-intro__counts > span {
+  display: inline-flex;
+  min-height: var(--gh-control-height-sm);
+  align-items: center;
+  gap: var(--gh-space-2);
+  padding: 0 var(--gh-space-3);
+  border: var(--gh-border-width) solid var(--gh-border);
+  border-radius: var(--gh-radius-round);
+  background: var(--gh-surface);
+  color: var(--gh-text-muted);
+  font-size: var(--gh-font-size-xs);
+}
+
+.sensors-intro__counts strong {
+  color: var(--gh-text-strong);
+}
+
+.sensors-layout {
+  display: grid;
+  min-width: 0;
+  grid-template-columns: minmax(0, 1fr) minmax(18rem, 20rem);
+  align-items: start;
+  gap: var(--gh-space-4);
+}
+
+.sensors-content,
+.sensors-management {
+  min-width: 0;
+}
+
+.sensors-section-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--gh-space-4);
+  margin-bottom: var(--gh-space-4);
+}
+
+.sensors-section-header h2 {
+  margin: 0;
+  font-size: var(--gh-font-size-lg);
+}
+
+.sensors-section-header p {
+  margin: var(--gh-space-1) 0 0;
+  color: var(--gh-text-muted);
+  font-size: var(--gh-font-size-xs);
+}
+
+.sensors-section-header__count {
+  flex: 0 0 auto;
+  color: var(--gh-text-muted);
+  font-size: var(--gh-font-size-xs);
+}
+
+.sensors-grid {
+  display: grid;
+  min-width: 0;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--gh-space-4);
+}
+
+.sensor-card {
+  display: flex;
+  min-width: 0;
+  min-height: 15rem;
+  flex-direction: column;
+  margin: 0;
+}
+
+.sensor-card__header {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: var(--gh-space-3);
+}
+
+.sensor-card__icon,
+.sensors-form-card__header > span,
+.sensors-empty > span {
+  display: grid;
+  width: 2.5rem;
+  height: 2.5rem;
+  flex: 0 0 auto;
+  place-items: center;
+  border-radius: var(--gh-radius-round);
+  background: var(--gh-primary-soft);
+  color: var(--gh-primary);
+}
+
+.sensor-card__identity {
+  display: grid;
+  min-width: 0;
+  flex: 1;
+}
+
+.sensor-card__identity small {
+  color: var(--gh-text-muted);
+  font-size: var(--gh-font-size-xs);
+}
+
+.sensor-card__identity h3 {
+  margin: var(--gh-space-1) 0 0;
+  overflow-wrap: anywhere;
+}
+
+.sensor-card__details {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--gh-space-2);
+  margin: var(--gh-space-4) 0 0;
+}
+
+.sensor-card__details > div {
+  min-width: 0;
+  padding: var(--gh-space-3);
+  border: var(--gh-border-width) solid var(--gh-border);
+  border-radius: var(--gh-radius-md);
+  background: var(--gh-surface-subtle);
+}
+
+.sensor-card__details dt {
+  color: var(--gh-text-muted);
+  font-size: var(--gh-font-size-xs);
+}
+
+.sensor-card__details dd {
+  margin: var(--gh-space-2) 0 0;
+  color: var(--gh-text-strong);
+  font-size: var(--gh-font-size-sm);
+  font-weight: var(--gh-weight-semibold);
+  overflow-wrap: anywhere;
+}
+
+.sensor-assignment {
+  display: inline-flex;
+  min-width: 0;
+  align-items: center;
+  gap: var(--gh-space-2);
+}
+
+.sensor-assignment .icon {
+  color: var(--gh-primary);
+}
+
+.sensor-assignment--unassigned,
+.sensor-assignment--unassigned .icon {
+  color: var(--gh-text-muted);
+}
+
+.sensor-card__notice {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--gh-space-2);
+  margin-top: auto;
+  padding-top: var(--gh-space-4);
+  color: var(--gh-text-muted);
+  font-size: var(--gh-font-size-xs);
+}
+
+.sensor-card__notice .icon {
+  flex: 0 0 auto;
+  color: var(--gh-info);
+}
+
+.sensors-management {
+  position: sticky;
+  top: calc(var(--gh-header-height) + var(--gh-space-4));
+  display: grid;
+  gap: var(--gh-space-4);
+}
+
+.sensors-management .card + .card {
+  margin-top: 0;
+}
+
+.sensors-form-card {
+  margin: 0;
+}
+
+.sensors-form-card__header {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--gh-space-3);
+  margin-bottom: var(--gh-space-4);
+}
+
+.sensors-form-card__header h2 {
+  margin: 0;
+  font-size: var(--gh-font-size-lg);
+}
+
+.sensors-form-card__header p {
+  margin: var(--gh-space-1) 0 0;
+  color: var(--gh-text-muted);
+  font-size: var(--gh-font-size-xs);
+}
+
+.sensors-form-card form {
+  display: grid;
+  gap: var(--gh-space-4);
+}
+
+.sensors-form-card__actions {
+  padding-top: var(--gh-space-2);
+  border-top: var(--gh-border-width) solid var(--gh-border);
+}
+
+.sensors-form-card__empty,
+.sensors-empty {
+  display: flex;
+  align-items: center;
+  gap: var(--gh-space-3);
+  color: var(--gh-text-muted);
+  font-size: var(--gh-font-size-sm);
+}
+
+.sensors-form-card__empty > .icon {
+  flex: 0 0 auto;
+  color: var(--gh-info);
+}
+
+.sensors-empty {
+  min-height: 18rem;
+  justify-content: center;
+  flex-direction: column;
+  padding: var(--gh-space-8);
+  border: var(--gh-border-width) dashed var(--gh-border-strong);
+  border-radius: var(--gh-radius-md);
+  background: var(--gh-surface);
+  text-align: center;
+}
+
+.sensors-empty h3,
+.sensors-empty p {
+  margin: 0;
+}
+
+.sensors-empty p {
+  max-width: 24rem;
+}
+
+@media (max-width: 78rem) {
+  .sensors-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 64rem) {
+  .sensors-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .sensors-management {
+    position: static;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 48rem) {
+  .sensors-intro {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .sensors-intro__counts {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .sensors-intro__counts > span {
+    justify-content: center;
+  }
+
+  .sensors-management {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 30rem) {
+  .sensors-section-header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .sensor-card__details {
+    grid-template-columns: 1fr;
+  }
+
+  .sensors-intro__counts {
+    grid-template-columns: 1fr;
+  }
+}

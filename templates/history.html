@@ -1,64 +1,71 @@
 {% extends "base.html" %}
+{% from "components/icons.html" import icon %}
+
+{% block title %}Garden History | GardenHub{% endblock %}
+{% block body_class %}history-route{% endblock %}
+{% block extra_styles %}<link rel="stylesheet" href="{{ url_for('static', filename='css/history.css') }}">{% endblock %}
 
 {% block content %}
-<h2>📜 Historic Weather</h2>
+<div class="history-page" data-history-hub>
+  <header class="page-intro history-intro">
+    <div>
+      <span class="history-intro__eyebrow">{{ icon("history") }} Garden activity</span>
+      <h1>Garden History</h1>
+      <p>See recent weather, sensor, watering and system activity across your garden.</p>
+    </div>
+    <span class="history-intro__count">{{ history.events|length }} recent event{{ '' if history.events|length == 1 else 's' }}</span>
+  </header>
 
-<table border="1" cellpadding="5">
-  <tr>
-    <th>Date</th>
-    <th>Max °C</th>
-    <th>Min °C</th>
-    <th>Rain (mm)</th>
-    <th>Sun (min)</th>
-    <th>Daylight (min)</th>
-    <th>Wind (km/h)</th>
-    <th>Direction</th>
-  </tr>
+  <section class="card history-card" aria-labelledby="garden-timeline-title">
+    <header class="history-card__header">
+      <div>
+        <h2 id="garden-timeline-title">Garden timeline</h2>
+        <p>Existing records from across GardenHub, newest first.</p>
+      </div>
+      <div class="history-filters" role="group" aria-label="Filter garden history">
+        {% for category in history.categories %}
+          <button
+            class="history-filter{% if loop.first %} is-active{% endif %}"
+            type="button"
+            data-history-filter="{{ category.key }}"
+            data-empty-title="{{ category.empty_title }}"
+            data-empty-text="{{ category.empty_text }}"
+            aria-pressed="{{ 'true' if loop.first else 'false' }}"
+          >{{ category.label }} <span>{{ category.count }}</span></button>
+        {% endfor %}
+      </div>
+    </header>
 
-  {% for row in weather %}
-  <tr>
-    <td>{{ row[0] }}</td>
-    <td>{{ "%.1f"|format(row[1]) }}</td>   
-    <td>{{ "%.1f"|format(row[2]) }}</td>   
-    <td>{{ "%.2f"|format(row[3]) }}</td>   
-    <td>{{ "%.0f"|format(row[4]) }}</td>   
-    <td>{{ "%.0f"|format(row[5]) }}</td>   
-    <td>{{ "%.1f"|format(row[6]) }}</td>   
-    <td>{{ "%.0f"|format(row[7]) }}°</td>
+    {% if history.has_unavailable_sources %}
+      <div class="history-source-notice" role="status">{{ icon("info") }} Some existing history sources could not be loaded. Available activity is still shown below.</div>
+    {% endif %}
 
-  </tr>
-  {% endfor %}
-</table>
-<hr>
+    <div class="history-timeline" data-history-list>
+      {% for event in history.events %}
+        <article class="history-event history-event--{{ event.category }}" data-history-item data-category="{{ event.category }}">
+          <span class="history-event__marker history-event__marker--{{ event.tone or event.category }}">{{ icon(event.icon) }}</span>
+          <div class="history-event__body">
+            <div class="history-event__topline">
+              <span class="history-event__category">{{ event.category_label }}</span>
+              <time{% if event.timestamp_value %} datetime="{{ event.timestamp_value }}"{% endif %}>{{ event.timestamp_label }}</time>
+            </div>
+            <h3>{{ event.title }}</h3>
+            <p>{{ event.secondary }}</p>
+          </div>
+          <a class="history-event__link" href="{{ event.destination_href }}" aria-label="{{ event.destination_label }}: {{ event.title }}">{{ event.destination_label }} {{ icon("chevron-right") }}</a>
+        </article>
+      {% endfor %}
+    </div>
 
-<h2>🌡️ Recent Sensor Readings</h2>
-
-{% if readings %}
-  <table border="1" cellpadding="5">
-    <tr>
-      <th>Timestamp</th>
-      <th>Date</th>
-      <th>Bed</th>
-      <th>Sensor</th>
-      <th>Slot</th>
-      <th>Moisture (raw)</th>
-      <th>Moisture (%)</th>
-    </tr>
-    {% for r in readings %}
-      <tr>
-        <td>{{ r[0][:10] }} {{ r[0][11:16] }}</td>
-        <td>{{ r[1] }}</td>
-        <td>{{ r[2] }}</td>
-        <td>{{ r[3] }}</td>
-        <td>{{ r[4] }}</td>
-        <td>{{ r[5] }}</td>
-        <td>{{ r[6] }}%</td>
-      </tr>
-    {% endfor %}
-  </table>
-{% else %}
-  <p><em>No sensor readings recorded.</em></p>
-{% endif %}
-
-<a href="/">⬅ Back</a>
+    {% set initial_empty = history.categories[0] %}
+    <div class="history-empty" data-history-empty{% if history.events %} hidden{% endif %}>
+      {{ icon("inbox") }}
+      <h3 data-history-empty-title>{{ initial_empty.empty_title }}</h3>
+      <p data-history-empty-text>{{ initial_empty.empty_text }}</p>
+    </div>
+    <p class="sr-only" data-history-status role="status" aria-live="polite"></p>
+  </section>
+</div>
 {% endblock %}
+
+{% block extra_scripts %}<script src="{{ url_for('static', filename='js/history.js') }}" defer></script>{% endblock %}

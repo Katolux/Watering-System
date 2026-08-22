@@ -1,167 +1,180 @@
 {% extends "base.html" %}
+{% from "components/icons.html" import icon %}
+
+{% block title %}Beds | GardenHub{% endblock %}
+{% block body_class %}workspace-route beds-route{% endblock %}
+{% block extra_styles %}<link rel="stylesheet" href="{{ url_for('static', filename='css/workspace.css') }}"><link rel="stylesheet" href="{{ url_for('static', filename='css/beds.css') }}">{% endblock %}
+{% block header_back %}<a class="button button--ghost button--icon" href="{{ url_for('automation.automation') }}" aria-label="Back to Garden Control" title="Back to Garden Control">{{ icon("arrow-left") }}</a>{% endblock %}
 
 {% block content %}
-<h2>🪴 Beds Management</h2>
+{% set bed_counts = namespace(active=0) %}
+{% for bed in beds %}{% if bed.active %}{% set bed_counts.active = bed_counts.active + 1 %}{% endif %}{% endfor %}
 
-<!-- ================= ADD BED ================= -->
+<div class="beds-page">
+  <header class="beds-intro">
+    <div>
+      <span class="beds-intro__eyebrow">{{ icon("sprout") }} Garden management</span>
+      <h1>Beds</h1>
+      <p>Manage bed records and plant assignments, review today&apos;s moisture readings, and use the existing manual watering action.</p>
+    </div>
+    <div class="beds-intro__counts" aria-label="Bed totals">
+      <span><strong>{{ beds|length }}</strong> total</span>
+      <span><i class="status-dot status-dot--success"></i><strong>{{ bed_counts.active }}</strong> active</span>
+    </div>
+  </header>
 
-<h3>Add new bed</h3>
+  <div class="beds-layout">
+    <div class="beds-content">
+      <section aria-labelledby="current-beds-title">
+        <header class="beds-section-header">
+          <div>
+            <h2 id="current-beds-title">Current beds</h2>
+            <p>Today&apos;s supported readings and the latest stored watering decision for each bed.</p>
+          </div>
+          <span class="beds-section-header__count">{{ beds|length }} bed{{ '' if beds|length == 1 else 's' }}</span>
+        </header>
 
-<form method="POST" action="{{ url_for('automation.automation_beds_add') }}">
-  <label>
-    Bed ID:
-    <input type="text" name="bed_id" required>
-  </label>
-  <br><br>
+        {% if beds %}
+          <div class="beds-grid">
+            {% for bed in beds %}
+              {% set summary_class = 'success' if bed.summary == 'OK' else ('warning' if bed.summary in ('NEEDS WATER', 'TOO WET') else 'muted') %}
+              <article class="card bed-card">
+                <header class="bed-card__header">
+                  <div class="bed-card__identity">
+                    <span class="bed-card__icon">{{ icon("sprout") }}</span>
+                    <span>
+                      <small>Bed</small>
+                      <h3>{{ bed.bed_id }}</h3>
+                    </span>
+                  </div>
+                  <span class="badge{% if bed.active %} badge--success{% else %} badge--muted{% endif %}">{{ "Active" if bed.active else "Inactive" }}</span>
+                </header>
 
-  <label>
-    Active:
-    <select name="active">
-      <option value="1">Yes</option>
-      <option value="0">No</option>
-    </select>
-  </label>
-  <br><br>
+                <div class="bed-card__plant">
+                  <span>{{ icon("sprout") }}</span>
+                  <span><small>Assigned plants</small><strong>{{ bed.plant or "No plant assigned" }}</strong></span>
+                </div>
 
-  <button type="submit">Add bed</button>
-</form>
+                <dl class="bed-card__metrics">
+                  <div>
+                    <dt>Bed status</dt>
+                    <dd><span class="bed-status bed-status--{{ summary_class }}"><i></i>{{ bed.summary }}</span></dd>
+                  </div>
+                  <div>
+                    <dt>Average moisture</dt>
+                    <dd>{{ (bed.avg_moisture ~ '%') if bed.avg_moisture is not none else 'Unavailable' }}</dd>
+                  </div>
+                  <div>
+                    <dt>Watering decision</dt>
+                    <dd>{{ (bed.watering.minutes ~ ' min') if bed.watering else 'No decision' }}</dd>
+                  </div>
+                </dl>
 
-<hr>
+                {% if bed.watering %}
+                  <div class="bed-card__decision" aria-label="Watering decision factors">
+                    <span>{{ icon("gauge") }}</span>
+                    <dl>
+                      <div><dt>Soil</dt><dd>x{{ "%.2f"|format(bed.watering.soil_factor) }}</dd></div>
+                      <div><dt>Temperature</dt><dd>x{{ "%.2f"|format(bed.watering.temp_factor) }}</dd></div>
+                      <div><dt>Rain</dt><dd>x{{ "%.2f"|format(bed.watering.rain_factor) }}</dd></div>
+                    </dl>
+                  </div>
+                {% else %}
+                  <div class="bed-card__decision bed-card__decision--empty">{{ icon("info") }} No stored watering decision is available.</div>
+                {% endif %}
 
-<!-- ================= ASSIGN PLANT ================= -->
+                <div class="bed-readings">
+                  <header><h4>Today&apos;s moisture slots</h4><span>6 daily slots</span></header>
+                  <div class="bed-readings__grid">
+                    {% for slot in range(1, 7) %}
+                      {% set reading = bed.slots[slot] %}
+                      <div class="bed-reading{% if reading.status == 'OK' %} is-ok{% elif reading.status in ('LOW', 'HIGH') %} needs-review{% endif %}">
+                        <span>Slot {{ slot }}</span>
+                        <strong>{{ (reading.pct ~ '%') if reading.value is not none else 'Unavailable' }}</strong>
+                        <small>{{ reading.status if reading.value is not none else 'No reading' }}</small>
+                      </div>
+                    {% endfor %}
+                  </div>
+                </div>
 
-<h3>Assign plant to bed</h3>
-
-<form method="POST" action="{{ url_for('automation.automation_beds_assign') }}">
-
-  <label>
-    Bed:
-    <select name="bed_id" required>
-      {% for bed in beds %}
-        <option value="{{ bed.bed_id }}">{{ bed.bed_id }}</option>
-      {% endfor %}
-    </select>
-  </label>
-
-  <br><br>
-
-<label>
-  Plant:
-  <select name="plant_id" required>
-    {% for plant in plants %}
-      <option value="{{ plant[0] }}">
-        {{ plant[1] }}
-      </option>
-    {% endfor %}
-  </select>
-
-</label>
-
-
-  <br><br>
-
-  <label>
-    Quantity:
-    <input type="number" name="quantity" min="1" value="1">
-  </label>
-
-  <br><br>
-
-  <button type="submit">Assign plant</button>
-</form>
-
-<hr>
-
-<!-- ================= EXISTING PLANTS ================= -->
-
-<h3>Existing plants</h3>
-
-<ul>
-  {% for p in plants %}
-    <li>
-      <strong>{{ p[0]|capitalize }}</strong>
-      – {{ p[1] }}
-      <span style="color:#666;">
-        ({{ p[2] }}–{{ p[3] }})
-      </span>
-    </li>
-  {% endfor %}
-</ul>
-
-<hr>
-
-<!-- ================= CURRENT STATE ================= -->
-
-<h3>Current bed status (today)</h3>
-
-<ul>
-{% for bed in beds %}
-  <li>
-    <strong>{{ bed.bed_id }}</strong>
-    —
-    {% if bed.plant %}
-      🌱 {{ bed.plant }}
-    {% else %}
-      (no plant)
-    {% endif %}
-    <br>
-
-    <strong>Overall status:</strong>
-    <span class="status {{ bed.summary|lower|replace(' ', '-') }}">
-      {{ bed.summary }}
-    </span>
-    <br>
-
-    <strong>Avg moisture today:</strong>
-    {% if bed.avg_moisture is not none %}
-      {{ bed.avg_moisture }}%
-    {% else %}
-      no data
-    {% endif %}
-    <br>
-
-    {# ===== WATERING DECISION ===== #}
-    {% if bed.watering %}
-      <strong>Recommended watering:</strong>
-      {{ bed.watering.minutes }} min
-      <br>
-      <small>
-        Soil ×{{ "%.2f"|format(bed.watering.soil_factor) }},
-        Temp ×{{ "%.2f"|format(bed.watering.temp_factor) }},
-        Rain ×{{ "%.2f"|format(bed.watering.rain_factor) }}
-      </small>
-      <br>
-    {% else %}
-      <em>No watering decision yet</em>
-      <br>
-    {% endif %}
-
-    {# ===== WATER NOW ===== #}
-   <form method="POST" action="{{ url_for('watering.water_now') }}" style="margin-top:6px;">
-      <input type="hidden" name="bed_id" value="{{ bed.bed_id }}">
-      <label>
-        Water now (min):
-        <input type="number" name="minutes" min="1" required style="width:60px;">
-      </label>
-      <button type="submit">💧 Water now</button>
-    </form>
-
-    <br>
-
-    {# ===== SLOTS ===== #}
-    {% for slot in range(1, 7) %}
-      {% set s = bed.slots[slot] %}
-      [{{ slot }}:
-        {% if s.value is not none %}
-          {{ s.value }} / {{ s.pct }}% ({{ s.status }})
+                <form class="bed-water-form" method="POST" action="{{ url_for('watering.water_now') }}">
+                  <input type="hidden" name="bed_id" value="{{ bed.bed_id }}">
+                  <label for="minutes-{{ loop.index }}">Water now</label>
+                  <div class="bed-water-form__action">
+                    <span><input id="minutes-{{ loop.index }}" type="number" name="minutes" min="1" placeholder="Minutes" required><small>min</small></span>
+                    <button class="button button--primary" type="submit">{{ icon("droplet") }} Water now</button>
+                  </div>
+                </form>
+              </article>
+            {% endfor %}
+          </div>
         {% else %}
-          n/a
+          <div class="beds-empty">
+            <span>{{ icon("sprout") }}</span>
+            <h3>No beds configured</h3>
+            <p>Create the first bed using the existing Add bed form.</p>
+          </div>
         {% endif %}
+      </section>
+    </div>
 
-      ]
-    {% endfor %}
-  </li>
-{% endfor %}
-</ul>
+    <aside class="beds-management" aria-label="Bed management">
+      <section class="card beds-form-card">
+        <header class="beds-form-card__header">
+          <span>{{ icon("plus") }}</span>
+          <div><h2>Add bed</h2><p>Create a bed using the existing bed record fields.</p></div>
+        </header>
+        <form method="POST" action="{{ url_for('automation.automation_beds_add') }}">
+          <div class="field">
+            <label class="field__label" for="bed-id">Bed ID</label>
+            <input id="bed-id" type="text" name="bed_id" placeholder="e.g. raised-4" required>
+            <small class="field__help">Use the identifier expected by the existing garden data.</small>
+          </div>
+          <div class="field">
+            <label class="field__label" for="bed-active">Status</label>
+            <select id="bed-active" name="active">
+              <option value="1">Active</option>
+              <option value="0">Inactive</option>
+            </select>
+          </div>
+          <div class="beds-form-card__actions">
+            <button class="button button--primary button--full" type="submit">{{ icon("plus") }} Add bed</button>
+          </div>
+        </form>
+      </section>
 
+      <section class="card beds-form-card">
+        <header class="beds-form-card__header">
+          <span>{{ icon("sprout") }}</span>
+          <div><h2>Assign plant</h2><p>Connect an existing Encyclopedia plant to a bed.</p></div>
+        </header>
+        {% if beds and plants %}
+          <form method="POST" action="{{ url_for('automation.automation_beds_assign') }}">
+            <div class="field">
+              <label class="field__label" for="assign-bed">Bed</label>
+              <select id="assign-bed" name="bed_id" required>
+                {% for bed in beds %}<option value="{{ bed.bed_id }}">{{ bed.bed_id }}</option>{% endfor %}
+              </select>
+            </div>
+            <div class="field">
+              <label class="field__label" for="assign-plant">Plant</label>
+              <select id="assign-plant" name="plant_id" required>
+                {% for plant in plants %}<option value="{{ plant[0] }}">{{ plant[1] }}</option>{% endfor %}
+              </select>
+            </div>
+            <div class="field">
+              <label class="field__label" for="assign-quantity">Quantity</label>
+              <input id="assign-quantity" type="number" name="quantity" min="1" value="1">
+            </div>
+            <div class="beds-form-card__actions">
+              <button class="button button--primary button--full" type="submit">{{ icon("sprout") }} Assign plant</button>
+            </div>
+          </form>
+        {% else %}
+          <div class="beds-form-card__empty">{{ icon("info") }}<span>A bed and an Encyclopedia plant are required before assignment.</span></div>
+        {% endif %}
+      </section>
+    </aside>
+  </div>
+</div>
 {% endblock %}

@@ -1,0 +1,137 @@
+{
+  "schema_version": 1,
+  "id": "courgette_patio",
+  "names": {
+    "common": "Zucchini (Patio / Compact Type)",
+    "scientific": "Cucurbita pepo",
+    "de": "Patio-Zucchini"
+  },
+  "category": "vegetable",
+  "family": "Cucurbitaceae",
+
+  "ui": {
+    "icon_key": "courgette_patio",
+    "emoji": "🥒",
+    "photo_key": "courgette_patio_01"
+  },
+
+  "spacing_cm": {
+    "in_row": null,
+    "between_rows": null
+  },
+
+  "support": {
+    "needs_trellis": false,
+    "height_cm_range": [null, null],
+    "notes": "Compact-type spacing and mature size are not yet recorded."
+  },
+
+  "roots": {
+    "depth_cm_range": [20, 60],
+    "type": "fibrous"
+  },
+
+  "soil": {
+    "preferred_textures": ["loam", "humus_rich"],
+    "drainage": "good",
+    "pH_range": [6.0, 7.2],
+    "organic_matter": "likes_high",
+    "notes": "General Cucurbita pepo guidance: high organic matter and steady moisture support production."
+  },
+
+  "water_need": {
+    "overall": "high",
+    "stage_profile": {
+      "establishment": "high",
+      "vegetative": "medium",
+      "flowering_fruiting": "high",
+      "finish": "medium"
+    }
+  },
+
+  "irrigation": {
+    "sensitivity": "drought_sensitive",
+    "mulch_helpful": true
+  },
+
+  "calendar": {
+    "base": {
+      "sow_indoors": {
+        "weeks_relative_to_last_frost": [-4, -2],
+        "months": [4],
+        "notes": "Start in larger pots and avoid root disturbance."
+      },
+      "sow_outdoors": {
+        "weeks_relative_to_last_frost": [2, 6],
+        "months": [5, 6],
+        "notes": "Sow only after the soil has warmed."
+      },
+      "transplant_out": {
+        "weeks_relative_to_last_frost": [3, 6],
+        "months": [5, 6]
+      },
+      "harvest": {
+        "weeks_relative_to_last_frost": [10, 18],
+        "months": [7, 8, 9],
+        "notes": "Pick small and often for continuous production."
+      }
+    },
+    "days_to_maturity_range": [45, 65]
+  },
+
+  "nutrition": {
+    "feeder": "heavy",
+    "emphasis": "balanced",
+    "schedule_hint": "every_14_days",
+    "notes": "Top-dress with compost; feed regularly once flowering starts."
+  },
+
+  "care": {
+    "pruning": {
+      "required": false,
+      "method": "thin",
+      "notes": "Remove damaged or mildewed leaves to improve airflow."
+    },
+    "pollination": {
+      "type": "insect",
+      "aid_notes": "If fruit aborts, hand-pollination may help."
+    }
+  },
+
+  "companions": {
+    "good": [
+      {
+        "plant_id": "calendula",
+        "reason": "Supports beneficial insects and general garden health.",
+        "confidence": "medium",
+        "mechanism": "pollinator"
+      },
+      {
+        "plant_id": "onion",
+        "reason": "Alliums may help deter some pests and can fit at container edges.",
+        "confidence": "low",
+        "mechanism": "pest"
+      },
+      {
+        "plant_id": "garlic",
+        "reason": "Can provide a similar edge-planting benefit to onion.",
+        "confidence": "low",
+        "mechanism": "pest"
+      }
+    ],
+    "avoid": [
+      {
+        "plant_id": "cucumber",
+        "reason": "Crowding cucurbits can increase mildew pressure.",
+        "confidence": "medium",
+        "mechanism": "disease"
+      }
+    ]
+  },
+
+  "varieties": [],
+
+  "meta": {
+    "source_note": "Identity comes from plants_index.json. General species guidance is shared with zucchini.json; compact-type spacing and mature size remain unavailable."
+  }
+}

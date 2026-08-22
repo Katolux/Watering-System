@@ -133,7 +133,7 @@ def insert_plant(cur, plant_data: dict) -> None:
 
     cur.execute(
         """
-        INSERT OR REPLACE INTO plants (
+        INSERT INTO plants (
             plant_id,
             name,
             scientific_name,
@@ -161,6 +161,31 @@ def insert_plant(cur, plant_data: dict) -> None:
             schema_version
         )
         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        ON CONFLICT(plant_id) DO UPDATE SET
+            name = excluded.name,
+            scientific_name = excluded.scientific_name,
+            category = excluded.category,
+            family = excluded.family,
+            icon_key = excluded.icon_key,
+            emoji = excluded.emoji,
+            photo_key = excluded.photo_key,
+            spacing_in_row_cm = excluded.spacing_in_row_cm,
+            spacing_between_rows_cm = excluded.spacing_between_rows_cm,
+            root_depth_min_cm = excluded.root_depth_min_cm,
+            root_depth_max_cm = excluded.root_depth_max_cm,
+            root_type = excluded.root_type,
+            water_need_overall = excluded.water_need_overall,
+            irrigation_sensitivity = excluded.irrigation_sensitivity,
+            mulch_helpful = excluded.mulch_helpful,
+            min_moisture = excluded.min_moisture,
+            max_moisture = excluded.max_moisture,
+            base_minutes = excluded.base_minutes,
+            soil_json = excluded.soil_json,
+            calendar_json = excluded.calendar_json,
+            nutrition_json = excluded.nutrition_json,
+            care_json = excluded.care_json,
+            plant_json = excluded.plant_json,
+            schema_version = excluded.schema_version
         """,
         (
             plant_data["id"],
@@ -320,6 +345,7 @@ def seed_all_plants(plants_folder="plants"):
     json_files = sorted(folder.glob("*.json"))
 
     all_data = []
+    source_by_id = {}
 
     # PASS 1: load + validate everything
     for json_file in json_files:
@@ -332,6 +358,13 @@ def seed_all_plants(plants_folder="plants"):
             data = json.load(f)
 
         validate_plant_json(data, source_name=str(json_file))
+        if data["id"] in source_by_id:
+            print(
+                f"WARNING: skipping duplicate plant id {data['id']} from "
+                f"{json_file.name}; first defined in {source_by_id[data['id']]}"
+            )
+            continue
+        source_by_id[data["id"]] = json_file.name
         all_data.append((json_file, data))
 
     with get_conn() as conn:

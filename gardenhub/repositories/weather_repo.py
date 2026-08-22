@@ -17,9 +17,10 @@ def save_weather_record(record):
                 sunshine,
                 daylight,
                 wind_max,
-                wind_dir
+                wind_dir,
+                daily_weather_code
             )
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             ON CONFLICT(date) DO UPDATE SET
                 timestamp = excluded.timestamp,
                 temp_max = excluded.temp_max,
@@ -28,7 +29,8 @@ def save_weather_record(record):
                 sunshine = excluded.sunshine,
                 daylight = excluded.daylight,
                 wind_max = excluded.wind_max,
-                wind_dir = excluded.wind_dir
+                wind_dir = excluded.wind_dir,
+                daily_weather_code = excluded.daily_weather_code
             """,
             (
                 record["date"],
@@ -40,8 +42,62 @@ def save_weather_record(record):
                 record["daylight"],
                 record["wind_max"],
                 record["wind_dir"],
+                record.get("weather_code"),
             ),
         )
+
+
+def save_current_weather(record):
+    with get_conn() as conn:
+        conn.execute(
+            """
+            INSERT INTO weather_data (
+                date, timestamp, current_timestamp, current_temperature,
+                current_humidity, current_pressure, current_weather_code,
+                current_wind_speed, current_wind_dir
+            )
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+            ON CONFLICT(date) DO UPDATE SET
+                timestamp = excluded.timestamp,
+                current_timestamp = excluded.current_timestamp,
+                current_temperature = excluded.current_temperature,
+                current_humidity = excluded.current_humidity,
+                current_pressure = excluded.current_pressure,
+                current_weather_code = excluded.current_weather_code,
+                current_wind_speed = excluded.current_wind_speed,
+                current_wind_dir = excluded.current_wind_dir
+            """,
+            (
+                record["date"],
+                datetime.utcnow().isoformat(),
+                record["timestamp"],
+                record["temperature"],
+                record["humidity"],
+                record["pressure"],
+                record["weather_code"],
+                record["wind_speed"],
+                record["wind_direction"],
+            ),
+        )
+
+
+def get_weather_records(days=60):
+    with get_conn() as conn:
+        conn.row_factory = __import__("sqlite3").Row
+        rows = conn.execute(
+            """
+            SELECT date, timestamp, temp_max, temp_min, precipitation,
+                   sunshine, daylight, wind_max, wind_dir, daily_weather_code,
+                   current_temperature, current_humidity, current_pressure,
+                   current_weather_code, current_wind_speed, current_wind_dir,
+                   "current_timestamp" AS current_timestamp
+            FROM weather_data
+            ORDER BY date DESC
+            LIMIT ?
+            """,
+            (days,),
+        ).fetchall()
+    return [dict(row) for row in rows]
 
 
 def get_latest_weather_date():

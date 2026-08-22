@@ -1,7 +1,7 @@
 # Legacy Development Files
 
 Files in this folder are retained for historical reference. They are not part
-of the active GardenHUB runtime and must not be used as supported application
+of the active GardenHub runtime and must not be used as supported application
 entry points.
 
 - `Main.py` is an obsolete exploratory menu that imports removed menu code and

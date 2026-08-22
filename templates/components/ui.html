@@ -1,0 +1,102 @@
+{% from "components/icons.html" import icon %}
+
+{% macro button(label, variant="primary", icon_name=None, href=None, disabled=False, size=None, icon_only=False, type="button") -%}
+  {% set classes = "button button--" ~ variant ~ (" button--" ~ size if size else "") ~ (" button--icon" if icon_only else "") %}
+  {% if href and not disabled %}
+    <a class="{{ classes }}" href="{{ href }}"{% if icon_only %} aria-label="{{ label }}" title="{{ label }}"{% endif %}>
+      {% if icon_name %}{{ icon(icon_name) }}{% endif %}{% if not icon_only %}<span>{{ label }}</span>{% endif %}
+    </a>
+  {% else %}
+    <button class="{{ classes }}" type="{{ type }}"{% if disabled %} disabled aria-disabled="true"{% endif %}{% if icon_only %} aria-label="{{ label }}" title="{{ label }}"{% endif %}>
+      {% if icon_name %}{{ icon(icon_name) }}{% endif %}{% if not icon_only %}<span>{{ label }}</span>{% endif %}
+    </button>
+  {% endif %}
+{%- endmacro %}
+
+{% macro card(title=None, description=None, classes="") -%}
+<section class="card{% if classes %} {{ classes }}{% endif %}">
+  {% if title or description %}
+    <header class="card__header">
+      <div>
+        {% if title %}<h2 class="card__title">{{ title }}</h2>{% endif %}
+        {% if description %}<p class="card__description">{{ description }}</p>{% endif %}
+      </div>
+    </header>
+  {% endif %}
+  {{ caller() }}
+</section>
+{%- endmacro %}
+
+{% macro page_header(title, description=None, eyebrow=None) -%}
+<header class="page-header">
+  <div>
+    {% if eyebrow %}<p class="page-header__eyebrow">{{ eyebrow }}</p>{% endif %}
+    <h1>{{ title }}</h1>
+    {% if description %}<p class="page-header__description">{{ description }}</p>{% endif %}
+  </div>
+  {% if caller %}<div class="page-header__actions">{{ caller() }}</div>{% endif %}
+</header>
+{%- endmacro %}
+
+{% macro section_header(title, description=None) -%}
+<header class="section-header">
+  <div>
+    <h2 class="section-header__title">{{ title }}</h2>
+    {% if description %}<p class="section-header__description">{{ description }}</p>{% endif %}
+  </div>
+  {% if caller %}<div class="section-header__actions">{{ caller() }}</div>{% endif %}
+</header>
+{%- endmacro %}
+
+{% macro empty_state(title, description, icon_name="inbox", action_label=None, action_disabled=True, action_href=None) -%}
+<div class="empty-state">
+  <div class="empty-state__icon">{{ icon(icon_name) }}</div>
+  <h3 class="empty-state__title">{{ title }}</h3>
+  <p class="empty-state__description">{{ description }}</p>
+  {% if action_label %}{{ button(action_label, "primary", "plus", href=action_href, disabled=action_disabled) }}{% endif %}
+</div>
+{%- endmacro %}
+
+{% macro loading_state(label="Loading content") -%}
+<div class="loading-state" role="status" aria-label="{{ label }}">
+  <span class="skeleton skeleton--title"></span>
+  <span class="skeleton"></span>
+  <span class="skeleton skeleton--short"></span>
+  <span class="sr-only">{{ label }}</span>
+</div>
+{%- endmacro %}
+
+{% macro input_field(name, label, value="", placeholder="", type="text", hint=None, error=None, disabled=False) -%}
+<div class="field">
+  <label class="field__label" for="{{ name }}">{{ label }}</label>
+  <input class="input" id="{{ name }}" name="{{ name }}" type="{{ type }}" value="{{ value }}" placeholder="{{ placeholder }}"{% if hint %} aria-describedby="{{ name }}-hint"{% endif %}{% if error %} aria-invalid="true" aria-describedby="{{ name }}-error"{% endif %}{% if disabled %} disabled{% endif %}>
+  {% if hint %}<p class="field__hint" id="{{ name }}-hint">{{ hint }}</p>{% endif %}
+  {% if error %}<p class="field__error" id="{{ name }}-error">{{ error }}</p>{% endif %}
+</div>
+{%- endmacro %}
+
+{% macro select_field(name, label, options, selected=None, hint=None, disabled=False) -%}
+<div class="field">
+  <label class="field__label" for="{{ name }}">{{ label }}</label>
+  <select id="{{ name }}" name="{{ name }}"{% if hint %} aria-describedby="{{ name }}-hint"{% endif %}{% if disabled %} disabled{% endif %}>
+    {% for value, option_label in options %}<option value="{{ value }}"{% if value == selected %} selected{% endif %}>{{ option_label }}</option>{% endfor %}
+  </select>
+  {% if hint %}<p class="field__hint" id="{{ name }}-hint">{{ hint }}</p>{% endif %}
+</div>
+{%- endmacro %}
+
+{% macro tabs(items, group_id, active=0) -%}
+<div class="tabs" role="tablist" aria-label="Workspace views" data-tabs>
+  {% for item in items %}
+    <button class="tabs__button" type="button" role="tab" id="{{ group_id }}-tab-{{ loop.index0 }}" aria-selected="{{ 'true' if loop.index0 == active else 'false' }}" aria-controls="{{ group_id }}-panel-{{ loop.index0 }}" tabindex="{{ '0' if loop.index0 == active else '-1' }}">{{ item }}</button>
+  {% endfor %}
+</div>
+{%- endmacro %}
+
+{% macro badge(label, tone="neutral") -%}<span class="badge{% if tone != 'neutral' %} badge--{{ tone }}{% endif %}">{{ label }}</span>{%- endmacro %}
+
+{% macro notification_chip(label, count=None) -%}
+<span class="notification-chip">{{ icon("bell") }}<span>{{ label }}</span>{% if count is not none %}<span class="notification-chip__count">{{ count }}</span>{% endif %}</span>
+{%- endmacro %}
+
+{% macro status_indicator(label, tone="neutral") -%}<span class="status-indicator{% if tone != 'neutral' %} status-indicator--{{ tone }}{% endif %}">{{ label }}</span>{%- endmacro %}

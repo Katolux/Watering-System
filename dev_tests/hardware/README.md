@@ -1,7 +1,7 @@
 # Hardware Diagnostics
 
 This folder contains manual Arduino/ESP32 and receiver diagnostics. They are
-development aids, not the primary GardenHUB firmware or application runtime.
+development aids, not the primary GardenHub firmware or application runtime.
 
 - `arduino_test` and `test_code_andruino.cpp` read soil-sensor values.
 - `check_macadress.cpp` prints the ESP32 MAC address.

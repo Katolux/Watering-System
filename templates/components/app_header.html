@@ -1,0 +1,75 @@
+{% from "components/icons.html" import icon %}
+
+{% macro app_header(shell_title) -%}
+<header class="app-header">
+  <button class="button button--ghost button--icon app-header__mobile-toggle" type="button" data-mobile-sidebar-toggle aria-controls="app-sidebar" aria-expanded="false" aria-label="Open navigation" title="Open navigation">{{ icon("menu") }}</button>
+
+  <div class="app-header__identity">
+    {{ caller() }}
+    <img class="app-header__brand-mark" src="{{ url_for('static', filename='images/brand/gardenhub-mark.svg') }}" alt="">
+    <div>
+      <span class="app-header__eyebrow">GardenHub</span>
+      <strong class="app-header__title">{{ shell_title }}</strong>
+    </div>
+  </div>
+
+  <div class="app-header__context">
+    {% if demo_mode %}<span class="demo-indicator">{{ icon("database") }} Demo data</span>{% endif %}
+    {% if shell_weather and shell_weather.current and shell_weather.current.temperature is not none %}
+      <a class="weather-context" href="{{ url_for('weather.weather') }}" title="Current weather">
+        {{ icon(shell_weather.current.condition_icon) }}
+        <span><strong>{{ "%.1f"|format(shell_weather.current.temperature) }}&deg;C</strong><small>{{ shell_weather.current.condition }}</small></span>
+      </a>
+    {% else %}
+      <div class="weather-context weather-context--unavailable" title="Current weather is unavailable">{{ icon("cloud") }}<span><strong>&mdash;&deg;C</strong><small>Weather unavailable</small></span></div>
+    {% endif %}
+    <div class="header-menu garden-menu">
+      <button class="garden-context" type="button" data-menu-trigger="garden-context-menu" aria-expanded="false" aria-controls="garden-context-menu" title="Active garden and location">
+        {{ icon("map-pin") }}
+        <span><strong data-active-garden-name>{{ active_garden.name }}</strong><small data-active-garden-location>{{ active_garden.location.address_label }}</small></span>
+        {{ icon("chevron-down") }}
+      </button>
+      <div class="header-menu__panel garden-menu__panel" id="garden-context-menu" data-menu-panel hidden>
+        <div class="garden-menu__header"><span>Active garden</span><small>Selection is kept for this browser session.</small></div>
+        <div class="garden-menu__options" role="listbox" aria-label="Available gardens">
+          {% for garden_option in garden_context.gardens %}
+          <button type="button" role="option" data-garden-option="{{ garden_option.id }}" aria-selected="{{ 'true' if garden_option.id == garden_context.active_garden_id else 'false' }}">
+            <span><strong>{{ garden_option.name }}</strong><small>{{ garden_option.location.address_label }}</small></span>{{ icon("check") }}
+          </button>
+          {% endfor %}
+        </div>
+        <button class="garden-menu__location-action" type="button" data-location-dialog-open>{{ icon("map-pin") }} <span><strong>Garden location</strong><small>Use device location or enter it manually</small></span>{{ icon("chevron-right") }}</button>
+      </div>
+    </div>
+    <div class="header-menu">
+      <button class="button button--ghost button--icon notification-bell" type="button" data-menu-trigger="notifications-menu" aria-expanded="false" aria-controls="notifications-menu" aria-label="Notifications" title="Notifications">
+        {{ icon("bell") }}
+        {% if shell_notifications.attention_count %}<span class="notification-bell__indicator" aria-hidden="true">{{ '9+' if shell_notifications.attention_count > 9 else shell_notifications.attention_count }}</span>{% endif %}
+      </button>
+      <div class="header-menu__panel notification-preview" id="notifications-menu" data-menu-panel hidden>
+        <div class="notification-preview__header">
+          <div><h2 class="header-menu__title">Notifications</h2><p>Recent system events</p></div>
+          {% if shell_notifications.attention_count %}<span class="badge badge--warning">{{ shell_notifications.attention_count }} to review</span>{% endif %}
+        </div>
+        {% if shell_notifications.load_error %}
+          <div class="notification-preview__empty notification-preview__empty--error">{{ icon("alert") }}<span><strong>Notifications unavailable</strong><small>The system-event history could not be loaded.</small></span></div>
+        {% elif shell_notifications.preview %}
+          <ul class="notification-preview__list">
+            {% for event in shell_notifications.preview %}
+              <li>
+                <a href="{{ url_for('notifications.notifications') }}#event-{{ event.id }}">
+                  <span class="notification-preview__icon notification-preview__icon--{{ event.tone }}">{{ icon(event.category_icon) }}</span>
+                  <span class="notification-preview__body"><span><strong>{{ event.category }}</strong><time{% if event.timestamp_value %} datetime="{{ event.timestamp_value }}"{% endif %}>{{ event.timestamp_label }}</time></span><span>{{ event.message }}</span></span>
+                </a>
+              </li>
+            {% endfor %}
+          </ul>
+        {% else %}
+          <div class="notification-preview__empty">{{ icon("check") }}<span><strong>All quiet in the garden</strong><small>No system events have been recorded.</small></span></div>
+        {% endif %}
+        <a class="notification-preview__footer" href="{{ url_for('notifications.notifications') }}">View all notifications {{ icon("chevron-right") }}</a>
+      </div>
+    </div>
+  </div>
+</header>
+{%- endmacro %}

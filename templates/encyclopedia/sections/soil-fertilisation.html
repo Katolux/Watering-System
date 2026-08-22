@@ -1,0 +1,26 @@
+{% from "components/icons.html" import icon %}
+{% from "encyclopedia/_macros.html" import section_heading, fact_list %}
+
+<section class="knowledge-section" aria-labelledby="soil-fertilisation-title">
+  {{ section_heading("Soil & fertilisation", "Build healthy growth", "Soil structure and feeding strategy work together.", "soil-fertilisation-title") }}
+  <div class="soil-nutrition-grid">
+    {% if plant.soil.textures or plant.soil.drainage or plant.soil.ph or plant.soil.organic_matter %}
+    <article class="knowledge-card soil-card">
+      <div class="card-title-with-icon"><span>{{ icon("sprout") }}</span><h3>Soil preferences</h3></div>
+      {{ fact_list([("Textures", plant.soil.textures|join(", ")), ("Drainage", plant.soil.drainage), ("pH", plant.soil.ph), ("Organic matter", plant.soil.organic_matter)]) }}
+      {% if plant.soil.notes %}<p class="module-note">{{ plant.soil.notes }}</p>{% endif %}
+    </article>
+    {% endif %}
+    {% if plant.nutrition.feeder or plant.nutrition.schedule or plant.nutrition.notes %}
+    <article class="knowledge-card nutrition-card">
+      <div class="card-title-with-icon"><span>{{ icon("flask") }}</span><h3>Feeding strategy</h3></div>
+      {{ fact_list([("Feeding level", plant.nutrition.feeder), ("Schedule", plant.nutrition.schedule)]) }}
+      <div class="nutrition-phases">
+        {% if plant.nutrition.early_growth %}<div><small>Early growth</small><strong>{{ plant.nutrition.early_growth }}</strong></div>{% endif %}
+        {% if plant.nutrition.flowering_fruiting %}<div><small>Flowering &amp; fruiting</small><strong>{{ plant.nutrition.flowering_fruiting }}</strong></div>{% endif %}
+      </div>
+      {% if plant.nutrition.notes %}<p class="module-note">{{ plant.nutrition.notes }}</p>{% endif %}
+    </article>
+    {% endif %}
+  </div>
+</section>

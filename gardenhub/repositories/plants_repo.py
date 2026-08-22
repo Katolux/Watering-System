@@ -27,6 +27,30 @@ def get_all_plants_catalog():
         """)
         return cur.fetchall()
 
+
+def get_encyclopedia_catalog():
+    """Return the plant fields needed by the user-facing catalogue."""
+    with get_conn() as conn:
+        cur = conn.cursor()
+        cur.execute("""
+            SELECT
+                plant_id,
+                name,
+                scientific_name,
+                category,
+                family,
+                icon_key,
+                photo_key,
+                spacing_in_row_cm,
+                water_need_overall,
+                calendar_json,
+                plant_json
+            FROM plants
+            ORDER BY name COLLATE NOCASE
+        """)
+        return cur.fetchall()
+
+
 def get_plant_by_id(plant_id):
     with get_conn() as conn:
         cur = conn.cursor()
@@ -73,6 +97,25 @@ def get_plant_varieties(plant_id):
         """, (plant_id,))
         return cur.fetchall()
 
+
+def get_encyclopedia_varieties(plant_id):
+    """Return variety content used by the Encyclopedia, including resolved data."""
+    with get_conn() as conn:
+        cur = conn.cursor()
+        cur.execute("""
+            SELECT
+                variety_id,
+                name,
+                notes,
+                overrides_json,
+                resolved_json
+            FROM plant_varieties
+            WHERE plant_id = ?
+            ORDER BY name COLLATE NOCASE
+        """, (plant_id,))
+        return cur.fetchall()
+
+
 def get_plant_companions(plant_id):
     with get_conn() as conn:
         cur = conn.cursor()
@@ -81,6 +124,30 @@ def get_plant_companions(plant_id):
             FROM plant_companions
             WHERE plant_id = ?
             ORDER BY relation, other_plant_id
+        """, (plant_id,))
+        return cur.fetchall()
+
+
+def get_encyclopedia_companions(plant_id):
+    """Return companion relationships with user-facing plant names."""
+    with get_conn() as conn:
+        cur = conn.cursor()
+        cur.execute("""
+            SELECT
+                other.plant_id,
+                other.name,
+                other.scientific_name,
+                relation.relation,
+                relation.reason,
+                relation.confidence,
+                relation.mechanism
+            FROM plant_companions AS relation
+            JOIN plants AS other
+              ON other.plant_id = relation.other_plant_id
+            WHERE relation.plant_id = ?
+            ORDER BY
+                CASE relation.relation WHEN 'good' THEN 0 ELSE 1 END,
+                other.name COLLATE NOCASE
         """, (plant_id,))
         return cur.fetchall()
     

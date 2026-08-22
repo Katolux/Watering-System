@@ -1,0 +1,270 @@
+{% extends "base.html" %}
+{% from "components/icons.html" import icon %}
+
+{% block title %}Planner | GardenHub{% endblock %}
+{% block body_class %}planner-route{% endblock %}
+{% block extra_styles %}<link rel="stylesheet" href="{{ url_for('static', filename='css/planner.css') }}">{% endblock %}
+{% block extra_scripts %}<script src="{{ url_for('static', filename='js/planner.js') }}" defer></script>{% endblock %}
+
+{% block content %}
+<div class="planner-shell" data-planner data-static-root="{{ url_for('static', filename='') }}" data-save-url="{{ url_for('planner.planner_layout_put') }}">
+  <script type="application/json" data-planner-catalog>{{ catalog|tojson }}</script>
+  <script type="application/json" data-planner-state>{{ planner_state|tojson }}</script>
+
+  <header class="planner-toolbar" aria-label="Planner toolbar">
+    <div class="planner-tools" role="toolbar" aria-label="Editing tools">
+      <button class="planner-tool is-active" type="button" data-tool="select" aria-pressed="true" title="Select and move objects">{{ icon("layout") }}<span>Select</span></button>
+      <button class="planner-tool" type="button" data-tool="pan" aria-pressed="false" title="Pan around the garden">{{ icon("scan") }}<span>Pan</span></button>
+      <button class="planner-tool" type="button" data-tool="measure" aria-pressed="false" title="Measure a distance">{{ icon("maximize") }}<span>Measure</span></button>
+      <span class="planner-tools__separator" aria-hidden="true"></span>
+      <button class="planner-tool" type="button" data-action="duplicate" disabled title="Duplicate selection">{{ icon("plus") }}<span>Duplicate</span></button>
+      <button class="planner-tool" type="button" data-action="delete" disabled title="Delete selection">{{ icon("trash") }}<span>Delete</span></button>
+      <button class="planner-tool planner-tool--icon" type="button" data-action="undo" disabled aria-label="Undo" title="Undo">{{ icon("arrow-left") }}</button>
+      <button class="planner-tool planner-tool--icon" type="button" data-action="redo" disabled aria-label="Redo" title="Redo">{{ icon("arrow-left") }}</button>
+    </div>
+
+    <div class="planner-toolbar__actions">
+      <div class="planner-view-switch" role="group" aria-label="Planner view">
+        <button type="button" class="is-active" data-planner-view-button="plan" aria-pressed="true">Plan</button>
+        <button type="button" data-planner-view-button="calendar" aria-pressed="false">Calendar</button>
+      </div>
+      <button class="button button--secondary planner-panel-toggle" type="button" data-panel-toggle="library" aria-expanded="true">{{ icon("plus") }} <span>Catalogue</span></button>
+      <button class="button button--secondary planner-panel-toggle" type="button" data-panel-toggle="inspector" aria-expanded="true">{{ icon("info") }} <span>Inspector</span></button>
+      <button class="button button--secondary" type="button" data-edit-garden title="Edit garden dimensions and units">Garden</button>
+      <button class="button button--secondary" type="button" data-layers-toggle aria-expanded="false">{{ icon("layout") }} Layers</button>
+      <button class="button button--primary" type="button" data-save-plan disabled>Save</button>
+      <span class="planner-save-state" data-save-state><i></i> No saved plan</span>
+    </div>
+  </header>
+
+  <div class="planner-workspace">
+    <aside class="planner-library" data-panel="library" aria-label="Add to Plan">
+      <header class="planner-panel-header">
+        <div><span class="planner-panel-header__eyebrow">Plant and object catalogue</span><h2>Add to Plan</h2></div>
+        <button class="button button--ghost button--icon planner-panel-close" type="button" data-panel-close="library" aria-label="Collapse Add to Plan" title="Collapse catalogue">&lsaquo;</button>
+      </header>
+      <label class="planner-search">{{ icon("search") }}<input type="search" placeholder="Search this category" data-library-search aria-label="Search Add to Plan"></label>
+      <nav class="planner-library-tabs" aria-label="Asset categories">
+        <button type="button" class="is-active" data-library-tab="plants" aria-pressed="true"><span>{{ icon("sprout") }}</span>Plants</button>
+        <button type="button" data-library-tab="beds" aria-pressed="false"><span>{{ icon("container") }}</span>Beds &amp; containers</button>
+        <button type="button" data-library-tab="irrigation" aria-pressed="false"><span>{{ icon("droplet") }}</span>Irrigation</button>
+        <button type="button" data-library-tab="surfaces" aria-pressed="false"><span>{{ icon("layout") }}</span>Surfaces</button>
+        <button type="button" data-library-tab="structures" aria-pressed="false"><span>{{ icon("greenhouse") }}</span>Structures &amp; boundaries</button>
+        <button type="button" data-library-tab="utilities" aria-pressed="false"><span>{{ icon("settings") }}</span>Utilities &amp; objects</button>
+      </nav>
+
+      <div class="planner-library-content">
+        <section class="planner-asset-panel is-active" data-library-panel="plants" aria-label="Plants">
+          <div class="planner-asset-panel__heading"><strong>Plant catalogue</strong><small>{{ catalog|length }} records</small></div>
+          <div class="planner-filter-strip" data-library-filters aria-label="Plant filters">
+            <button type="button" data-plant-filter="category:vegetable">Vegetables</button>
+            <button type="button" data-plant-filter="category:flower">Flowers</button>
+            <button type="button" data-plant-filter="category:herb">Herbs</button>
+            <button type="button" data-plant-filter="category:fruit">Fruit</button>
+            <button type="button" data-plant-filter="timing:sow">Sow now</button>
+            <button type="button" data-plant-filter="timing:transplant">Transplant now</button>
+            <button type="button" data-plant-filter="timing:harvest">Harvest now</button>
+            <button type="button" data-plant-filter="relationship:good">Companion</button>
+            <button type="button" data-plant-filter="relationship:avoid">Avoid</button>
+            <button type="button" class="planner-filter-clear" data-clear-plant-filters hidden>Clear</button>
+          </div>
+          <div class="planner-asset-list planner-asset-list--plants">
+            {% for plant in catalog %}
+            <article class="planner-asset" draggable="true" data-library-asset data-search="{{ plant.name|lower }} {{ plant.scientific_name|lower }} {{ plant.category|lower }} {{ plant.family|lower }}" data-kind="plant" data-plant-id="{{ plant.plant_id }}">
+              <span class="planner-asset__thumb planner-asset__thumb--plant{% if not plant.has_asset %} is-placeholder{% endif %}">
+                <img src="{{ url_for('static', filename=plant.asset_path) }}" alt="" draggable="false"{% if not plant.has_asset %} hidden{% endif %}>
+                <span class="planner-plant-placeholder"{% if plant.has_asset %} hidden{% endif %}>{{ plant.name[:2]|upper }}</span>
+              </span>
+              <span class="planner-asset__body"><strong>{{ plant.name }}</strong><small>{{ plant.spacing_in_row_cm or '—' }} cm in-row{% if plant.spacing_between_rows_cm %} · {{ plant.spacing_between_rows_cm }} cm rows{% endif %}</small></span>
+              <button type="button" data-add-asset aria-label="Add {{ plant.name }}" title="Add {{ plant.name }}">+</button>
+            </article>
+            {% endfor %}
+          </div>
+        </section>
+
+        <section class="planner-asset-panel" data-library-panel="beds" aria-label="Beds and containers">
+          <div class="planner-asset-panel__heading"><strong>Growing areas</strong><small>Scalable measured objects</small></div>
+          <div class="planner-asset-grid">
+            {% for variant, name in [('raised-bed','Raised bed'),('ground-bed','Ground bed'),('square-bed','Square bed'),('round-pot','Round pot'),('planter','Rectangular planter'),('large-container','Large container'),('greenhouse','Greenhouse / polytunnel')] %}
+            <article class="planner-asset planner-asset--tile" draggable="true" data-library-asset data-search="{{ name|lower }}" data-kind="bed" data-variant="{{ variant }}" data-name="{{ name }}"><span class="planner-object-symbol planner-object-symbol--{{ variant }}"></span><strong>{{ name }}</strong><button type="button" data-add-asset aria-label="Add {{ name }}">+</button></article>
+            {% endfor %}
+          </div>
+        </section>
+
+        <section class="planner-asset-panel" data-library-panel="irrigation" aria-label="Irrigation">
+          <div class="planner-asset-panel__heading"><strong>Irrigation</strong><small>Visual planning only</small></div>
+          <div class="planner-asset-grid">
+            {% for variant, name in [('main-1in','Main line · 1 inch'),('main-half','Main line · 1/2 inch'),('main-quarter','Main line · 1/4 inch'),('emitter-15','Emitter line · 15 cm'),('emitter-30','Emitter line · 30 cm'),('dripper','Point emitter / dripper')] %}
+            <article class="planner-asset planner-asset--tile" draggable="true" data-library-asset data-search="{{ name|lower }}" data-kind="irrigation" data-variant="{{ variant }}" data-name="{{ name }}"><span class="planner-object-symbol planner-object-symbol--{{ variant }}"></span><strong>{{ name }}</strong><button type="button" data-add-asset aria-label="Add {{ name }}">+</button></article>
+            {% endfor %}
+          </div>
+        </section>
+
+        <section class="planner-asset-panel" data-library-panel="surfaces" aria-label="Surfaces">
+          <div class="planner-asset-panel__heading"><strong>Surfaces</strong><small>Resize to cover an area</small></div>
+          <div class="planner-asset-grid">
+            {% for variant, name in [('grass','Grass'),('soil','Soil / planting area'),('paving','Path / paving'),('gravel','Gravel')] %}
+            <article class="planner-asset planner-asset--tile" draggable="true" data-library-asset data-search="{{ name|lower }}" data-kind="surface" data-variant="{{ variant }}" data-name="{{ name }}"><span class="planner-object-symbol planner-object-symbol--{{ variant }}"></span><strong>{{ name }}</strong><button type="button" data-add-asset aria-label="Add {{ name }}">+</button></article>
+            {% endfor %}
+          </div>
+        </section>
+
+        <section class="planner-asset-panel" data-library-panel="structures" aria-label="Structures and boundaries">
+          <div class="planner-asset-panel__heading"><strong>Boundaries &amp; structures</strong><small>Top-down symbols</small></div>
+          <div class="planner-asset-grid">
+            {% for variant, name in [('fence','Fence'),('hedge','Hedge / bush boundary'),('greenhouse','Greenhouse / polytunnel'),('structure','Garden structure')] %}
+            <article class="planner-asset planner-asset--tile" draggable="true" data-library-asset data-search="{{ name|lower }}" data-kind="structure" data-variant="{{ variant }}" data-name="{{ name }}"><span class="planner-object-symbol planner-object-symbol--{{ variant }}"></span><strong>{{ name }}</strong><button type="button" data-add-asset aria-label="Add {{ name }}">+</button></article>
+            {% endfor %}
+          </div>
+        </section>
+
+        <section class="planner-asset-panel" data-library-panel="utilities" aria-label="Utilities and objects">
+          <div class="planner-asset-panel__heading"><strong>Utilities &amp; objects</strong><small>Basic garden markers</small></div>
+          <div class="planner-asset-grid">
+            {% for variant, name in [('tree','Tree placeholder'),('water-tank','Water barrel / tank'),('utility','Basic utility object')] %}
+            <article class="planner-asset planner-asset--tile" draggable="true" data-library-asset data-search="{{ name|lower }}" data-kind="utility" data-variant="{{ variant }}" data-name="{{ name }}"><span class="planner-object-symbol planner-object-symbol--{{ variant }}"></span><strong>{{ name }}</strong><button type="button" data-add-asset aria-label="Add {{ name }}">+</button></article>
+            {% endfor %}
+          </div>
+        </section>
+      </div>
+    </aside>
+
+    <section class="planner-canvas-panel" aria-label="Garden design canvas">
+      <div class="planner-canvas-topline" data-plan-only>
+        <div><strong data-garden-name>{{ planner_state.garden.name }}</strong><span data-garden-summary>{{ planner_state.garden.width }} × {{ planner_state.garden.height }} m working area</span></div>
+        <span data-canvas-status>Select an object or add one from the library.</span>
+      </div>
+      <div class="planner-canvas-frame" data-plan-only>
+        <div class="planner-ruler-corner"><span data-ruler-unit>m</span></div>
+        <div class="planner-ruler planner-ruler--horizontal" data-ruler-x aria-hidden="true"></div>
+        <div class="planner-ruler planner-ruler--vertical" data-ruler-y aria-hidden="true"></div>
+        <div class="planner-viewport" data-planner-viewport tabindex="0" aria-label="Measured garden canvas. Use arrow keys to move a selected object.">
+          <div class="planner-stage" data-planner-stage>
+            <div class="planner-stage__grid" aria-hidden="true"></div>
+            <div class="planner-stage__objects" data-planner-objects></div>
+            <div class="planner-measure" data-measure hidden><span></span><output></output></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="planner-compass" data-plan-only data-compass aria-label="North orientation">
+        <button class="planner-compass__dial" type="button" data-north-dial aria-label="Adjust north orientation" aria-describedby="north-angle"><span class="planner-compass__north-direction" aria-hidden="true"><i class="planner-compass__north-needle"></i><span class="planner-compass__north-label">N</span></span><span class="planner-compass__pivot" aria-hidden="true"></span><output id="north-angle" data-north-angle>0&deg;</output></button>
+        <button class="planner-compass__lock" type="button" data-north-lock aria-pressed="true" title="Unlock north orientation">Locked</button>
+      </div>
+      <div class="planner-zoom" data-plan-only aria-label="Canvas zoom controls">
+        <button type="button" data-zoom-out aria-label="Zoom out">−</button><output data-zoom-output>100%</output><button type="button" data-zoom-in aria-label="Zoom in">+</button><button type="button" data-zoom-fit title="Fit garden">Fit</button>
+      </div>
+      <div class="planner-scale" data-plan-only><span data-scale-bar></span><output data-scale-output>2 m</output></div>
+
+      <div class="planner-layers" data-layers-panel hidden>
+        <header><strong>Layers</strong><button type="button" data-layers-close aria-label="Close layers">&times;</button></header>
+        {% for layer, label in [('plants','Plants'),('structures','Structures'),('irrigation','Irrigation'),('beds','Beds & containers'),('paths','Paths & ground areas'),('surfaces','Surfaces'),('sensors','Sensors'),('labels','Labels'),('halos','Spacing halos')] %}
+        <label><input type="checkbox" data-layer="{{ layer }}"{% if layer != 'sensors' %} checked{% endif %}><span>{{ label }}</span></label>
+        {% endfor %}
+      </div>
+
+      <section class="planner-calendar" data-calendar-view hidden aria-label="Planner calendar">
+        <header>
+          <div><span>Calendar foundation</span><h2>Planting calendar</h2></div>
+          <p>Generated from placed plants and their stored catalogue dates.</p>
+        </header>
+        <div class="planner-greenhouse-status" data-calendar-greenhouse>Season extension not yet implemented</div>
+        <div class="planner-calendar__empty" data-calendar-empty hidden>
+          <strong>No plants in this plan yet</strong>
+          <span>Add plants to build a calendar from recorded sowing, transplant, and harvest windows.</span>
+        </div>
+        <div class="planner-calendar__table-wrap" data-calendar-table-wrap>
+          <table class="planner-calendar__table">
+            <thead><tr><th>Plant</th><th>Qty</th><th>Indoor sowing</th><th>Outdoor sowing</th><th>Transplant</th><th>Harvest</th><th>Notes</th></tr></thead>
+            <tbody data-calendar-body></tbody>
+          </table>
+        </div>
+      </section>
+    </section>
+
+    <aside class="planner-inspector" data-panel="inspector" aria-label="Object inspector">
+      <header class="planner-panel-header">
+        <div><span class="planner-panel-header__eyebrow">Inspector</span><h2 data-inspector-title>Nothing selected</h2></div>
+        <button class="button button--ghost button--icon planner-panel-close" type="button" data-panel-close="inspector" aria-label="Collapse inspector" title="Collapse inspector">&rsaquo;</button>
+      </header>
+      <div class="planner-inspector__empty" data-inspector-empty>
+        <span>{{ icon("scan") }}</span><h3>Select an object</h3><p>Choose a plant, bed, surface, irrigation line, or structure to edit its supported properties.</p>
+      </div>
+      <form class="planner-inspector__form" data-inspector-form hidden>
+        <div class="planner-selection-summary"><span data-inspector-symbol></span><div><strong data-inspector-name></strong><small data-inspector-type></small></div></div>
+        <div class="planner-inspector-section planner-plant-profile" data-plant-fields hidden>
+          <p class="planner-scientific" data-plant-scientific></p>
+          <dl class="planner-facts">
+            <div><dt>Quantity</dt><dd data-plant-quantity></dd></div>
+            <div><dt>In-row spacing</dt><dd data-plant-spacing-x></dd></div>
+            <div><dt>Between rows</dt><dd data-plant-spacing-y></dd></div>
+            <div><dt>Sow indoors</dt><dd data-plant-sow-indoors></dd></div>
+            <div><dt>Sow outdoors</dt><dd data-plant-sow-outdoors></dd></div>
+            <div><dt>Transplant</dt><dd data-plant-transplant></dd></div>
+            <div><dt>Harvest</dt><dd data-plant-harvest></dd></div>
+            <div><dt>Assigned bed</dt><dd data-plant-bed></dd></div>
+          </dl>
+          <p class="planner-hint" data-plant-hint>Resize the halo with its four handles. Plants repeat at catalogue spacing; their artwork stays proportional.</p>
+          <a class="button button--secondary planner-encyclopedia-link" data-plant-encyclopedia href="#">Open Encyclopedia</a>
+        </div>
+        <div class="planner-inspector-section" data-companion-fields hidden>
+          <h3>Companion planting</h3>
+          <div class="planner-companions" data-companions></div>
+        </div>
+        <div class="planner-inspector-section" data-bed-fields hidden>
+          <h3>Bed relationship</h3><dl class="planner-facts"><div><dt>Bed record</dt><dd data-bed-record></dd></div><div><dt>Zone</dt><dd data-bed-zone></dd></div></dl>
+        </div>
+        <div class="planner-inspector-section planner-greenhouse-note" data-greenhouse-fields hidden>
+          <h3>Greenhouse effect</h3>
+          <p>Season extension not yet implemented</p>
+        </div>
+        <details class="planner-inspector-section planner-geometry" data-geometry-section open>
+          <summary>Placement &amp; geometry</summary>
+          <div class="planner-geometry__body">
+            <label class="field"><span class="field__label">Name</span><input type="text" data-field="name"></label>
+            <div class="planner-field-grid" data-area-fields><label class="field"><span class="field__label" data-width-label>Width (m)</span><input type="number" min="0.1" step="0.1" data-field="width"></label><label class="field"><span class="field__label" data-height-label>Height (m)</span><input type="number" min="0.1" step="0.1" data-field="height"></label></div>
+            <label class="field planner-linear-field" data-linear-fields hidden><span class="field__label" data-length-label>Length (m)</span><input type="number" min="0.5" step="0.1" data-field="length"></label>
+            <label class="field"><span class="field__label">Rotation</span><div class="planner-range-field"><input type="range" min="0" max="359" step="1" data-field="rotation"><output data-rotation-output>0°</output></div></label>
+            <div class="planner-orientation" data-linear-fields hidden><span>Orientation</span><div><button type="button" data-orientation="0">Horizontal</button><button type="button" data-orientation="90">Vertical</button></div></div>
+            <div data-stacking-fields>
+              <h3>Layers</h3>
+              <div class="planner-stack-summary"><span>Position</span><output data-stack-position></output></div>
+              <div class="planner-stack-controls" role="group" aria-label="Object stacking controls">
+                <button type="button" data-stack-action="front" title="Bring to front"><span>⇈</span>Front</button>
+                <button type="button" data-stack-action="forward" title="Bring forward"><span>↑</span>Forward</button>
+                <button type="button" data-stack-action="backward" title="Send backward"><span>↓</span>Backward</button>
+                <button type="button" data-stack-action="back" title="Send to back"><span>⇊</span>Back</button>
+              </div>
+            </div>
+          </div>
+        </details>
+        <div class="planner-inspector-actions"><button class="button button--secondary" type="button" data-action="duplicate">{{ icon("plus") }} Duplicate</button><button class="button button--secondary" type="button" data-action="delete">{{ icon("trash") }} Delete</button></div>
+      </form>
+      <div class="planner-persistence-note">{{ icon("info") }}<p><strong>Planner layout</strong><span>Geometry is saved with this garden. Existing bed and planting links remain read-only.</span></p></div>
+    </aside>
+  </div>
+
+  <button class="planner-panel-scrim" type="button" data-panel-scrim aria-label="Close Planner panel" hidden></button>
+  <div class="planner-toast" data-planner-toast role="status" aria-live="polite" hidden></div>
+
+  <dialog class="planner-garden-dialog" data-garden-dialog aria-labelledby="garden-dialog-title">
+    <form method="dialog" data-garden-form>
+      <header><span>Planner setup</span><h2 id="garden-dialog-title">Create Your Garden</h2><p>Define the real space first. GardenHub keeps the geometry in one internal metric model.</p></header>
+      <div class="planner-garden-dialog__fields">
+        <label class="field"><span class="field__label">Garden name</span><input type="text" name="gardenName" value="My Garden" maxlength="60" required></label>
+        <fieldset><legend>Measurement system</legend><label><input type="radio" name="measurement" value="metric" checked> Metric</label><label><input type="radio" name="measurement" value="imperial"> Imperial</label></fieldset>
+        <div class="planner-dimension-entry">
+          <span>Width</span><label><input type="number" name="widthMajor" min="0" step="1" value="10" required aria-label="Width metres"><small data-major-unit>metres</small></label><label><input type="number" name="widthMinor" min="0" max="99" step="1" value="0" aria-label="Width centimetres"><small data-minor-unit>centimetres</small></label>
+        </div>
+        <div class="planner-dimension-entry">
+          <span>Height</span><label><input type="number" name="heightMajor" min="0" step="1" value="8" required aria-label="Height metres"><small data-major-unit>metres</small></label><label><input type="number" name="heightMinor" min="0" max="99" step="1" value="0" aria-label="Height centimetres"><small data-minor-unit>centimetres</small></label>
+        </div>
+        <label class="field"><span class="field__label">North orientation</span><select name="north"><option value="0">Top</option><option value="90">Right</option><option value="180">Bottom</option><option value="270">Left</option></select></label>
+        <label class="field"><span class="field__label">Template</span><select name="template"><option value="empty">Empty garden</option><option value="demo">Demo garden</option></select></label>
+      </div>
+      <p class="planner-garden-dialog__error" data-garden-error role="alert" hidden></p>
+      <footer><button class="button button--secondary" type="button" data-garden-cancel hidden>Cancel</button><button class="button button--primary" type="submit">Create garden</button></footer>
+    </form>
+  </dialog>
+</div>
+{% endblock %}

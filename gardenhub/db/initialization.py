@@ -4,6 +4,7 @@ from gardenhub.db.schema import (
     init_watering_events_table,
     init_watering_decisions_table,
     init_weather_db,
+    init_planner_layouts_table,
 )
 
 
@@ -13,3 +14,4 @@ def init_all_tables():
     init_watering_events_table()
     init_watering_decisions_table()
     init_weather_db()
+    init_planner_layouts_table()

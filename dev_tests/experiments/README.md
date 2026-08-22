@@ -1,7 +1,7 @@
 # Future Experiments
 
 This folder contains development experiments that are not part of the active
-GardenHUB runtime or supported production features.
+GardenHub runtime or supported production features.
 
 - `ml_pipeline.py` is a placeholder machine-learning data pipeline whose SQL
   and schema assumptions do not match the current application.

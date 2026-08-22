@@ -1,0 +1,628 @@
+.watering-route .app-main {
+  overflow-x: clip;
+}
+
+.watering-page,
+.watering-page * {
+  box-sizing: border-box;
+}
+
+.watering-page {
+  display: grid;
+  min-width: 0;
+  gap: var(--gh-space-5);
+}
+
+.watering-intro {
+  display: flex;
+  min-width: 0;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--gh-space-5);
+}
+
+.watering-intro > div:first-child {
+  min-width: 0;
+}
+
+.watering-intro h1 {
+  margin: 0;
+  color: var(--gh-text-strong);
+  font-size: clamp(1.65rem, 2vw, 2.2rem);
+  line-height: var(--gh-line-height-tight);
+}
+
+.watering-intro p {
+  max-width: 48rem;
+  margin: var(--gh-space-2) 0 0;
+  color: var(--gh-text-muted);
+  font-size: var(--gh-font-size-sm);
+}
+
+.watering-intro__eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--gh-space-2);
+  margin-bottom: var(--gh-space-2);
+  color: var(--gh-primary);
+  font-size: var(--gh-font-size-xs);
+  font-weight: var(--gh-weight-semibold);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.watering-intro__counts {
+  display: flex;
+  flex: 0 0 auto;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: var(--gh-space-2);
+}
+
+.watering-intro__counts > span {
+  display: inline-flex;
+  min-height: var(--gh-control-height-sm);
+  align-items: center;
+  gap: var(--gh-space-2);
+  padding: 0 var(--gh-space-3);
+  border: var(--gh-border-width) solid var(--gh-border);
+  border-radius: var(--gh-radius-round);
+  background: var(--gh-surface);
+  color: var(--gh-text-muted);
+  font-size: var(--gh-font-size-xs);
+}
+
+.watering-intro__counts strong {
+  color: var(--gh-text-strong);
+}
+
+.watering-layout {
+  display: grid;
+  min-width: 0;
+  grid-template-columns: minmax(0, 1fr) minmax(18rem, 20rem);
+  align-items: start;
+  gap: var(--gh-space-4);
+}
+
+.watering-content,
+.watering-management {
+  min-width: 0;
+}
+
+.watering-content {
+  display: grid;
+  gap: var(--gh-space-5);
+}
+
+.watering-section-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--gh-space-4);
+  margin-bottom: var(--gh-space-4);
+}
+
+.watering-section-header h2 {
+  margin: 0;
+  font-size: var(--gh-font-size-lg);
+}
+
+.watering-section-header p {
+  margin: var(--gh-space-1) 0 0;
+  color: var(--gh-text-muted);
+  font-size: var(--gh-font-size-xs);
+}
+
+.watering-section-header__count {
+  flex: 0 0 auto;
+  color: var(--gh-text-muted);
+  font-size: var(--gh-font-size-xs);
+}
+
+.watering-decisions {
+  display: grid;
+  min-width: 0;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--gh-space-4);
+}
+
+.watering-decision-card {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  margin: 0;
+}
+
+.watering-decision-card__header {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: var(--gh-space-3);
+}
+
+.watering-decision-card__icon,
+.watering-form-card__header > span,
+.watering-empty > span {
+  display: grid;
+  width: 2.5rem;
+  height: 2.5rem;
+  flex: 0 0 auto;
+  place-items: center;
+  border-radius: var(--gh-radius-round);
+  background: var(--gh-info-soft);
+  color: var(--gh-info);
+}
+
+.watering-decision-card__identity {
+  display: grid;
+  min-width: 0;
+  flex: 1;
+}
+
+.watering-decision-card__identity small,
+.watering-decision-card__plants small {
+  color: var(--gh-text-muted);
+  font-size: var(--gh-font-size-xs);
+}
+
+.watering-decision-card__identity h3 {
+  margin: var(--gh-space-1) 0 0;
+  overflow-wrap: anywhere;
+}
+
+.watering-decision-card__plants {
+  display: flex;
+  align-items: center;
+  gap: var(--gh-space-2);
+  margin: var(--gh-space-4) 0;
+  padding: var(--gh-space-3);
+  border-radius: var(--gh-radius-md);
+  background: var(--gh-surface-subtle);
+}
+
+.watering-decision-card__plants > span:first-child {
+  display: grid;
+  width: 2rem;
+  height: 2rem;
+  flex: 0 0 auto;
+  place-items: center;
+  border-radius: var(--gh-radius-round);
+  background: var(--gh-surface);
+  color: var(--gh-primary);
+}
+
+.watering-decision-card__plants > span:last-child {
+  display: grid;
+  min-width: 0;
+}
+
+.watering-decision-card__plants strong {
+  overflow: hidden;
+  color: var(--gh-text-strong);
+  font-size: var(--gh-font-size-sm);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.watering-decision-card__result {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--gh-space-2);
+}
+
+.watering-decision-card__result > span {
+  display: grid;
+  min-width: 0;
+  gap: var(--gh-space-1);
+  padding: var(--gh-space-3);
+  border: var(--gh-border-width) solid var(--gh-border);
+  border-radius: var(--gh-radius-md);
+}
+
+.watering-decision-card__result small {
+  color: var(--gh-text-muted);
+  font-size: var(--gh-font-size-xs);
+}
+
+.watering-decision-card__result strong {
+  color: var(--gh-text-strong);
+  font-size: var(--gh-font-size-lg);
+}
+
+.watering-decision-card__result em {
+  color: var(--gh-text-muted);
+  font-size: var(--gh-font-size-xs);
+  font-style: normal;
+}
+
+.watering-factors {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--gh-space-2);
+  margin: var(--gh-space-3) 0 0;
+  padding: var(--gh-space-3);
+  border-radius: var(--gh-radius-md);
+  background: var(--gh-info-soft);
+}
+
+.watering-factors > div {
+  min-width: 0;
+  padding-left: var(--gh-space-3);
+  border-left: var(--gh-border-width) solid var(--gh-border);
+}
+
+.watering-factors > div:first-child {
+  padding-left: 0;
+  border-left: 0;
+}
+
+.watering-factors dt {
+  color: var(--gh-text-muted);
+  font-size: var(--gh-font-size-xs);
+}
+
+.watering-factors dd {
+  margin: var(--gh-space-1) 0 0;
+  color: var(--gh-text-strong);
+  font-size: var(--gh-font-size-sm);
+  font-weight: var(--gh-weight-semibold);
+  overflow-wrap: anywhere;
+}
+
+.watering-decision-card__empty {
+  display: flex;
+  min-height: 7.5rem;
+  align-items: center;
+  gap: var(--gh-space-3);
+  margin-top: auto;
+  padding: var(--gh-space-4);
+  border: var(--gh-border-width) dashed var(--gh-border-strong);
+  border-radius: var(--gh-radius-md);
+  color: var(--gh-text-muted);
+}
+
+.watering-decision-card__empty > .icon {
+  flex: 0 0 auto;
+  color: var(--gh-info);
+}
+
+.watering-decision-card__empty > span {
+  display: grid;
+  gap: var(--gh-space-1);
+}
+
+.watering-decision-card__empty strong {
+  color: var(--gh-text-strong);
+  font-size: var(--gh-font-size-sm);
+}
+
+.watering-decision-card__empty small {
+  color: var(--gh-text-muted);
+  font-size: var(--gh-font-size-xs);
+}
+
+.watering-history {
+  min-width: 0;
+  margin: 0;
+}
+
+.watering-history__header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--gh-space-4);
+  margin-bottom: var(--gh-space-4);
+}
+
+.watering-history__header h2 {
+  margin: 0;
+  font-size: var(--gh-font-size-lg);
+}
+
+.watering-history__header p {
+  margin: var(--gh-space-1) 0 0;
+  color: var(--gh-text-muted);
+  font-size: var(--gh-font-size-xs);
+}
+
+.watering-history__header > span {
+  flex: 0 0 auto;
+  color: var(--gh-text-muted);
+  font-size: var(--gh-font-size-xs);
+}
+
+.watering-history__table {
+  min-width: 0;
+  overflow: hidden;
+  border: var(--gh-border-width) solid var(--gh-border);
+  border-radius: var(--gh-radius-md);
+}
+
+.watering-history__table table {
+  width: 100%;
+  table-layout: fixed;
+}
+
+.watering-history__table th:nth-child(1) {
+  width: 9.5rem;
+}
+
+.watering-history__table th:nth-child(2) {
+  width: 8rem;
+}
+
+.watering-history__table th:nth-child(3),
+.watering-history__table th:nth-child(4),
+.watering-history__table th:nth-child(5) {
+  width: 6.5rem;
+}
+
+.watering-history__table td {
+  overflow-wrap: anywhere;
+}
+
+.watering-history__table td:first-child span,
+.watering-history__table td:first-child small {
+  display: block;
+}
+
+.watering-history__table td:first-child small {
+  color: var(--gh-text-muted);
+  font-size: var(--gh-font-size-xs);
+}
+
+.watering-history__empty,
+.watering-form-card__empty {
+  display: flex;
+  align-items: center;
+  gap: var(--gh-space-3);
+  padding: var(--gh-space-5);
+  border: var(--gh-border-width) dashed var(--gh-border-strong);
+  border-radius: var(--gh-radius-md);
+  color: var(--gh-text-muted);
+}
+
+.watering-history__empty > .icon,
+.watering-form-card__empty > .icon {
+  flex: 0 0 auto;
+  color: var(--gh-info);
+}
+
+.watering-history__empty > span {
+  display: grid;
+  gap: var(--gh-space-1);
+}
+
+.watering-history__empty strong {
+  color: var(--gh-text-strong);
+  font-size: var(--gh-font-size-sm);
+}
+
+.watering-history__empty small {
+  color: var(--gh-text-muted);
+  font-size: var(--gh-font-size-xs);
+}
+
+.watering-management {
+  position: sticky;
+  top: calc(var(--gh-header-height) + var(--gh-space-4));
+  display: grid;
+  gap: var(--gh-space-4);
+}
+
+.watering-management .card + .card {
+  margin-top: 0;
+}
+
+.watering-form-card,
+.watering-scope-card {
+  margin: 0;
+}
+
+.watering-form-card__header,
+.watering-scope-card > header {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--gh-space-3);
+  margin-bottom: var(--gh-space-4);
+}
+
+.watering-form-card__header h2,
+.watering-scope-card h2 {
+  margin: 0;
+  font-size: var(--gh-font-size-lg);
+}
+
+.watering-form-card__header p,
+.watering-scope-card header p {
+  margin: var(--gh-space-1) 0 0;
+  color: var(--gh-text-muted);
+  font-size: var(--gh-font-size-xs);
+}
+
+.watering-form-card form {
+  display: grid;
+  gap: var(--gh-space-4);
+}
+
+.watering-form-card__actions {
+  padding-top: var(--gh-space-2);
+  border-top: var(--gh-border-width) solid var(--gh-border);
+}
+
+.watering-scope-card > header > span {
+  display: grid;
+  width: 2.5rem;
+  height: 2.5rem;
+  flex: 0 0 auto;
+  place-items: center;
+  border-radius: var(--gh-radius-round);
+  background: var(--gh-surface-hover);
+  color: var(--gh-info);
+}
+
+.watering-scope-card dl {
+  display: grid;
+  margin: 0;
+}
+
+.watering-scope-card dl > div {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--gh-space-3);
+  padding: var(--gh-space-3) 0;
+  border-top: var(--gh-border-width) solid var(--gh-border);
+  font-size: var(--gh-font-size-xs);
+}
+
+.watering-scope-card dt {
+  color: var(--gh-text);
+}
+
+.watering-scope-card dd {
+  margin: 0;
+  color: var(--gh-text-muted);
+  text-align: right;
+}
+
+.watering-empty {
+  display: grid;
+  min-height: 22rem;
+  place-content: center;
+  justify-items: center;
+  gap: var(--gh-space-3);
+  padding: var(--gh-space-6);
+  border: var(--gh-border-width) dashed var(--gh-border-strong);
+  border-radius: var(--gh-radius-lg);
+  background: var(--gh-surface);
+  text-align: center;
+}
+
+.watering-empty h3,
+.watering-empty p {
+  margin: 0;
+}
+
+.watering-empty p {
+  max-width: 28rem;
+  color: var(--gh-text-muted);
+  font-size: var(--gh-font-size-sm);
+}
+
+@media (max-width: 78rem) {
+  .watering-decisions {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 64rem) {
+  .watering-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .watering-management {
+    position: static;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 48rem) {
+  .watering-intro {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .watering-intro__counts {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .watering-intro__counts > span {
+    justify-content: center;
+  }
+
+  .watering-management {
+    grid-template-columns: 1fr;
+  }
+
+  .watering-history__table {
+    overflow: visible;
+    border: 0;
+  }
+
+  .watering-history__table table,
+  .watering-history__table tbody,
+  .watering-history__table tr,
+  .watering-history__table td {
+    display: block;
+    width: 100%;
+  }
+
+  .watering-history__table thead {
+    display: none;
+  }
+
+  .watering-history__table tbody {
+    display: grid;
+    gap: var(--gh-space-3);
+  }
+
+  .watering-history__table tr {
+    padding: var(--gh-space-3);
+    border: var(--gh-border-width) solid var(--gh-border);
+    border-radius: var(--gh-radius-md);
+    background: var(--gh-surface-subtle);
+  }
+
+  .watering-history__table td {
+    display: grid;
+    grid-template-columns: 6.5rem minmax(0, 1fr);
+    gap: var(--gh-space-3);
+    padding: var(--gh-space-2) 0;
+    border: 0;
+    border-top: var(--gh-border-width) solid var(--gh-border);
+  }
+
+  .watering-history__table td:first-child {
+    padding-top: 0;
+    border-top: 0;
+  }
+
+  .watering-history__table td::before {
+    color: var(--gh-text-muted);
+    font-size: var(--gh-font-size-xs);
+    content: attr(data-label);
+  }
+}
+
+@media (max-width: 36rem) {
+  .watering-decision-card__result,
+  .watering-factors {
+    grid-template-columns: 1fr;
+  }
+
+  .watering-factors > div,
+  .watering-factors > div:first-child {
+    padding: var(--gh-space-2) 0 0;
+    border-top: var(--gh-border-width) solid var(--gh-border);
+    border-left: 0;
+  }
+
+  .watering-factors > div:first-child {
+    padding-top: 0;
+    border-top: 0;
+  }
+}
+
+@media (max-width: 30rem) {
+  .watering-intro__counts {
+    grid-template-columns: 1fr;
+  }
+
+  .watering-section-header,
+  .watering-history__header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}

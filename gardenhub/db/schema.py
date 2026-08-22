@@ -200,6 +200,44 @@ def init_weather_db():
                 sunshine REAL,
                 daylight REAL,
                 wind_max REAL,
-                wind_dir REAL
+                wind_dir REAL,
+                daily_weather_code INTEGER,
+                current_temperature REAL,
+                current_humidity REAL,
+                current_pressure REAL,
+                current_weather_code INTEGER,
+                current_wind_speed REAL,
+                current_wind_dir REAL,
+                current_timestamp TEXT
+            )
+        """)
+        existing_columns = {
+            row[1] for row in cur.execute("PRAGMA table_info(weather_data)").fetchall()
+        }
+        current_weather_columns = {
+            "daily_weather_code": "INTEGER",
+            "current_temperature": "REAL",
+            "current_humidity": "REAL",
+            "current_pressure": "REAL",
+            "current_weather_code": "INTEGER",
+            "current_wind_speed": "REAL",
+            "current_wind_dir": "REAL",
+            "current_timestamp": "TEXT",
+        }
+        for column, column_type in current_weather_columns.items():
+            if column not in existing_columns:
+                cur.execute(f"ALTER TABLE weather_data ADD COLUMN {column} {column_type}")
+
+
+def init_planner_layouts_table():
+    """Create the visual Planner store without duplicating garden domain rows."""
+    with get_conn() as conn:
+        conn.execute("""
+            CREATE TABLE IF NOT EXISTS planner_layouts (
+                garden_id TEXT PRIMARY KEY,
+                schema_version INTEGER NOT NULL DEFAULT 1,
+                garden_json TEXT NOT NULL,
+                objects_json TEXT NOT NULL,
+                updated_at TEXT NOT NULL
             )
         """)

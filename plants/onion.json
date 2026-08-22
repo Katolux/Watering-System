@@ -59,7 +59,7 @@
       { "plant_id": "calendula", "reason": "General beneficial insect support.", "confidence": "low", "mechanism": "pollinator" }
     ],
     "avoid": [
-      { "plant_id": "beans", "reason": "Alliums and legumes are often considered poor companions (not always proven).", "confidence": "low", "mechanism": "unknown" }
+      { "plant_id": "bush_bean", "reason": "Alliums and legumes are often considered poor companions (not always proven).", "confidence": "low", "mechanism": "unknown" }
     ]
   },
 

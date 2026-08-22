@@ -1,0 +1,23 @@
+{% from "components/icons.html" import icon %}
+{% from "encyclopedia/_macros.html" import section_heading %}
+
+<section class="knowledge-section" aria-labelledby="pests-diseases-title">
+  {{ section_heading("Plant health", "Pests & diseases", "Start with the named problem and its distinguishing overview. Detailed diagnosis fields can be added to the same component later.", "pests-diseases-title") }}
+  {% if plant.pests_diseases %}
+  <div class="troubleshooting-grid">
+    {% for problem in plant.pests_diseases %}
+    <article class="troubleshooting-card">
+      {% if problem.image %}<figure><img src="{{ url_for('static', filename=problem.image) }}" alt="{{ problem.name }} on {{ plant.name }}"></figure>{% endif %}
+      <div class="troubleshooting-card__body">
+        <span class="troubleshooting-card__icon">{{ icon("alert") }}</span>
+        <h3>{{ problem.name }}</h3>
+        {% if problem.summary %}<p>{{ problem.summary }}</p>{% endif %}
+        {% if problem.symptoms %}<div><strong>Symptoms</strong><p>{{ problem.symptoms }}</p></div>{% endif %}
+        {% if problem.likely_cause %}<div><strong>Likely cause</strong><p>{{ problem.likely_cause }}</p></div>{% endif %}
+        {% if problem.what_to_do %}<div><strong>What to do</strong><p>{{ problem.what_to_do }}</p></div>{% endif %}
+      </div>
+    </article>
+    {% endfor %}
+  </div>
+  {% endif %}
+</section>

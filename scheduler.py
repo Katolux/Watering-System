@@ -5,6 +5,7 @@ from gardenhub.services.watering_engine import run_watering_engine
 from gardenhub.repositories.sensors_repo import get_today_moisture_slots
 from gardenhub.repositories.system_events_repo import log_system_event
 from gardenhub.services.weather import refresh_weather
+from gardenhub.services.garden_context import get_garden_context, get_weather_coordinates
 
 
 # Track last successful runs
@@ -66,7 +67,12 @@ if __name__ == "__main__":
                     message="Starting weather refresh"
                 )
 
-                refresh_weather()
+                coordinates = get_weather_coordinates(get_garden_context(False))
+                refresh_weather(
+                    coordinates["latitude"],
+                    coordinates["longitude"],
+                    coordinates["timezone"],
+                )
                 last_weather_refresh = now
 
                 log_system_event(

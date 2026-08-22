@@ -1,43 +1,246 @@
 {% extends "base.html" %}
+{% from "components/icons.html" import icon %}
+{% from "components/garden_snapshot.html" import garden_snapshot %}
+
+{% block title %}Garden Control | GardenHub{% endblock %}
+{% block body_class %}workspace-route garden-control-route{% endblock %}
+{% block extra_styles %}<link rel="stylesheet" href="{{ url_for('static', filename='css/workspace.css') }}"><link rel="stylesheet" href="{{ url_for('static', filename='css/garden-control.css') }}">{% endblock %}
+{% block extra_scripts %}<script src="{{ url_for('static', filename='js/automation-overview.js') }}" defer></script>{% endblock %}
 
 {% block content %}
-<h2>🤖 Automation & Plant Status</h2>
+{% set attention = namespace(count=0) %}
+{% for bed in garden.beds %}
+  {% if bed.active and (not bed.active_sensor_count or bed.moisture is none or bed.moisture < 45 or bed.moisture > 75) %}
+    {% set attention.count = attention.count + 1 %}
+  {% endif %}
+{% endfor %}
+{% set latest_watering = garden.watering_events|first %}
+{% set latest_decision = garden.decisions|first %}
+<div class="garden-control-page">
+  <header class="garden-control-intro">
+    <div>
+      <span class="garden-control-intro__eyebrow">{{ icon("activity") }} Live garden overview</span>
+      <h1>Garden Control</h1>
+      <p>See how your garden is performing now, understand recent decisions, and open the right tool when something needs attention.</p>
+    </div>
+    <nav class="garden-control-nav" aria-label="Garden system shortcuts">
+      <a href="{{ url_for('automation.automation_beds') }}">Beds</a>
+      <a href="{{ url_for('sensor.automation_sensors') }}">Sensors</a>
+      <a href="#today-decisions">Automation</a>
+      <a href="{{ url_for('watering.watering') }}">Watering</a>
+      <a href="{{ url_for('watering.watering') }}">History</a>
+      <a href="#system-events">System events</a>
+    </nav>
+  </header>
 
-<ul>
-  <li><a href="/automation/beds">🪴 Manage Beds</a></li>
-  <li><a href="/automation/plants">🌱 Manage Plants</a></li>
-  <li><a href="/automation/sensors">🔧 Sensors</a></li>
+  <section class="garden-control-summary" aria-label="Garden status summary">
+    <a class="garden-control-summary__card" href="#garden-snapshot">
+      <span class="garden-control-summary__icon">{{ icon("sprout") }}</span>
+      <span><small>Garden status</small><strong>{% if attention.count %}{{ attention.count }} bed{{ '' if attention.count == 1 else 's' }} need attention{% else %}All monitored beds calm{% endif %}</strong><span>{{ garden.warnings|length }} stored warning record{{ '' if garden.warnings|length == 1 else 's' }}</span></span>
+      {{ icon("chevron-right") }}
+    </a>
+    <a class="garden-control-summary__card" href="{{ url_for('watering.watering') }}">
+      <span class="garden-control-summary__icon garden-control-summary__icon--blue">{{ icon("droplet") }}</span>
+      <span><small>Watering</small><strong>{{ (latest_watering.minutes ~ ' min') if latest_watering else 'No history yet' }}</strong><span>{% if latest_watering %}Latest record for {{ latest_watering.bed_id|replace('-', ' ')|title }}{% else %}No watering event is stored{% endif %}</span></span>
+      {{ icon("chevron-right") }}
+    </a>
+    <a class="garden-control-summary__card" href="{{ url_for('sensor.automation_sensors') }}">
+      <span class="garden-control-summary__icon">{{ icon("wifi") }}</span>
+      <span><small>Sensors</small><strong>{{ garden.counts.active_sensors }} / {{ garden.counts.sensors }} active</strong><span>{{ 'All configured sensors active' if garden.counts.active_sensors == garden.counts.sensors and garden.counts.sensors else 'Review inactive sensors' }}</span></span>
+      {{ icon("chevron-right") }}
+    </a>
+    <a class="garden-control-summary__card" href="#devices">
+      <span class="garden-control-summary__icon garden-control-summary__icon--violet">{{ icon("automation") }}</span>
+      <span><small>Controller</small><strong>Not reported</strong><span>Live controller state is not stored</span></span>
+      {{ icon("chevron-right") }}
+    </a>
+    <a class="garden-control-summary__card" href="{{ url_for('weather.weather') }}">
+      <span class="garden-control-summary__icon garden-control-summary__icon--blue">{{ icon(shell_weather.today.condition_icon if shell_weather and shell_weather.today else 'cloud') }}</span>
+      <span><small>Today&apos;s weather</small><strong>{% if shell_weather and shell_weather.today and shell_weather.today.temp_max is not none %}High {{ "%.1f"|format(shell_weather.today.temp_max) }}&deg;C{% else %}Unavailable{% endif %}</strong><span>{{ shell_weather.today.condition if shell_weather and shell_weather.today else 'No forecast for today' }}</span></span>
+      {{ icon("chevron-right") }}
+    </a>
+  </section>
 
-  
-</ul>
+  <div class="garden-control-hero">
+    <section class="card garden-snapshot-card" id="garden-snapshot">
+      <header class="garden-control-section-header">
+        <div>
+          <span class="garden-control-section-header__icon">{{ icon("layout") }}</span>
+          <div><h2>Garden Snapshot</h2><p>{% if planner_projection %}Read-only view from Planner. Select a linked bed to inspect it.{% else %}Save a Planner layout to connect garden geometry with live operations.{% endif %}</p></div>
+        </div>
+        <span class="garden-control-readonly">{{ icon("check" if planner_projection else "clock") }} {{ 'Planner source' if planner_projection else 'Awaiting Planner' }}</span>
+      </header>
+      {{ garden_snapshot(planner_projection) }}
+    </section>
 
-<hr>
+    <aside class="card garden-context-panel" data-bed-context aria-live="polite">
+      <div data-context-overview>
+        <header class="garden-context-panel__header">
+          <div><span class="garden-control-section-header__icon">{{ icon("sprout") }}</span><h2>Garden Overview</h2></div>
+          <span class="badge{% if garden.warnings %} badge--warning{% else %} badge--success{% endif %}">{{ 'Review' if garden.warnings else 'Healthy' }}</span>
+        </header>
+        <p class="garden-context-panel__lead">{% if planner_projection %}A quick operational summary across the current Planner layout.{% else %}A quick operational summary. Save a Planner layout to add spatial context.{% endif %}</p>
+        <dl class="garden-overview-metrics">
+          <div><dt>Total beds</dt><dd>{{ garden.beds|length }}</dd></div>
+          <div><dt>Active sensors</dt><dd>{{ garden.counts.active_sensors }} of {{ garden.counts.sensors }}</dd></div>
+          <div><dt>Beds requiring attention</dt><dd>{{ attention.count }}</dd></div>
+          <div><dt>Next watering</dt><dd>Not scheduled</dd><small>No future schedule is stored</small></div>
+          <div><dt>Active alerts</dt><dd>Unavailable</dd><small>{{ garden.warnings|length }} warning record{{ '' if garden.warnings|length == 1 else 's' }} stored; resolution state is not tracked</small></div>
+        </dl>
+        <a class="button button--secondary button--full" href="#system-events">Review system events</a>
+      </div>
 
-<form method="POST" action="{{ url_for('automation.automation_run_watering_engine') }}">
-  <button type="submit">
-    💧 Calculate watering decisions (dry run)
-  </button>
-</form>
+      {% for bed in garden.beds %}
+        {% set bed_sensors = garden.sensors|selectattr('bed_id', 'equalto', bed.bed_id)|list %}
+        {% set bed_watering = garden.watering_events|selectattr('bed_id', 'equalto', bed.bed_id)|list|first %}
+        {% set bed_decision = garden.decisions|selectattr('bed_id', 'equalto', bed.bed_id)|list|first %}
+        {% set needs_attention = bed.active and (not bed.active_sensor_count or bed.moisture is none or bed.moisture < 45 or bed.moisture > 75) %}
+        <div class="garden-context-panel__bed" id="bed-context-{{ bed.bed_id }}" data-bed-panel="{{ bed.bed_id }}" hidden>
+          <header class="garden-context-panel__header">
+            <div>
+              <button class="garden-context-panel__back" type="button" data-show-overview aria-label="Return to garden overview">{{ icon("arrow-left") }}</button>
+              <span><small>{{ bed.zone_name or 'Unassigned zone' }}</small><h2>{{ bed.bed_id|replace('-', ' ')|title }}</h2></span>
+            </div>
+            <span class="badge{% if not bed.active %} badge--muted{% elif needs_attention %} badge--warning{% else %} badge--success{% endif %}">{% if not bed.active %}Resting{% elif needs_attention %}Attention{% else %}Healthy{% endif %}</span>
+          </header>
 
-<h3>⚠️ System events (recent)</h3>
+          <dl class="garden-bed-vitals">
+            <div><dt>{{ icon("droplet") }} Moisture</dt><dd>{{ bed.moisture|int ~ '%' if bed.moisture is not none else 'Unavailable' }}</dd></div>
+            <div><dt>{{ icon("thermometer") }} Temperature</dt><dd>Unavailable</dd><small>No bed reading</small></div>
+            <div><dt>{{ icon("humidity") }} Humidity</dt><dd>Unavailable</dd><small>No bed reading</small></div>
+          </dl>
 
-{% if system_events %}
-  <ul>
-    {% for e in system_events %}
-      <li>
-        <strong>{{ e[1] }}</strong>
-        [{{ e[2] }}]
-        {% if e[3] %}(bed {{ e[3] }}){% endif %}
-        – {{ e[4] }}
-        <br><small style="color:#666;">{{ e[0] }}</small>
-      </li>
-    {% endfor %}
-  </ul>
-{% else %}
-  <p><em>No system events recorded.</em></p>
-{% endif %}
+          <div class="garden-context-section">
+            <h3>Assigned plants</h3>
+            <p>{{ bed.plants|join(', ') if bed.plants else 'No plants assigned.' }}</p>
+          </div>
+          <div class="garden-context-section">
+            <h3>Assigned sensors</h3>
+            {% if bed_sensors %}
+              <ul class="garden-context-sensors">
+                {% for sensor in bed_sensors %}
+                  <li><span class="status-dot{% if sensor.active %} status-dot--success{% else %} status-dot--muted{% endif %}"></span><span>{{ sensor.sensor_id }}</span><small>{{ 'Active' if sensor.active else 'Inactive' }}</small></li>
+                {% endfor %}
+              </ul>
+            {% else %}
+              <p>No sensors assigned.</p>
+            {% endif %}
+          </div>
+          <dl class="garden-context-facts">
+            <div><dt>Last watering</dt><dd>{% if bed_watering %}{{ bed_watering.date }} &middot; {{ bed_watering.minutes }} min{% else %}No event stored{% endif %}</dd></div>
+            <div><dt>Recommendation</dt><dd>{% if not bed.active %}No action needed while this bed is resting.{% elif not bed.active_sensor_count %}Review the sensor assignment before making a watering decision.{% elif bed.moisture is none %}Wait for a supported moisture reading.{% elif bed_decision and bed_decision.rain_factor is not none and bed_decision.rain_factor < 1 %}Watering was adjusted because rain is expected.{% elif bed_decision %}Latest stored decision: {{ bed_decision.final_minutes }} minutes.{% else %}No stored watering decision is available.{% endif %}</dd></div>
+          </dl>
+          <div class="garden-context-actions">
+            <a class="button button--primary" href="{{ url_for('automation.automation_beds') }}">Bed details</a>
+            <a class="button button--secondary" href="{{ url_for('sensor.automation_sensors') }}">Sensors</a>
+            <a class="button button--secondary" href="{{ url_for('watering.watering') }}">History</a>
+          </div>
+        </div>
+      {% endfor %}
+    </aside>
+  </div>
 
+  <section class="garden-control-lower" aria-label="Garden operations">
+    <article class="card garden-decisions-card" id="today-decisions">
+      <header class="garden-control-section-header">
+        <div><span class="garden-control-section-header__icon">{{ icon("automation") }}</span><div><h2>Today's Decisions</h2><p>Plain-language explanations from stored watering calculations.</p></div></div>
+        <a href="{{ url_for('watering.watering') }}">History {{ icon("chevron-right") }}</a>
+      </header>
+      {% if latest_decision and latest_decision.date != today %}
+        <div class="garden-decision-notice">{{ icon("clock") }} No calculation is stored for today. Showing the latest results from {{ latest_decision.date }}.</div>
+      {% endif %}
+      {% if garden.decisions %}
+        <ul class="garden-decision-list">
+          {% for decision in garden.decisions[:5] %}
+            <li>
+              <span class="garden-decision-list__icon">{{ icon("droplet") }}</span>
+              <span>
+                <strong>{{ decision.plant_name or decision.bed_id|replace('-', ' ')|title }}</strong>
+                <small>{{ decision.bed_id|replace('-', ' ')|title }} &middot; {{ decision.date }}</small>
+                <p>{% if decision.rain_factor is not none and decision.rain_factor < 1 %}Watering reduced because rain is expected.{% elif decision.final_minutes == 0 %}Watering skipped because the stored calculation found no duration was needed.{% elif decision.avg_moisture is not none %}GardenHub calculated {{ decision.final_minutes }} minutes from a {{ decision.avg_moisture }}% moisture reading.{% else %}GardenHub calculated {{ decision.final_minutes }} minutes from the available inputs.{% endif %}</p>
+              </span>
+              <span class="garden-decision-list__result">{{ decision.final_minutes }} min</span>
+            </li>
+          {% endfor %}
+        </ul>
+      {% else %}
+        <div class="garden-control-empty">{{ icon("inbox") }}<span><strong>No decisions yet</strong><small>Stored watering decisions will be explained here.</small></span></div>
+      {% endif %}
+    </article>
 
+    <article class="card garden-devices-card" id="devices">
+      <header class="garden-control-section-header">
+        <div><span class="garden-control-section-header__icon">{{ icon("wifi") }}</span><div><h2>Devices</h2><p>Operational state from registered hardware.</p></div></div>
+        <a href="{{ url_for('sensor.automation_sensors') }}">View all {{ icon("chevron-right") }}</a>
+      </header>
+      {% if garden.sensors %}
+        <ul class="garden-device-list">
+          {% for sensor in garden.sensors[:6] %}
+            <li>
+              <span class="garden-device-list__icon">{{ icon("droplet" if sensor.sensor_type == 'moisture' else "gauge") }}</span>
+              <span><strong>{{ sensor.sensor_id }}</strong><small>{{ sensor.bed_id|replace('-', ' ')|title }}{% if sensor.depth_cm %} &middot; {{ sensor.depth_cm }} cm{% endif %}</small></span>
+              <span class="garden-device-list__reading">{{ sensor.latest_moisture ~ '%' if sensor.latest_moisture is not none else 'No reading' }}</span>
+              <span class="garden-device-list__status{% if sensor.active %} is-active{% endif %}"><i></i>{{ 'Active' if sensor.active else 'Inactive' }}</span>
+            </li>
+          {% endfor %}
+        </ul>
+      {% else %}
+        <div class="garden-control-empty">{{ icon("wifi") }}<span><strong>No devices registered</strong><small>Add hardware from the Sensors page.</small></span></div>
+      {% endif %}
+    </article>
 
-<a href="/">⬅ Back</a>
+    <article class="card garden-watering-card">
+      <header class="garden-control-section-header">
+        <div><span class="garden-control-section-header__icon">{{ icon("droplet") }}</span><div><h2>Watering System</h2><p>Operational irrigation summary.</p></div></div>
+        <a href="{{ url_for('watering.watering') }}">Open {{ icon("chevron-right") }}</a>
+      </header>
+      <div class="garden-watering-state">
+        <span class="garden-watering-state__icon">{{ icon("gauge") }}</span>
+        <span><small>Current state</small><strong>Live state unavailable</strong></span>
+      </div>
+      <dl class="garden-watering-metrics">
+        <div><dt>Active zones</dt><dd>{{ garden.zones|selectattr('active', 'equalto', 1)|list|length }} / {{ garden.zones|length }}</dd></div>
+        <div><dt>Next watering</dt><dd>Not scheduled</dd></div>
+        <div><dt>Flow</dt><dd>Not reported</dd></div>
+      </dl>
+      <ul class="garden-zone-list">
+        {% for zone in garden.zones %}
+          <li><span><i class="status-dot{% if zone.active %} status-dot--success{% else %} status-dot--muted{% endif %}"></i>{{ zone.name }}</span><small>{{ zone.status|title }}</small></li>
+        {% else %}
+          <li><span>No irrigation zones configured</span></li>
+        {% endfor %}
+      </ul>
+    </article>
+
+    <article class="card garden-alerts-card" id="system-events">
+      <header class="garden-control-section-header">
+        <div><span class="garden-control-section-header__icon garden-control-section-header__icon--warning">{{ icon("alert") }}</span><div><h2>Alerts</h2><p>Recent issues that may need attention.</p></div></div>
+        <a href="#system-events">View events {{ icon("chevron-right") }}</a>
+      </header>
+      {% if garden.warnings %}
+        <ul class="garden-alert-list">
+          {% for warning in garden.warnings[:4] %}
+            <li>
+              <span class="garden-alert-list__icon">{{ icon("alert") }}</span>
+              <span><strong>{{ warning.message }}</strong><small>{{ warning.source|replace('_', ' ')|title }}{% if warning.bed_id %} &middot; {{ warning.bed_id|replace('-', ' ')|title }}{% endif %}</small></span>
+              {{ icon("chevron-right") }}
+            </li>
+          {% endfor %}
+        </ul>
+      {% else %}
+        <div class="garden-control-empty garden-control-empty--success">{{ icon("check") }}<span><strong>No active alerts</strong><small>The latest stored system events contain no warnings.</small></span></div>
+      {% endif %}
+    </article>
+  </section>
+
+  <footer class="card garden-infrastructure" aria-label="Infrastructure status">
+    <div class="garden-infrastructure__title"><span class="garden-control-section-header__icon">{{ icon("activity") }}</span><span><strong>Infrastructure</strong><small>Supporting services at a glance</small></span></div>
+    <dl>
+      <div><dt>Controller</dt><dd><i class="status-dot status-dot--muted"></i>Not reported</dd></div>
+      <div><dt>Database</dt><dd><i class="status-dot status-dot--success"></i>Available</dd></div>
+      <div><dt>Weather service</dt><dd><i class="status-dot{% if shell_weather and shell_weather.today %} status-dot--success{% else %} status-dot--muted{% endif %}"></i>{{ shell_weather.current.updated_label if shell_weather else 'Unavailable' }}</dd></div>
+      <div><dt>Backup</dt><dd><i class="status-dot status-dot--muted"></i>Not reported</dd></div>
+    </dl>
+  </footer>
+</div>
 {% endblock %}

@@ -1,67 +1,175 @@
 {% extends "base.html" %}
+{% from "components/icons.html" import icon %}
 
-{% block title %}Dashboard | GardenHUB{% endblock %}
+{% block title %}Workspace | GardenHub{% endblock %}
+{% block body_class %}workspace-route{% endblock %}
+
+{% block extra_styles %}
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/workspace.css') }}">
+{% endblock %}
 
 {% block content %}
+{% set monitored_zones = garden.zones|selectattr('status', 'equalto', 'monitoring')|list %}
+{% set weather_warnings = garden.warnings|selectattr('source', 'equalto', 'weather')|list %}
+<div class="workspace-page">
+  <div class="workspace-page__main">
+    <header class="workspace-toolbar">
+      <button class="workspace-garden-name" type="button" data-workspace-garden-trigger title="Choose the active garden">
+        <span data-active-garden-name>{{ active_garden.name }}</span>
+        {{ icon("chevron-down") }}
+      </button>
+      <div class="workspace-toolbar__actions">
+        <div class="workspace-view-switcher" role="group" aria-label="Garden view">
+          <button class="workspace-view-switcher__button is-active" type="button" data-workspace-view="map" aria-pressed="true">{{ icon("layout") }} Living Garden</button>
+          <button class="workspace-view-switcher__button" type="button" data-workspace-view="list" aria-pressed="false">{{ icon("list") }} List View</button>
+        </div>
+        <a class="button button--primary workspace-add-button" href="{{ url_for('planner.planner') }}">{{ icon("layout") }} Open Planner</a>
+      </div>
+    </header>
 
-<h1>🌱 Garden Dashboard</h1>
+    <section class="living-garden-card" data-workspace-panel="map" aria-label="Living Garden">
+      <div class="living-garden">
+        {% if planner_state.planExists %}
+          {% set saved_beds = planner_state.objects|selectattr('kind', 'equalto', 'bed')|list %}
+          <div class="living-garden__interim">
+            <span class="living-garden__icon">{{ icon("layout") }}</span>
+            <div class="living-garden__copy">
+              <span class="living-garden__eyebrow">Planner layout ready</span>
+              <h2>{{ planner_state.garden.name }}</h2>
+              <p>Your saved layout is ready to edit in Planner. A richer Living Garden view will join this workspace in a future GardenHub update.</p>
+            </div>
+            <dl class="living-garden__plan-summary">
+              <div><dt>Garden size</dt><dd>{{ planner_state.garden.width }} × {{ planner_state.garden.height }} {{ planner_state.garden.units }}</dd></div>
+              <div><dt>Planner objects</dt><dd>{{ planner_state.objects|length }}</dd></div>
+              <div><dt>Beds &amp; containers</dt><dd>{{ saved_beds|length }}</dd></div>
+              <div><dt>North orientation</dt><dd>{{ planner_state.garden.north|round|int }}°</dd></div>
+            </dl>
+            <a class="button button--primary" href="{{ url_for('planner.planner') }}">{{ icon("layout") }} Open Planner</a>
+          </div>
+        {% else %}
+          <div class="living-garden__empty">
+            <span>{{ icon("layout") }}</span>
+            <h2>No garden plan available</h2>
+            <p>Create and save a garden plan in Planner to establish the layout for this garden.</p>
+            <a class="button button--primary" href="{{ url_for('planner.planner') }}">Open Planner</a>
+          </div>
+        {% endif %}
+      </div>
+    </section>
 
-<div class="grid grid-2">
-
-  <!-- WEATHER CARD -->
-<div class="card">
-  <h2>Weather</h2>
-
-  {% if latest_weather %}
-    <p><strong>Date:</strong> {{ latest_weather[0] }}</p>
-    <p><strong>Max:</strong> {{ "%.1f"|format(latest_weather[1]) }} °C</p>
-    <p><strong>Min:</strong> {{ "%.1f"|format(latest_weather[2]) }} °C</p>
-    <p><strong>Rain:</strong> {{ "%.1f"|format(latest_weather[3]) }} mm</p>
-    <p><strong>Sunshine:</strong> {{ "%.0f"|format(latest_weather[4]) }} min</p>
-    <p><strong>Wind:</strong> {{ "%.1f"|format(latest_weather[6]) }} km/h</p>
-  {% else %}
-    <p>No weather data available yet.</p>
-  {% endif %}
-
-  <form method="POST" action="{{ url_for('refresh_weather_route') }}">
-    <button>Refresh Weather</button>
-  </form>
-</div>
-
-  <!-- SYSTEM CARD -->
-<div class="card">
-  <h2>Recent System Events</h2>
-
-  {% if system_events %}
-    <ul>
-      {% for e in system_events %}
-        <li>
-          <strong>{{ e[1] }}</strong>
-          [{{ e[2] }}]
-          {% if e[3] %}(bed {{ e[3] }}){% endif %}
-          — {{ e[4] }}
-          <br>
-          <small>{{ e[0] }}</small>
-        </li>
+    <section class="workspace-list-view" data-workspace-panel="list" hidden aria-label="Garden beds list">
+      {% for bed in garden.beds %}
+      <article class="workspace-list-bed">
+        <span class="workspace-list-bed__icon">{{ icon("layout") }}</span>
+        <span><strong>{{ bed.bed_id|replace('-', ' ')|title }}</strong><small>{{ bed.zone_name }} &middot; {{ bed.plants|join(', ') if bed.plants else 'No current planting' }}</small></span>
+        <span>{{ bed.moisture|int ~ '%' if bed.moisture is not none else 'No reading' }}</span>
+      </article>
       {% endfor %}
-    </ul>
-  {% else %}
-    <p><em>No system events recorded.</em></p>
-  {% endif %}
-</div>
+    </section>
 
-<!-- QUICK ACTIONS -->
-<div class="card">
-  <h2>Quick Actions</h2>
+    <div class="workspace-status-grid">
+      <section class="workspace-card irrigation-status-card">
+        <header class="workspace-card__header"><h2>Irrigation Status</h2><a href="{{ url_for('automation.automation') }}" aria-label="Open automation">{{ icon("chevron-right") }}</a></header>
+        <div class="irrigation-status-card__summary">
+          <div class="irrigation-ring" style="--irrigation-progress: {{ ((monitored_zones|length / garden.zones|length) * 360)|round|int if garden.zones else 0 }}deg">
+            <strong>{{ monitored_zones|length }} / {{ garden.zones|length }}</strong><span>Zones monitored</span>
+          </div>
+          <ul class="irrigation-legend">
+            <li><span class="status-dot status-dot--success"></span><strong>{{ monitored_zones|length }}</strong> Monitoring</li>
+            <li><span class="status-dot status-dot--warning"></span><strong>{{ garden.zones|selectattr('status', 'equalto', 'review')|list|length }}</strong> Needs review</li>
+            <li><span class="status-dot status-dot--muted"></span><strong>{{ garden.zones|selectattr('status', 'equalto', 'inactive')|list|length }}</strong> Inactive</li>
+          </ul>
+        </div>
+        <div class="workspace-card__footer-note"><small>Next watering</small><strong>Schedule unavailable</strong><span>No controller schedule is stored.</span></div>
+      </section>
 
-  <div class="grid grid-2">
-    <a class="button" href="{{ url_for('automation.automation') }}">Automation</a>
-    <a class="button" href="{{ url_for('automation.automation_beds') }}">Beds</a>
-    <a class="button" href="{{ url_for('plant.automation_plants') }}">Plants</a>
-    <a class="button" href="{{ url_for('sensor.automation_sensors') }}">Sensors</a>
-    <a class="button" href="{{ url_for('watering.watering') }}">Watering</a>
-    <a class="button" href="{{ url_for('history') }}">History</a>
+      <section class="workspace-card environmental-card">
+        <header class="workspace-card__header"><h2>Environmental Overview</h2></header>
+        <dl class="environment-list">
+          <div><dt>{{ icon("container") }} Soil Moisture</dt><dd>{{ garden.environment.soil_moisture ~ '%' if garden.environment.soil_moisture is not none else 'Unavailable' }}</dd><i style="--metric-level: {{ garden.environment.soil_moisture or 0 }}%"></i></div>
+          <div><dt>{{ icon("thermometer") }} Today&apos;s High</dt><dd>{{ weather.today.temp_max|round(1) ~ '°C' if weather.today and weather.today.temp_max is not none else 'Unavailable' }}</dd><i class="metric-line--warm" style="--metric-level: {{ ((weather.today.temp_max / 35) * 100)|round|int if weather.today and weather.today.temp_max is not none else 0 }}%"></i></div>
+          <div><dt>{{ icon("humidity") }} Humidity</dt><dd{% if weather.current.humidity is none %} class="is-unavailable"{% endif %}>{{ weather.current.humidity|round|int ~ '%' if weather.current.humidity is not none else 'Unavailable' }}</dd></div>
+          <div><dt>{{ icon("sun") }} Light</dt><dd class="is-unavailable">Unavailable</dd></div>
+          <div><dt>{{ icon("flask") }} pH Level</dt><dd class="is-unavailable">Unavailable</dd></div>
+        </dl>
+      </section>
+
+      <section class="workspace-card snapshot-card">
+        <header class="workspace-card__header"><h2>Garden Snapshot</h2></header>
+        <dl class="snapshot-list">
+          <div><dt>{{ icon("layout") }} Beds</dt><dd>{{ garden.beds|length }}</dd></div>
+          <div><dt>{{ icon("container") }} Containers</dt><dd class="is-unavailable">&mdash;</dd></div>
+          <div><dt>{{ icon("greenhouse") }} Greenhouse</dt><dd>{{ garden.counts.greenhouses }}</dd></div>
+          <div><dt>{{ icon("sprout") }} Total Plants</dt><dd>{{ garden.counts.total_plants }}</dd></div>
+        </dl>
+      </section>
+    </div>
+
+    <section class="quick-actions-card" aria-labelledby="quick-actions-title">
+      <h2 id="quick-actions-title">Quick Actions</h2>
+      <div class="quick-actions-grid">
+        <a href="{{ url_for('plant.add_plant') }}">{{ icon("sprout") }}<span>Add Plant</span></a>
+        <a href="{{ url_for('watering.watering') }}">{{ icon("droplet") }}<span>Water Now</span></a>
+        <button type="button" disabled title="Tasks are not available">{{ icon("check-square") }}<span>Add Task</span></button>
+        <button type="button" disabled title="Notes are not available">{{ icon("message") }}<span>Add Note</span></button>
+        <a href="{{ url_for('weather.weather', tab='history') }}">{{ icon("book") }}<span>View Journal</span></a>
+        <button type="button" disabled title="Plant scanning is not available">{{ icon("scan") }}<span>Scan Plant</span></button>
+      </div>
+    </section>
   </div>
-</div>
 
+  <aside class="workspace-page__rail" aria-label="Garden context">
+    <section class="workspace-card weather-panel">
+      <header class="workspace-card__header"><h2>Today&apos;s Conditions</h2><a href="{{ url_for('weather.weather') }}">See full forecast {{ icon("chevron-right") }}</a></header>
+      {% if weather.today %}
+      <div class="weather-panel__current">
+        <span class="weather-panel__symbol weather-panel__symbol--{{ weather.today.condition_icon }}">{{ icon(weather.today.condition_icon) }}</span>
+        <span class="weather-panel__temperature"><strong>{{ weather.today.condition }}</strong><small>Stored forecast for today</small></span>
+        <dl>
+          <div><dt>High</dt><dd>{% if weather.today.temp_max is not none %}{{ "%.1f"|format(weather.today.temp_max) }}&deg;C{% else %}&mdash;{% endif %}</dd></div>
+          <div><dt>Low</dt><dd>{% if weather.today.temp_min is not none %}{{ "%.1f"|format(weather.today.temp_min) }}&deg;C{% else %}&mdash;{% endif %}</dd></div>
+          <div><dt>Expected rain</dt><dd>{% if weather.today.precipitation is not none %}{{ "%.1f"|format(weather.today.precipitation) }} mm{% else %}&mdash;{% endif %}</dd></div>
+          <div><dt>Max wind</dt><dd>{% if weather.today.wind_max is not none %}{{ "%.1f"|format(weather.today.wind_max) }} km/h{% else %}&mdash;{% endif %}</dd></div>
+        </dl>
+      </div>
+      <p class="weather-panel__provenance">Stored forecast snapshot &middot; {{ weather.current.updated_label }}</p>
+      <div class="forecast-strip" aria-label="Weather forecast">
+        <span class="forecast-day--{{ weather.today.condition_icon }}"><small>Today</small><span class="forecast-strip__icon">{{ icon(weather.today.condition_icon) }}</span><strong>{{ "%.1f"|format(weather.today.temp_max) ~ '°' if weather.today.temp_max is not none else '—' }}</strong><em>{{ "%.1f"|format(weather.today.temp_min) ~ '°' if weather.today.temp_min is not none else '—' }}</em></span>
+        {% for day in weather.forecast[:4] %}<span class="forecast-day--{{ day.condition_icon }}"><small>{{ day.day_label }}</small><span class="forecast-strip__icon">{{ icon(day.condition_icon) }}</span><strong>{{ "%.1f"|format(day.temp_max) ~ '°' if day.temp_max is not none else '—' }}</strong><em>{{ "%.1f"|format(day.temp_min) ~ '°' if day.temp_min is not none else '—' }}</em></span>{% endfor %}
+      </div>
+      {% if weather_warnings %}
+      <div class="weather-alert">{{ icon("alert") }}<span><small>Weather warning</small><strong>{{ weather_warnings[0].message }}</strong></span></div>
+      {% else %}
+      <div class="weather-alert weather-alert--quiet">{{ icon("info") }}<span><strong>No weather warnings</strong></span></div>
+      {% endif %}
+      {% else %}<div class="workspace-empty">No weather records are available.</div>{% endif %}
+    </section>
+
+    <section class="workspace-card irrigation-overview-panel">
+      <header class="workspace-card__header"><h2>Irrigation Overview</h2><a href="{{ url_for('automation.automation') }}">See all zones {{ icon("chevron-right") }}</a></header>
+      <ul class="zone-list">
+        {% for zone in garden.zones %}
+        <li>
+          <span class="zone-list__icon zone-list__icon--{{ zone.status }}">{% if zone.status == 'monitoring' %}{{ icon("sprout") }}{% elif zone.status == 'review' %}{{ icon("alert") }}{% else %}<span class="status-dot status-dot--muted"></span>{% endif %}</span>
+          <span><strong>{{ zone.name }}</strong><small>{{ zone.bed_count }} beds &middot; {{ zone.active_sensor_count }} active sensors</small></span>
+          <em class="zone-list__status zone-list__status--{{ zone.status }}">{{ 'Monitoring' if zone.status == 'monitoring' else 'Needs review' if zone.status == 'review' else 'Inactive' }}</em>
+        </li>
+        {% endfor %}
+      </ul>
+    </section>
+
+    <section class="workspace-card tasks-panel">
+      <header class="workspace-card__header"><h2>Upcoming Tasks</h2><span>See all tasks {{ icon("chevron-right") }}</span></header>
+      <div class="tasks-unavailable">
+        <span class="tasks-unavailable__icon">{{ icon("calendar") }}</span>
+        <div><strong>Tasks unavailable</strong><p>Task planning is not available yet.</p></div>
+        <button type="button" disabled>{{ icon("plus") }} Add task</button>
+      </div>
+    </section>
+  </aside>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+  <script src="{{ url_for('static', filename='js/workspace.js') }}" defer></script>
 {% endblock %}

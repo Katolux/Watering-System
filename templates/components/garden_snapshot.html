@@ -1,0 +1,58 @@
+{% from "components/icons.html" import icon %}
+{% macro garden_snapshot(planner) -%}
+<div class="garden-snapshot" data-garden-snapshot>
+  {% if planner %}
+    <div class="garden-snapshot__viewport" style="--garden-aspect: {{ planner.aspect_ratio }}">
+      <div
+        class="garden-snapshot__canvas"
+        role="group"
+        aria-label="{{ planner.garden.name }} Planner layout, {{ planner.dimensions_label }}. Select a linked bed to inspect its operational status."
+        style="--north-rotation: {{ planner.garden.north }}deg">
+        <span class="garden-snapshot__dimensions">{{ planner.dimensions_label }}</span>
+        {% for object in planner.objects %}
+          {% set operational = object.operational %}
+          <{% if operational %}button{% else %}div{% endif %}
+            class="garden-snapshot__object garden-snapshot__object--{{ object.kind_class }} garden-snapshot__object--{{ object.variant_class }}{% if operational %} garden-snapshot__object--linked is-{{ operational.status }}{% endif %}"
+            {% if operational %}
+              type="button"
+              data-bed-select="{{ object.bedId }}"
+              aria-pressed="false"
+              aria-controls="bed-context-{{ object.bedId }}"
+            {% else %}
+              role="img"
+            {% endif %}
+            aria-label="{{ object.name }}{% if operational %}, {{ operational.status_label }}{% else %}, contextual {{ object.kind }}{% endif %}"
+            style="--object-x: {{ object.left_pct }}%; --object-y: {{ object.top_pct }}%; --object-w: {{ object.width_pct }}%; --object-h: {{ object.height_pct }}%; --object-rotation: {{ object.rotation }}deg; z-index: {{ object.display_order }}">
+            <span class="garden-snapshot__object-visual" aria-hidden="true"></span>
+            <span class="garden-snapshot__object-label">{{ object.name }}</span>
+            {% if operational %}
+              <span class="garden-snapshot__object-detail">{{ object.domain_bed.plants|join(' + ') if object.domain_bed.plants else 'No current planting' }}</span>
+              <span class="garden-snapshot__object-state">
+                <i class="status-dot{% if operational.status == 'healthy' %} status-dot--success{% elif operational.status == 'warning' %} status-dot--warning{% else %} status-dot--muted{% endif %}"></i>
+                {{ operational.status_label }}
+              </span>
+              {% if operational.watering %}
+                <span class="garden-snapshot__object-watering">Last watered {{ operational.watering.minutes }} min</span>
+              {% endif %}
+            {% endif %}
+          </{% if operational %}button{% else %}div{% endif %}>
+        {% endfor %}
+        <span class="garden-snapshot__north" title="North: {{ planner.garden.north|round|int }}°" aria-label="North orientation {{ planner.garden.north|round|int }} degrees"><i aria-hidden="true">↑</i><b>N</b></span>
+      </div>
+    </div>
+    <div class="garden-snapshot__legend" aria-label="Snapshot legend">
+      <span><i class="status-dot status-dot--success"></i>Healthy</span>
+      <span><i class="status-dot status-dot--warning"></i>Attention</span>
+      <span><i class="status-dot status-dot--muted"></i>Resting</span>
+      <span><i class="garden-snapshot__context-key"></i>Planner context</span>
+    </div>
+  {% else %}
+    <div class="garden-snapshot__empty">
+      <span class="garden-snapshot__empty-icon">{{ icon("layout") }}</span>
+      <h3>Planner not created yet.</h3>
+      <p>Create and save the garden layout in Planner. Garden Control will display that same layout here as a read-only snapshot.</p>
+      <a class="button button--primary" href="{{ url_for('planner.planner') }}">{{ icon("layout") }} Open Planner</a>
+    </div>
+  {% endif %}
+</div>
+{%- endmacro %}
