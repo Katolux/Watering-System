@@ -186,48 +186,55 @@ def init_sensor_readings_table():
             )
         """)
 
-
 def init_weather_db():
     with get_conn() as conn:
-        cur = conn.cursor()
-        cur.execute("""
+        conn.execute("""
             CREATE TABLE IF NOT EXISTS weather_data (
                 date TEXT PRIMARY KEY,
                 timestamp TEXT,
+
                 temp_max REAL,
                 temp_min REAL,
                 precipitation REAL,
+                precipitation_probability_max REAL,
                 sunshine REAL,
                 daylight REAL,
+                sunrise TEXT,
+                sunset TEXT,
                 wind_max REAL,
+                wind_gusts_max REAL,
                 wind_dir REAL,
                 daily_weather_code INTEGER,
+                et0 REAL,
+
+                current_timestamp TEXT,
                 current_temperature REAL,
                 current_humidity REAL,
-                current_pressure REAL,
+                current_apparent_temperature REAL,
+                current_is_day INTEGER,
+                current_precipitation REAL,
                 current_weather_code INTEGER,
+                current_cloud_cover REAL,
+                current_pressure REAL,
                 current_wind_speed REAL,
                 current_wind_dir REAL,
-                current_timestamp TEXT
+                current_wind_gusts REAL
             )
         """)
-        existing_columns = {
-            row[1] for row in cur.execute("PRAGMA table_info(weather_data)").fetchall()
-        }
-        current_weather_columns = {
-            "daily_weather_code": "INTEGER",
-            "current_temperature": "REAL",
-            "current_humidity": "REAL",
-            "current_pressure": "REAL",
-            "current_weather_code": "INTEGER",
-            "current_wind_speed": "REAL",
-            "current_wind_dir": "REAL",
-            "current_timestamp": "TEXT",
-        }
-        for column, column_type in current_weather_columns.items():
-            if column not in existing_columns:
-                cur.execute(f"ALTER TABLE weather_data ADD COLUMN {column} {column_type}")
 
+
+def init_garden_location_table():
+    with get_conn() as conn:
+        conn.execute("""
+            CREATE TABLE IF NOT EXISTS garden_location (
+                id INTEGER PRIMARY KEY CHECK (id = 1),
+                location_label TEXT,
+                latitude REAL NOT NULL,
+                longitude REAL NOT NULL,
+                timezone TEXT NOT NULL,
+                updated_at TEXT NOT NULL
+            )
+        """)
 
 def init_planner_layouts_table():
     """Create the visual Planner store without duplicating garden domain rows."""

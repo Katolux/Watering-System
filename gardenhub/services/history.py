@@ -7,7 +7,7 @@ from gardenhub.repositories.system_events_repo import get_recent_system_event_re
 from gardenhub.repositories.watering_repo import get_recent_watering_events
 from gardenhub.repositories.weather_repo import get_weather_records
 from gardenhub.services.notifications import _present_event
-from gardenhub.services.overview import WEATHER_CODES
+from gardenhub.services.weather_view import WEATHER_CODES
 
 
 CATEGORY_DEFINITIONS = (

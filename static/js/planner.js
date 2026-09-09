@@ -26,7 +26,9 @@
     activeView: "plan",
     plantFilters: [],
     selectedId: null,
+    shapeEditId: null,
     mode: "select",
+    workingMode: "garden",
     basePixelsPerMetre: DEFAULT_PIXELS_PER_METRE,
     zoomMultiplier: 1,
     fittedViewportWidth: 0,
@@ -34,7 +36,7 @@
     viewportResizePending: false,
     northLocked: initialState.garden && initialState.garden.northLocked !== false,
     panelCollapsed: { library: false, inspector: false },
-    hiddenLayers: { sensors: true },
+    hiddenLayers: { sensors: true, labels: true },
     undo: [],
     redo: [],
     dirty: false,
@@ -89,6 +91,9 @@
     return round(metres, 2).toFixed(metres < 10 ? 2 : 1).replace(/\.0+$/, "").replace(/(\.\d)0$/, "$1") + " m";
   }
   function formatDimensions(item) {
+    if (geometryType(item) === "path") {
+    return formatLength(shapePathLength(item), true) + " path";
+    }
     if (isLinear(item)) return formatLength(item.width, true);
     if (item.variant === "round-pot") return "Ø " + formatLength(item.width, true);
     return formatLength(item.width, true) + " × " + formatLength(item.height, true);
@@ -128,7 +133,130 @@
   }
   function normalizeAngle(angle) { return ((angle % 360) + 360) % 360; }
   function signedAngleDelta(from, to) { return ((to - from + 540) % 360) - 180; }
+  function geometryType(item) {
+    return item && item.geometryType || "rect";
+  }
+
+  function hasEditableGeometry(item) {
+    return geometryType(item) === "area" || geometryType(item) === "path";
+  }
+
+  function isShapeEditing(item) {
+    return Boolean(
+      item &&
+      !item.locked &&
+      hasEditableGeometry(item) &&
+      state.shapeEditId === item.id &&
+      state.selectedId === item.id &&
+      state.mode === "select" &&
+      state.activeView === "plan" &&
+      !state.hiddenLayers[item.layer]
+    );
+  }
+
+  function initialShapePoints(type) {
+    return type === "area"
+      ? [{ x: 0, y: 0 }, { x: 1, y: 0 },
+         { x: 1, y: 1 }, { x: 0, y: 1 }]
+      : [{ x: 0, y: 0.5 }, { x: 1, y: 0.5 }];
+  }
+
+  function validShape(item) {
+    var points = item.points;
+    var minimum = geometryType(item) === "area" ? 3 : 2;
+    if (!Array.isArray(points) ||
+        points.length < minimum || points.length > 128) return false;
+
+    if (!points.every(function (point) {
+      return point &&
+        Number.isFinite(point.x) && Number.isFinite(point.y) &&
+        point.x >= 0 && point.x <= 1 &&
+        point.y >= 0 && point.y <= 1;
+    })) return false;
+
+    if (geometryType(item) === "path") {
+      return points.some(function (point) {
+        return point.x !== points[0].x || point.y !== points[0].y;
+      });
+    }
+
+    var twiceArea = points.reduce(function (sum, point, index) {
+      var next = points[(index + 1) % points.length];
+      return sum + point.x * next.y - next.x * point.y;
+    }, 0);
+    return Math.abs(twiceArea) > 1e-8;
+  }
+
+  function shapePathLength(item) {
+    return item.points.reduce(function (length, point, index, points) {
+      if (!index) return length;
+      return length + Math.hypot(
+        (point.x - points[index - 1].x) * item.width,
+        (point.y - points[index - 1].y) * item.height
+      );
+    }, 0);
+  }
+
+  function shapeMarkup(item) {
+    var tag = geometryType(item) === "area" ? "polygon" : "polyline";
+    var points = item.points.map(function (point) {
+      return point.x + "," + point.y;
+    }).join(" ");
+
+    return '<svg class="planner-shape" viewBox="0 0 1 1" ' +
+      'preserveAspectRatio="none" aria-hidden="true">' +
+      '<' + tag + ' points="' + points + '" /></svg>';
+  }
+
+  function shapeHandlesMarkup(item) {
+    function button(point, attribute, index, label, text) {
+      return '<button type="button" class="planner-shape-node' +
+        (attribute === "data-shape-edge" ? " is-insert" : "") +
+        '" ' + attribute + '="' + index +
+        '" style="left:' + (point.x * 100) +
+        '%;top:' + (point.y * 100) +
+        '%" aria-label="' + label + '">' + text + '</button>';
+    }
+
+    var markup = item.points.map(function (point, index) {
+      return button(point, "data-shape-node", index,
+        "Move vertex " + (index + 1), "");
+    }).join("");
+
+    var edgeCount = geometryType(item) === "area"
+      ? item.points.length : item.points.length - 1;
+
+    if (item.points.length < 128) {
+      for (var index = 0; index < edgeCount; index += 1) {
+        var first = item.points[index];
+        var next = item.points[(index + 1) % item.points.length];
+        markup += button(
+          { x: (first.x + next.x) / 2, y: (first.y + next.y) / 2 },
+          "data-shape-edge", index,
+          "Insert vertex after vertex " + (index + 1), "+"
+        );
+      }
+    }
+    return markup;
+  }
+
+  function insertShapePoint(item, edgeIndex) {
+    var edgeCount = geometryType(item) === "area"
+      ? item.points.length : item.points.length - 1;
+    if (!Number.isInteger(edgeIndex) ||
+        edgeIndex < 0 || edgeIndex >= edgeCount ||
+        item.points.length >= 128) return -1;
+
+    var first = item.points[edgeIndex];
+    var next = item.points[(edgeIndex + 1) % item.points.length];
+    item.points.splice(edgeIndex + 1, 0, {
+      x: round((first.x + next.x) / 2, 4),
+      y: round((first.y + next.y) / 2, 4)
+    });
+    return edgeIndex + 1;
+  }
   function isLinear(item) {
+    if (hasEditableGeometry(item)) return false;
     return Boolean(item && ((item.kind === "irrigation" && item.variant !== "dripper") || (item.kind === "structure" && (item.variant === "fence" || item.variant === "hedge"))));
   }
   function defaultZBase(layer) {
@@ -186,6 +314,7 @@
   }
 
   function restore(serialized) {
+    state.shapeEditId = null;
     state.objects = JSON.parse(serialized);
     recalculatePlantQuantities(state.objects);
     ensureZOrder();
@@ -291,6 +420,7 @@
   }
 
   function objectMarkup(item) {
+    if (hasEditableGeometry(item)) return shapeMarkup(item);
     if (item.kind === "plant") return plantMarkup(item);
     if (item.kind === "bed") return bedMarkup(item);
     if (item.kind === "surface") return '<span class="planner-object__visual planner-surface--' + item.variant + '"></span>';
@@ -365,11 +495,18 @@
   }
 
   function renderObjects() {
+    if (state.shapeEditId && !isShapeEditing(selected())) {
+      state.shapeEditId = null;
+    }
     objectLayer.innerHTML = "";
     orderedObjects().forEach(function (item) {
       if (state.hiddenLayers[item.layer]) return;
       var element = document.createElement("div");
       element.className = "planner-object planner-object--" + item.kind;
+      element.classList.toggle("is-locked", Boolean(item.locked));
+      element.title = item.locked
+        ? item.name + " — locked. Double-click to select and unlock."
+        : item.name;
       if (item.kind === "plant" && !plants[item.plantId]) element.classList.add("is-unavailable");
       if (isLinear(item)) element.classList.add("is-linear");
       if (item.kind === "plant" && plantGrid(item).cells > 1) element.classList.add("is-block");
@@ -391,6 +528,7 @@
     if (!item || state.hiddenLayers[item.layer]) return;
     var overlay = document.createElement("div");
     overlay.className = "planner-object planner-object--" + item.kind + " planner-selection-overlay is-selected";
+    overlay.classList.toggle("is-locked", Boolean(item.locked));
     if (item.kind === "plant" && !plants[item.plantId]) overlay.classList.add("is-unavailable");
     if (isLinear(item)) overlay.classList.add("is-linear");
     if (item.kind === "plant" && plantGrid(item).cells > 1) overlay.classList.add("is-block");
@@ -409,6 +547,8 @@
   }
 
   function applyObjectGeometry(element, item, zIndex) {
+    element.dataset.geometryType = geometryType(item);
+    element.dataset.variant = item.variant || "";
     element.style.setProperty("--object-x", item.x);
     element.style.setProperty("--object-y", item.y);
     element.style.setProperty("--object-width", item.width);
@@ -439,6 +579,8 @@
   }
 
   function handlesMarkup(item) {
+    if (item.locked) return "";
+    if (isShapeEditing(item)) return shapeHandlesMarkup(item);
     var horizontal = '<button class="planner-resize-handle" data-handle="e" aria-label="Extend length from end"></button><button class="planner-resize-handle" data-handle="w" aria-label="Extend length from start"></button>';
     var area = '<button class="planner-resize-handle" data-handle="nw" aria-label="Resize from top left"></button><button class="planner-resize-handle" data-handle="ne" aria-label="Resize from top right"></button><button class="planner-resize-handle" data-handle="se" aria-label="Resize from bottom right"></button><button class="planner-resize-handle" data-handle="sw" aria-label="Resize from bottom left"></button>';
     return (isLinear(item) ? horizontal : area) + '<button class="planner-rotation-handle" data-rotate-handle aria-label="Rotate"></button>';
@@ -501,6 +643,7 @@
   }
 
   function selectObject(id, focus) {
+    if (id !== state.selectedId) state.shapeEditId = null;
     state.selectedId = id;
     render();
     var item = selected();
@@ -514,8 +657,32 @@
   }
 
   function updateSelectionControls() {
-    var hasSelection = Boolean(selected());
-    planner.querySelectorAll('[data-action="duplicate"], [data-action="delete"]').forEach(function (button) { button.disabled = !hasSelection; });
+  var item = selected();
+
+  planner.querySelectorAll('[data-action="duplicate"]').forEach(function (button) {
+    button.disabled = !item;
+  });
+
+  planner.querySelectorAll('[data-action="delete"]').forEach(function (button) {
+    button.disabled = !item || Boolean(item.locked);
+  });
+
+  planner.querySelectorAll('[data-action="toggle-lock"]').forEach(function (button) {
+    button.disabled = !item;
+    button.textContent = item && item.locked ? "Unlock" : "Lock";
+    button.setAttribute("aria-pressed", item && item.locked ? "true" : "false");
+  });
+}
+
+  function toggleSelectedLock() {
+    var item = selected();
+    if (!item || interaction) return;
+
+    var before = beginChange();
+    item.locked = !item.locked;
+    finishChange(before);
+    render();
+    toast(item.name + (item.locked ? " locked" : " unlocked"));
   }
 
   function updateInspector() {
@@ -528,6 +695,15 @@
     title.textContent = item ? item.name : "Nothing selected";
     if (!item) return;
 
+    form.querySelector("[data-shape-controls]").hidden =
+      !hasEditableGeometry(item);
+
+    var shapeButton = form.querySelector("[data-edit-shape]");
+    shapeButton.disabled = Boolean(item.locked);
+    shapeButton.textContent = isShapeEditing(item) ? "Done" : "Edit shape";
+    shapeButton.setAttribute(
+      "aria-pressed", isShapeEditing(item) ? "true" : "false"
+    );
     form.querySelector("[data-inspector-name]").textContent = item.name;
     form.querySelector("[data-inspector-type]").textContent = typeLabel(item);
     form.querySelector('[data-field="name"]').value = item.name;
@@ -549,6 +725,12 @@
     form.querySelector("[data-width-label]").textContent = "Width (" + unitAbbreviation() + ")";
     form.querySelector("[data-height-label]").textContent = "Height (" + unitAbbreviation() + ")";
     form.querySelector("[data-length-label]").textContent = "Length (" + unitAbbreviation() + ")";
+    if (hasEditableGeometry(item)) {
+      form.querySelector("[data-width-label]").textContent =
+        "Frame width (" + unitAbbreviation() + ")";
+      form.querySelector("[data-height-label]").textContent =
+        "Frame height (" + unitAbbreviation() + ")";
+    }
     plantFields.hidden = item.kind !== "plant";
     companionFields.hidden = item.kind !== "plant";
     bedFields.hidden = item.kind !== "bed";
@@ -588,7 +770,18 @@
       form.querySelector("[data-bed-zone]").textContent = item.zoneName || "Not assigned";
     }
     updateStackInspector(item);
-  }
+    form.querySelector("[data-lock-status]").hidden = !item.locked;
+
+    form.querySelectorAll("[data-field], [data-orientation]").forEach(function (control) {
+      control.disabled = Boolean(item.locked);
+    });
+
+    if (item.locked) {
+      form.querySelectorAll("[data-stack-action]").forEach(function (button) {
+        button.disabled = true;
+      });
+    }
+    }
 
   function updateStackInspector(item) {
     var ordered = orderedObjects();
@@ -683,6 +876,7 @@
   }
 
   function setMode(mode) {
+    if (mode !== "select") state.shapeEditId = null;
     state.mode = mode;
     planner.querySelectorAll("[data-tool]").forEach(function (button) {
       var active = button.dataset.tool === mode;
@@ -692,6 +886,21 @@
     viewport.classList.toggle("is-panning", mode === "pan");
     viewport.classList.toggle("is-measuring", mode === "measure");
     if (mode !== "measure") measure.hidden = true;
+    renderObjects();
+    updateInspector();
+  }
+
+  function setWorkingMode(mode) {
+    if (["garden", "irrigation", "sensors"].indexOf(mode) === -1) return;
+
+    state.workingMode = mode;
+    planner.dataset.workingMode = mode;
+
+    planner.querySelectorAll("button[data-working-mode]").forEach(function (button) {
+      var active = button.dataset.workingMode === mode;
+      button.classList.toggle("is-active", active);
+      button.setAttribute("aria-pressed", active ? "true" : "false");
+    });
   }
 
   function addFromAsset(asset, point) {
@@ -706,6 +915,13 @@
     } else {
       var size = defaultSize(kind, asset.dataset.variant);
       item = { id: nextId(kind), kind: kind, variant: asset.dataset.variant, layer: layerFor(kind, asset.dataset.variant), name: asset.dataset.name || kind, x: 0, y: 0, width: size[0], height: size[1], rotation: 0 };
+    }
+    var requestedGeometry = asset.dataset.geometryType || "rect";
+    if (requestedGeometry === "area" || requestedGeometry === "path") {
+      item.geometryType = requestedGeometry;
+      item.points = initialShapePoints(requestedGeometry);
+      // Give a new path room to bend vertically.
+      if (requestedGeometry === "path") item.height = Math.max(item.height, 2);
     }
     item.width = Math.min(item.width, state.garden.width);
     item.height = Math.min(item.height, state.garden.height);
@@ -735,14 +951,26 @@
     var sizes = {
       "raised-bed": [4, 2], "ground-bed": [4, 2], "square-bed": [2.5, 2.5], "round-pot": [1, 1], "planter": [2, 0.9], "large-container": [1.6, 1.3], "greenhouse": [6, 3.5],
       "main-1in": [5, 0.35], "main-half": [5, 0.3], "main-quarter": [4, 0.25], "emitter-15": [4, 0.25], "emitter-30": [4, 0.25], "dripper": [0.5, 0.5],
-      "grass": [5, 4], "soil": [5, 4], "paving": [4, 1.2], "gravel": [4, 3], "fence": [5, 0.35], "hedge": [5, 0.55], "structure": [3, 2.5], "tree": [1.8, 1.8], "water-tank": [1.2, 1.5], "utility": [1.5, 1.5]
+      "grass": [5, 4], "soil": [5, 4], "paving": [4, 1.2], "gravel": [4, 3], "mulch": [4, 3], "woodchips": [4, 3], "concrete": [3, 2], "decking": [4, 3], "soaker-hose": [4, 2], "garden-hose": [5, 2], "fence": [5, 0.35], "hedge": [5, 0.55], "structure": [3, 2.5], "tree": [1.8, 1.8], "water-tank": [1.2, 1.5], "utility": [1.5, 1.5]
     };
     return sizes[variant] || (kind === "surface" ? [4, 3] : [2, 1.5]);
   }
 
   function layerFor(kind, variant) {
-    if (kind === "surface" && (variant === "paving" || variant === "gravel")) return "paths";
-    return { bed: "beds", irrigation: "irrigation", surface: "surfaces", structure: "structures", utility: "structures" }[kind] || kind;
+    if (
+      kind === "surface" &&
+      ["paving", "gravel", "concrete", "decking"].indexOf(variant) !== -1
+    ) {
+      return "paths";
+    }
+
+    return {
+      bed: "beds",
+      irrigation: "irrigation",
+      surface: "surfaces",
+      structure: "structures",
+      utility: "structures"
+    }[kind] || kind;
   }
 
   function visibleCanvasCentre() {
@@ -771,13 +999,37 @@
     item.bedId = bed ? bed.bedId : null;
   }
 
+  function nextDuplicateName(name) {
+  var base = String(name || "Object").trim();
+
+  // Treat trailing "copy" and integer suffixes as duplication suffixes.
+  base = base.replace(/(?:\s+copy|\s+[2-9]\d*|\s+1\d+)+$/i, "").trim();
+  if (!base) base = "Object";
+
+  var used = new Set(state.objects.map(function (item) {
+    return item.name.trim().toLowerCase();
+  }));
+
+  var number = 2;
+  var candidate;
+
+  do {
+    var suffix = " " + number;
+    candidate = base.slice(0, 120 - suffix.length).trimEnd() + suffix;
+    number += 1;
+  } while (used.has(candidate.toLowerCase()));
+
+  return candidate;
+}
+
   function duplicateSelected() {
     var item = selected();
     if (!item) return;
     var before = beginChange();
     var copy = clone(item);
     copy.id = nextId(item.kind);
-    copy.name = item.name + " copy";
+    copy.name = nextDuplicateName(item.name);
+    copy.locked = false;
     copy.x = clamp(round(item.x + 0.4), 0, state.garden.width - item.width);
     copy.y = clamp(round(item.y + 0.4), 0, state.garden.height - item.height);
     copy.z = nextZForLayer(item.layer);
@@ -793,7 +1045,7 @@
 
   function deleteSelected() {
     var item = selected();
-    if (!item) return;
+    if (!item || item.locked) return;
     var before = beginChange();
     state.objects = state.objects.filter(function (candidate) { return candidate.id !== item.id; });
     state.selectedId = null;
@@ -804,7 +1056,7 @@
 
   function reorderSelected(action) {
     var item = selected();
-    if (!item) return;
+    if (!item || item.locked) return;
     var ordered = orderedObjects();
     var index = ordered.indexOf(item);
     var before = beginChange();
@@ -974,11 +1226,17 @@
       requestAnimationFrame(function () { updateRulers(); fitZoom(); });
       return;
     }
-    closePanels();
+
     var panel = planner.querySelector('[data-panel="' + name + '"]');
-    if (panel) panel.classList.add("is-open");
+    if (!panel) return;
+
+    var wasOpen = panel.classList.contains("is-open");
+    closePanels();
+    if (wasOpen) return;
+
+    panel.classList.add("is-open");
     planner.querySelector("[data-panel-scrim]").hidden = false;
-    planner.querySelectorAll("[data-panel-toggle]").forEach(function (button) { button.setAttribute("aria-expanded", button.dataset.panelToggle === name ? "true" : "false"); });
+    updatePanelLayout();
   }
 
   function closePanels() {
@@ -1015,6 +1273,7 @@
   }
 
   function setPlannerView(view) {
+    if (view !== "plan") state.shapeEditId = null;
     state.activeView = view;
     planner.querySelectorAll("[data-planner-view-button]").forEach(function (button) {
       var active = button.dataset.plannerViewButton === view;
@@ -1025,6 +1284,8 @@
     planner.querySelector("[data-calendar-view]").hidden = view !== "calendar";
     if (view === "calendar") { closePanels(); planner.querySelector("[data-layers-panel]").hidden = true; renderCalendar(); }
     if (view === "plan") requestAnimationFrame(updateRulers);
+    renderObjects();
+    updateInspector();
   }
 
   function updateFilterButtons() {
@@ -1094,6 +1355,7 @@
     var scaleY = settings.height / sourceHeight;
     state.garden = { name: settings.name, width: round(settings.width), height: round(settings.height), measurement: settings.measurement, units: settings.measurement === "imperial" ? "ft" : "m", north: settings.north };
     state.objects = clone(sourceObjects).map(function (item) {
+      if (editing && item.locked) return item;
       item.x = round(clamp(item.x * scaleX, 0, Math.max(0, state.garden.width - 0.1)));
       item.y = round(clamp(item.y * scaleY, 0, Math.max(0, state.garden.height - 0.1)));
       item.width = round(clamp(item.width * scaleX, 0.1, Math.max(0.1, state.garden.width - item.x)));
@@ -1104,6 +1366,7 @@
     });
     state.hasPlan = true;
     state.selectedId = null;
+    state.shapeEditId = null;
     state.undo = [];
     state.redo = [];
     refreshDirtyState();
@@ -1116,6 +1379,38 @@
   }
 
   planner.addEventListener("click", function (event) {
+    var workingModeButton = event.target.closest("button[data-working-mode]");
+    if (workingModeButton) {
+      setWorkingMode(workingModeButton.dataset.workingMode);
+      return;
+    }
+    if (interaction && interaction.type === "node") {
+      endObjectInteraction({ pointerId: interaction.pointerId, type: "pointerup" });
+    }
+    if (event.target.closest("[data-edit-shape]")) {
+      var shapeItem = selected();
+      if (!hasEditableGeometry(shapeItem) || shapeItem.locked) return;
+      if (isShapeEditing(shapeItem)) {
+        state.shapeEditId = null;
+      } else {
+        setMode("select");
+        state.shapeEditId = shapeItem.id;
+      }
+      render();
+      return;
+    }
+
+    // Keyboard activation of the midpoint buttons.
+    var shapeEdge = event.target.closest("[data-shape-edge]");
+    if (shapeEdge && event.detail === 0 && isShapeEditing(selected())) {
+      var shapeBefore = beginChange();
+      if (insertShapePoint(selected(), Number(shapeEdge.dataset.shapeEdge)) >= 0) {
+        if (validShape(selected())) finishChange(shapeBefore);
+        else state.objects = JSON.parse(shapeBefore);
+        render();
+      }
+      return;
+    }
     if (event.target.closest("[data-save-plan]")) { savePlan(); return; }
     var viewButton = event.target.closest("[data-planner-view-button]");
     if (viewButton) { setPlannerView(viewButton.dataset.plannerViewButton); return; }
@@ -1138,6 +1433,7 @@
     if (tool) { setMode(tool.dataset.tool); return; }
     var action = event.target.closest("[data-action]");
     if (action && !action.disabled) {
+      if (action.dataset.action === "toggle-lock") toggleSelectedLock();
       if (action.dataset.action === "duplicate") duplicateSelected();
       if (action.dataset.action === "delete") deleteSelected();
       if (action.dataset.action === "undo") undo();
@@ -1147,7 +1443,7 @@
     var stackAction = event.target.closest("[data-stack-action]");
     if (stackAction && !stackAction.disabled) { reorderSelected(stackAction.dataset.stackAction); return; }
     var orientation = event.target.closest("[data-orientation]");
-    if (orientation && selected()) {
+    if (orientation && !orientation.disabled && selected() && !selected().locked) {
       var orientationBefore = beginChange();
       selected().rotation = Number(orientation.dataset.orientation);
       finishChange(orientationBefore);
@@ -1178,51 +1474,154 @@
     if (event.target.closest("[data-layers-close]")) { planner.querySelector("[data-layers-panel]").hidden = true; planner.querySelector("[data-layers-toggle]").setAttribute("aria-expanded", "false"); }
   });
 
+  objectLayer.addEventListener("dblclick", function (event) {
+  if (state.mode !== "select") return;
+
+  var element = event.target.closest("[data-object-id]");
+  if (!element) return;
+
+  var item = state.objects.find(function (candidate) {
+    return candidate.id === element.dataset.objectId;
+  });
+  if (!item || !item.locked) return;
+
+  event.preventDefault();
+  event.stopPropagation();
+  selectObject(item.id, true);
+});
+
   objectLayer.addEventListener("pointerdown", function (event) {
     var element = event.target.closest("[data-object-id]");
-    if (!element || state.mode !== "select") return;
-    var item = state.objects.find(function (candidate) { return candidate.id === element.dataset.objectId; });
+    if (!element || state.mode !== "select" ||
+        event.button !== 0 || interaction) return;
+
+    var item = state.objects.find(function (candidate) {
+      return candidate.id === element.dataset.objectId;
+    });
     if (!item) return;
+
+    if (item.locked) {
+      event.stopPropagation();
+      return;
+    }
     var handle = event.target.closest("[data-handle]");
     var rotateHandle = event.target.closest("[data-rotate-handle]");
+    var node = event.target.closest("[data-shape-node]");
+    var edge = event.target.closest("[data-shape-edge]");
+
     if (state.selectedId !== item.id) {
       selectObject(item.id, false);
-      element = objectLayer.querySelector('.planner-selection-overlay[data-object-id="' + CSS.escape(item.id) + '"]') || objectLayer.querySelector('[data-object-id="' + CSS.escape(item.id) + '"]');
+      element = objectLayer.querySelector(
+        '.planner-selection-overlay[data-object-id="' +
+        CSS.escape(item.id) + '"]'
+      );
     }
-    interaction = { type: handle ? "resize" : rotateHandle ? "rotate" : "move", pointerId: event.pointerId, item: item, before: beginChange(), startX: event.clientX, startY: event.clientY, original: clone(item), handle: handle && handle.dataset.handle };
+
+    var before = beginChange();
+    var nodeIndex = -1;
+
+    if (isShapeEditing(item)) {
+      // Body drags cannot accidentally move the whole object in this mode.
+      if (!node && !edge) {
+        event.preventDefault();
+        event.stopPropagation();
+        return;
+      }
+      nodeIndex = edge
+        ? insertShapePoint(item, Number(edge.dataset.shapeEdge))
+        : Number(node.dataset.shapeNode);
+      if (!Number.isInteger(nodeIndex) ||
+          nodeIndex < 0 || nodeIndex >= item.points.length) return;
+    }
+
+    interaction = {
+      type: nodeIndex >= 0 ? "node" :
+        handle ? "resize" : rotateHandle ? "rotate" : "move",
+      pointerId: event.pointerId,
+      item: item,
+      before: before,
+      startX: event.clientX,
+      startY: event.clientY,
+      original: clone(item),
+      handle: handle && handle.dataset.handle,
+      nodeIndex: nodeIndex
+    };
+
     if (interaction.type === "rotate") {
       var rect = element.getBoundingClientRect();
       interaction.centreX = rect.left + rect.width / 2;
       interaction.centreY = rect.top + rect.height / 2;
-      interaction.lastPointerAngle = Math.atan2(event.clientY - interaction.centreY, event.clientX - interaction.centreX) * 180 / Math.PI;
+      interaction.lastPointerAngle = Math.atan2(
+        event.clientY - interaction.centreY,
+        event.clientX - interaction.centreX
+      ) * 180 / Math.PI;
       interaction.rawRotation = item.rotation || 0;
       interaction.snapActive = event.shiftKey;
     }
-    try { element.setPointerCapture(event.pointerId); } catch (error) { /* Synthetic pointer streams may not expose capture. */ }
+
+    // The layer survives renderObjects(); individual object nodes do not.
+    try {
+      objectLayer.setPointerCapture(event.pointerId);
+    } catch (error) {
+      /* Window listeners also support synthetic pointer streams. */
+    }
+
+    if (edge) renderObjects();
     event.preventDefault();
     event.stopPropagation();
   });
 
   window.addEventListener("pointermove", function (event) {
-    if (!interaction || ["move", "resize", "rotate"].indexOf(interaction.type) === -1 || interaction.pointerId !== event.pointerId) return;
+    if (!interaction ||
+        ["move", "resize", "rotate", "node"].indexOf(interaction.type) === -1 ||
+        interaction.pointerId !== event.pointerId) return;
+
     var item = interaction.item;
+    if (item.locked) return;
+    var original = interaction.original;
     var screenDx = (event.clientX - interaction.startX) / renderScale();
     var screenDy = (event.clientY - interaction.startY) / renderScale();
+
     if (interaction.type === "move") {
-      item.x = clamp(round(interaction.original.x + screenDx), 0, state.garden.width - item.width);
-      item.y = clamp(round(interaction.original.y + screenDy), 0, state.garden.height - item.height);
-    } else if (interaction.type === "resize") {
-      var radians = -(interaction.original.rotation || 0) * Math.PI / 180;
-      var localDx = screenDx * Math.cos(radians) - screenDy * Math.sin(radians);
-      var localDy = screenDx * Math.sin(radians) + screenDy * Math.cos(radians);
-      resizeItem(item, interaction.original, interaction.handle, localDx, localDy);
-    } else if (interaction.type === "rotate") {
-      var angle = Math.atan2(event.clientY - interaction.centreY, event.clientX - interaction.centreX) * 180 / Math.PI;
-      interaction.rawRotation += signedAngleDelta(interaction.lastPointerAngle, angle);
+      item.x = clamp(
+        round(original.x + screenDx), 0, state.garden.width - item.width
+      );
+      item.y = clamp(
+        round(original.y + screenDy), 0, state.garden.height - item.height
+      );
+    } else if (interaction.type === "resize" || interaction.type === "node") {
+      var radians = -(original.rotation || 0) * Math.PI / 180;
+      var localDx = screenDx * Math.cos(radians) -
+        screenDy * Math.sin(radians);
+      var localDy = screenDx * Math.sin(radians) +
+        screenDy * Math.cos(radians);
+
+      if (interaction.type === "node") {
+        var originalPoint = original.points[interaction.nodeIndex];
+        item.points[interaction.nodeIndex] = {
+          x: round(clamp(originalPoint.x + localDx / original.width, 0, 1), 4),
+          y: round(clamp(originalPoint.y + localDy / original.height, 0, 1), 4)
+        };
+      } else {
+        resizeItem(item, original, interaction.handle, localDx, localDy);
+      }
+    } else {
+      var angle = Math.atan2(
+        event.clientY - interaction.centreY,
+        event.clientX - interaction.centreX
+      ) * 180 / Math.PI;
+      interaction.rawRotation += signedAngleDelta(
+        interaction.lastPointerAngle, angle
+      );
       interaction.lastPointerAngle = angle;
       interaction.snapActive = event.shiftKey;
-      item.rotation = normalizeAngle(interaction.snapActive ? Math.round(interaction.rawRotation / 15) * 15 : Math.round(interaction.rawRotation));
+      item.rotation = normalizeAngle(
+        interaction.snapActive
+          ? Math.round(interaction.rawRotation / 15) * 15
+          : Math.round(interaction.rawRotation)
+      );
     }
+
     if (item.kind === "plant") syncAssignedBed(item);
     renderObjects();
     updateInspector();
@@ -1233,9 +1632,32 @@
   window.addEventListener("pointercancel", endObjectInteraction);
 
   function endObjectInteraction(event) {
-    if (!interaction || ["move", "resize", "rotate"].indexOf(interaction.type) === -1 || interaction.pointerId !== event.pointerId) return;
-    finishChange(interaction.before);
+    if (!interaction ||
+        ["move", "resize", "rotate", "node"].indexOf(interaction.type) === -1 ||
+        interaction.pointerId !== event.pointerId) return;
+
+    var completed = interaction;
     interaction = null;
+
+    try {
+      if (objectLayer.hasPointerCapture(completed.pointerId)) {
+        objectLayer.releasePointerCapture(completed.pointerId);
+      }
+    } catch (error) {
+      /* Capture may already have ended. */
+    }
+
+    if (completed.type === "node" &&
+        (event.type === "pointercancel" || !validShape(completed.item))) {
+      state.objects = JSON.parse(completed.before);
+      if (event.type !== "pointercancel") {
+        toast("Keep a non-zero area or path.");
+      }
+      render();
+      return;
+    }
+
+    finishChange(completed.before);
     render();
   }
 
@@ -1285,6 +1707,7 @@
   }
 
   function resizeItem(item, original, handle, dx, dy) {
+    if (item.locked) return;
     var minimumWidth = 0.25;
     var minimumHeight = 0.25;
     var stepX = 0.1;
@@ -1453,7 +1876,7 @@
     field.addEventListener("focus", function () { field.dataset.before = beginChange(); });
     field.addEventListener("change", function () {
       var item = selected();
-      if (!item) return;
+      if (!item || item.locked) return;
       var value = field.value;
       var geometryChanged = false;
       if (field.dataset.field === "name") item.name = value.trim() || item.name;
@@ -1471,7 +1894,7 @@
   });
   form.querySelector('[data-field="rotation"]').addEventListener("input", function (event) {
     var item = selected();
-    if (!item) return;
+    if (!item || item.locked) return;
     item.rotation = Number(event.target.value);
     form.querySelector("[data-rotation-output]").value = item.rotation + "°";
     renderObjects();
@@ -1492,6 +1915,19 @@
       error.hidden = false;
       return;
     }
+    var editingGarden = planner.querySelector("[data-garden-dialog]").dataset.editing === "true";
+    var changingDimensions =
+      round(width) !== state.garden.width ||
+      round(height) !== state.garden.height;
+
+    if (editingGarden && changingDimensions && state.objects.some(function (item) {
+      return item.locked;
+    })) {
+      error.textContent = "Unlock all objects before changing the garden dimensions.";
+      error.hidden = false;
+      return;
+    }
+
     applyGardenSettings({ name: name, width: width, height: height, measurement: gardenForm.elements.measurement.value, north: Number(gardenForm.elements.north.value), template: gardenForm.elements.template.value }, planner.querySelector("[data-garden-dialog]").dataset.editing === "true");
     planner.querySelector("[data-garden-dialog]").close();
   });
@@ -1499,16 +1935,72 @@
 
   document.addEventListener("keydown", function (event) {
     if (!planner.contains(document.activeElement) && document.activeElement !== document.body) return;
+    if (interaction && interaction.type === "node") {
+      if (event.key === "Escape") {
+        event.preventDefault();
+        endObjectInteraction({
+          pointerId: interaction.pointerId,
+          type: "pointercancel"
+        });
+        state.shapeEditId = null;
+        render();
+      } else {
+        // Do not undo, save, delete, or nudge a half-finished node drag.
+        event.preventDefault();
+      }
+      return;
+    }
+
+    if (event.key === "Escape" && state.shapeEditId) {
+      event.preventDefault();
+      state.shapeEditId = null;
+      render();
+      return;
+    }
     var editing = /INPUT|TEXTAREA|SELECT/.test(document.activeElement.tagName);
     if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "s") { event.preventDefault(); savePlan(); return; }
     if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "z") { event.preventDefault(); event.shiftKey ? redo() : undo(); return; }
     if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "y") { event.preventDefault(); redo(); return; }
     if (editing) return;
+    var vertexButton = document.activeElement.closest("[data-shape-node]");
+    if (vertexButton && isShapeEditing(selected()) &&
+        /^Arrow/.test(event.key)) {
+      event.preventDefault();
+      var vertexItem = selected();
+      var vertexIndex = Number(vertexButton.dataset.shapeNode);
+      var vertexBefore = beginChange();
+      var oldPoint = clone(vertexItem.points[vertexIndex]);
+      var step = event.shiftKey ? 0.05 : 0.01;
+      var nextPoint = clone(oldPoint);
+
+      if (event.key === "ArrowLeft") nextPoint.x -= step;
+      if (event.key === "ArrowRight") nextPoint.x += step;
+      if (event.key === "ArrowUp") nextPoint.y -= step;
+      if (event.key === "ArrowDown") nextPoint.y += step;
+      nextPoint.x = round(clamp(nextPoint.x, 0, 1), 4);
+      nextPoint.y = round(clamp(nextPoint.y, 0, 1), 4);
+      vertexItem.points[vertexIndex] = nextPoint;
+
+      if (validShape(vertexItem)) finishChange(vertexBefore);
+      else vertexItem.points[vertexIndex] = oldPoint;
+      render();
+      var replacement = objectLayer.querySelector(
+        '[data-shape-node="' + vertexIndex + '"]'
+      );
+      if (replacement) replacement.focus({ preventScroll: true });
+      return;
+    }
+
+    if (state.shapeEditId && /^Arrow/.test(event.key)) {
+      event.preventDefault();
+      return;
+    }
     if ((event.key === "Delete" || event.key === "Backspace") && selected()) { event.preventDefault(); deleteSelected(); return; }
     if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "d" && selected()) { event.preventDefault(); duplicateSelected(); return; }
     var item = selected();
     if (!item || !/^Arrow/.test(event.key)) return;
     event.preventDefault();
+    if (item.locked) return;
     var before = beginChange();
     var increment = event.shiftKey ? 0.5 : 0.1;
     if (event.key === "ArrowLeft") item.x = Math.max(0, item.x - increment);
@@ -1538,6 +2030,7 @@
   });
 
   setMode("select");
+  setWorkingMode(state.workingMode);
   updatePanelLayout();
   render();
   updateFilterButtons();

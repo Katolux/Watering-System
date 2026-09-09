@@ -23,7 +23,7 @@ with patch("gardenhub.repositories.weather_repo.should_refresh_weather", return_
 from gardenhub.db.connection import get_conn
 from gardenhub.repositories.weather_repo import save_current_weather, save_weather_record
 from gardenhub.routes import weather_routes
-from gardenhub.services.overview import WEATHER_CODES
+from gardenhub.services.weather_view import WEATHER_CODES
 
 
 class WeatherViewModelParityTest(unittest.TestCase):

@@ -46,6 +46,7 @@ def main():
                     "variant": "soil",
                     "layer": "surfaces",
                     "name": "Scaled soil",
+                    "locked": True,
                     "x": 1.25,
                     "y": 2.5,
                     "width": 4.5,
@@ -58,6 +59,7 @@ def main():
                     "kind": "plant",
                     "layer": "plants",
                     "name": "Tomato group",
+                    "locked": False,
                     "plantId": "tomato",
                     "bedId": "bed-1",
                     "sourcePlantingId": 42,
@@ -125,6 +127,9 @@ def main():
         assert loaded["planExists"] is True
         assert loaded["garden"]["north"] == 37
         assert loaded["objects"] == saved["objects"]
+        assert loaded["objects"][0]["locked"] is True
+        assert loaded["objects"][1]["locked"] is False
+        assert "locked" not in loaded["objects"][2]
         assert [item["z"] for item in loaded["objects"]] == [101, 600, 601, 602, 99]
 
         from gardenhub.db.connection import get_conn
@@ -169,6 +174,94 @@ def main():
         loaded_after_failure = client.get("/api/planner/layout").get_json()
         assert loaded_after_failure["objects"] == loaded["objects"]
 
+        for invalid_lock in ("true", 1, None):
+            invalid = json.loads(json.dumps(updated))
+            invalid["objects"][0]["locked"] = invalid_lock
+            response = client.put("/api/planner/layout", json=invalid)
+            assert response.status_code == 400
+        assert client.get("/api/planner/layout").get_json()["objects"] == loaded["objects"]
+
+        updated["objects"][0]["locked"] = False
+        assert client.put("/api/planner/layout", json=updated).status_code == 200
+        assert client.get("/api/planner/layout").get_json()["objects"][0]["locked"] is False
+        geometry_layout = json.loads(json.dumps(layout))
+        geometry_layout["objects"] = [
+            {
+                "id": "geometry-area",
+                "kind": "surface",
+                "variant": "grass",
+                "layer": "surfaces",
+                "name": "Editable grass",
+                "x": 1,
+                "y": 1,
+                "width": 4,
+                "height": 3,
+                "rotation": 25,
+                "z": 100,
+                "geometryType": "area",
+                "points": [
+                    {"x": 0, "y": 0},
+                    {"x": 1, "y": 0},
+                    {"x": 0.75, "y": 0.6},
+                    {"x": 0.5, "y": 1},
+                    {"x": 0, "y": 1},
+                ],
+            },
+            {
+                "id": "geometry-path",
+                "kind": "structure",
+                "variant": "fence",
+                "layer": "structures",
+                "name": "Editable fence",
+                "x": 6,
+                "y": 2,
+                "width": 4,
+                "height": 3,
+                "rotation": 0,
+                "z": 500,
+                "geometryType": "path",
+                "points": [
+                    {"x": 0, "y": 0.5},
+                    {"x": 0.5, "y": 0.5},
+                    {"x": 1, "y": 1},
+                ],
+            },
+        ]
+
+        response = client.put("/api/planner/layout", json=geometry_layout)
+        assert response.status_code == 200, response.get_data(as_text=True)
+        geometry_saved = response.get_json()["objects"]
+        assert geometry_saved == geometry_layout["objects"]
+        assert client.get("/api/planner/layout").get_json()["objects"] == geometry_saved
+        assert get_planner_state(
+            garden_context=get_garden_context(False)
+        )["objects"] == geometry_saved
+
+        from gardenhub.services.planner_projection import get_planner_projection
+
+        projection = get_planner_projection("local-garden", {"beds": []})
+        assert [item["points"] for item in projection["objects"]] == [
+            item["points"] for item in geometry_saved
+        ]
+
+        invalid_cases = [
+            ("geometryType", "curve"),
+            ("geometryType", []),
+            ("points", [{"x": 0, "y": 0}]),
+            ("points", [{"x": 0, "y": 0}] * 129),
+            ("points", [{"x": True, "y": 0}] * 3),
+            ("points", [{"x": 2, "y": 0}] * 3),
+            ("points", [{"x": 0, "y": 0}] * 3),
+        ]
+        for field, value in invalid_cases:
+            bad_geometry = json.loads(json.dumps(geometry_layout))
+            bad_geometry["objects"][0][field] = value
+            response = client.put("/api/planner/layout", json=bad_geometry)
+            assert response.status_code == 400
+            assert client.get(
+                "/api/planner/layout"
+            ).get_json()["objects"] == geometry_saved
+                
         print("Planner persistence smoke passed")
         gc.collect()
 

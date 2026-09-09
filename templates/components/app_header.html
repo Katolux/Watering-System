@@ -30,7 +30,7 @@
         {{ icon("chevron-down") }}
       </button>
       <div class="header-menu__panel garden-menu__panel" id="garden-context-menu" data-menu-panel hidden>
-        <div class="garden-menu__header"><span>Active garden</span><small>Selection is kept for this browser session.</small></div>
+        <div class="garden-menu__header"><span>Active garden</span><small>Garden settings saved locally.</small></div>
         <div class="garden-menu__options" role="listbox" aria-label="Available gardens">
           {% for garden_option in garden_context.gardens %}
           <button type="button" role="option" data-garden-option="{{ garden_option.id }}" aria-selected="{{ 'true' if garden_option.id == garden_context.active_garden_id else 'false' }}">

@@ -26,11 +26,16 @@ def main():
             "temp_max": 20,
             "temp_min": 10,
             "precipitation": 0,
+            "precipitation_probability_max": 0,
             "sunshine": 8,
             "daylight": 12,
+            "sunrise": "07:00",
+            "sunset": "19:00",
             "wind_max": 5,
+            "wind_gusts_max": 8,
             "wind_dir": 180,
             "weather_code": 0,
+            "et0": 2,
         })
         save_planner_layout("local-garden", {
             "version": 1,

@@ -28,9 +28,27 @@
         <button type="button" class="is-active" data-planner-view-button="plan" aria-pressed="true">Plan</button>
         <button type="button" data-planner-view-button="calendar" aria-pressed="false">Calendar</button>
       </div>
-      <button class="button button--secondary planner-panel-toggle" type="button" data-panel-toggle="library" aria-expanded="true">{{ icon("plus") }} <span>Catalogue</span></button>
+      <button class="button button--secondary planner-panel-toggle" type="button" data-panel-toggle="library" aria-expanded="true"><span>Catalogue</span></button>
       <button class="button button--secondary planner-panel-toggle" type="button" data-panel-toggle="inspector" aria-expanded="true">{{ icon("info") }} <span>Inspector</span></button>
-      <button class="button button--secondary" type="button" data-edit-garden title="Edit garden dimensions and units">Garden</button>
+      <div class="planner-view-switch planner-working-mode-switch"
+     role="group"
+     aria-label="Planner working mode"
+     data-plan-only>
+  <button type="button"
+          class="is-active"
+          data-working-mode="garden"
+          aria-pressed="true">Garden</button>
+  <button type="button"
+          data-working-mode="irrigation"
+          aria-pressed="false">Irrigation</button>
+  <button type="button"
+          data-working-mode="sensors"
+          aria-pressed="false">Sensors</button>
+</div>
+<button class="button button--secondary"
+        type="button"
+        data-edit-garden
+        title="Edit garden dimensions and units">Garden setup</button>
       <button class="button button--secondary" type="button" data-layers-toggle aria-expanded="false">{{ icon("layout") }} Layers</button>
       <button class="button button--primary" type="button" data-save-plan disabled>Save</button>
       <span class="planner-save-state" data-save-state><i></i> No saved plan</span>
@@ -94,8 +112,8 @@
         <section class="planner-asset-panel" data-library-panel="irrigation" aria-label="Irrigation">
           <div class="planner-asset-panel__heading"><strong>Irrigation</strong><small>Visual planning only</small></div>
           <div class="planner-asset-grid">
-            {% for variant, name in [('main-1in','Main line · 1 inch'),('main-half','Main line · 1/2 inch'),('main-quarter','Main line · 1/4 inch'),('emitter-15','Emitter line · 15 cm'),('emitter-30','Emitter line · 30 cm'),('dripper','Point emitter / dripper')] %}
-            <article class="planner-asset planner-asset--tile" draggable="true" data-library-asset data-search="{{ name|lower }}" data-kind="irrigation" data-variant="{{ variant }}" data-name="{{ name }}"><span class="planner-object-symbol planner-object-symbol--{{ variant }}"></span><strong>{{ name }}</strong><button type="button" data-add-asset aria-label="Add {{ name }}">+</button></article>
+            {% for variant, name in [('main-1in','Main line · 1 inch'),('main-half','Main line · 1/2 inch'),('main-quarter','Main line · 1/4 inch'),('emitter-15','Emitter line · 15 cm'),('emitter-30','Emitter line · 30 cm'),('dripper','Point emitter / dripper'),('soaker-hose','Soaker hose'), ('garden-hose','Garden hose')] %}
+            <article class="planner-asset planner-asset--tile" draggable="true" data-library-asset data-search="{{ name|lower }}" data-geometry-type="{{ 'path' if variant in ['soaker-hose', 'garden-hose'] else 'rect' }}" data-kind="irrigation" data-variant="{{ variant }}" data-name="{{ name }}"><span class="planner-object-symbol planner-object-symbol--{{ variant }}"></span><strong>{{ name }}</strong><button type="button" data-add-asset aria-label="Add {{ name }}">+</button></article>
             {% endfor %}
           </div>
         </section>
@@ -103,8 +121,8 @@
         <section class="planner-asset-panel" data-library-panel="surfaces" aria-label="Surfaces">
           <div class="planner-asset-panel__heading"><strong>Surfaces</strong><small>Resize to cover an area</small></div>
           <div class="planner-asset-grid">
-            {% for variant, name in [('grass','Grass'),('soil','Soil / planting area'),('paving','Path / paving'),('gravel','Gravel')] %}
-            <article class="planner-asset planner-asset--tile" draggable="true" data-library-asset data-search="{{ name|lower }}" data-kind="surface" data-variant="{{ variant }}" data-name="{{ name }}"><span class="planner-object-symbol planner-object-symbol--{{ variant }}"></span><strong>{{ name }}</strong><button type="button" data-add-asset aria-label="Add {{ name }}">+</button></article>
+            {% for variant, name in [('grass','Grass'),('soil','Soil / planting area'),('paving','Path / paving'),('gravel','Gravel'),('mulch','Mulch'), ('woodchips','Woodchips / bark'), ('concrete','Concrete'), ('decking','Decking')] %}
+            <article class="planner-asset planner-asset--tile" data-geometry-type="{{ 'area' if variant in ['grass', 'mulch', 'woodchips', 'concrete', 'decking'] else 'rect' }}" draggable="true" data-library-asset data-search="{{ name|lower }}" data-kind="surface" data-variant="{{ variant }}" data-name="{{ name }}"><span class="planner-object-symbol planner-object-symbol--{{ variant }}"></span><strong>{{ name }}</strong><button type="button" data-add-asset aria-label="Add {{ name }}">+</button></article>
             {% endfor %}
           </div>
         </section>
@@ -113,7 +131,7 @@
           <div class="planner-asset-panel__heading"><strong>Boundaries &amp; structures</strong><small>Top-down symbols</small></div>
           <div class="planner-asset-grid">
             {% for variant, name in [('fence','Fence'),('hedge','Hedge / bush boundary'),('greenhouse','Greenhouse / polytunnel'),('structure','Garden structure')] %}
-            <article class="planner-asset planner-asset--tile" draggable="true" data-library-asset data-search="{{ name|lower }}" data-kind="structure" data-variant="{{ variant }}" data-name="{{ name }}"><span class="planner-object-symbol planner-object-symbol--{{ variant }}"></span><strong>{{ name }}</strong><button type="button" data-add-asset aria-label="Add {{ name }}">+</button></article>
+            <article class="planner-asset planner-asset--tile" data-geometry-type="{{ 'path' if variant == 'fence' else 'rect' }}" draggable="true" data-library-asset data-search="{{ name|lower }}" data-kind="structure" data-variant="{{ variant }}" data-name="{{ name }}"><span class="planner-object-symbol planner-object-symbol--{{ variant }}"></span><strong>{{ name }}</strong><button type="button" data-add-asset aria-label="Add {{ name }}">+</button></article>
             {% endfor %}
           </div>
         </section>
@@ -159,7 +177,7 @@
       <div class="planner-layers" data-layers-panel hidden>
         <header><strong>Layers</strong><button type="button" data-layers-close aria-label="Close layers">&times;</button></header>
         {% for layer, label in [('plants','Plants'),('structures','Structures'),('irrigation','Irrigation'),('beds','Beds & containers'),('paths','Paths & ground areas'),('surfaces','Surfaces'),('sensors','Sensors'),('labels','Labels'),('halos','Spacing halos')] %}
-        <label><input type="checkbox" data-layer="{{ layer }}"{% if layer != 'sensors' %} checked{% endif %}><span>{{ label }}</span></label>
+        <label><input type="checkbox" data-layer="{{ layer }}"{% if layer not in ['sensors', 'labels'] %} checked{% endif %}><span>{{ label }}</span></label>
         {% endfor %}
       </div>
 
@@ -221,6 +239,20 @@
         <details class="planner-inspector-section planner-geometry" data-geometry-section open>
           <summary>Placement &amp; geometry</summary>
           <div class="planner-geometry__body">
+
+            <div data-shape-controls hidden>
+              <button class="button button--secondary"
+                      type="button"
+                      data-edit-shape
+                      aria-pressed="false">
+                Edit shape
+              </button>
+              <p class="planner-hint">
+                Drag vertices to reshape. Use + to insert a vertex.
+                Nodes stay inside the frame; use Done, then resize the frame
+                if you need more room. Escape finishes shape editing.
+              </p>
+            </div>
             <label class="field"><span class="field__label">Name</span><input type="text" data-field="name"></label>
             <div class="planner-field-grid" data-area-fields><label class="field"><span class="field__label" data-width-label>Width (m)</span><input type="number" min="0.1" step="0.1" data-field="width"></label><label class="field"><span class="field__label" data-height-label>Height (m)</span><input type="number" min="0.1" step="0.1" data-field="height"></label></div>
             <label class="field planner-linear-field" data-linear-fields hidden><span class="field__label" data-length-label>Length (m)</span><input type="number" min="0.5" step="0.1" data-field="length"></label>
@@ -238,7 +270,14 @@
             </div>
           </div>
         </details>
-        <div class="planner-inspector-actions"><button class="button button--secondary" type="button" data-action="duplicate">{{ icon("plus") }} Duplicate</button><button class="button button--secondary" type="button" data-action="delete">{{ icon("trash") }} Delete</button></div>
+        <p class="planner-lock-status" data-lock-status role="status" hidden>
+        Locked — unlock to edit, move, resize, rotate, or delete.
+      </p>
+      <div class="planner-inspector-actions">
+        <button class="button button--secondary" type="button" data-action="toggle-lock" aria-pressed="false">Lock</button>
+        <button class="button button--secondary" type="button" data-action="duplicate">{{ icon("plus") }} Duplicate</button>
+        <button class="button button--secondary" type="button" data-action="delete">{{ icon("trash") }} Delete</button>
+      </div>
       </form>
       <div class="planner-persistence-note">{{ icon("info") }}<p><strong>Planner layout</strong><span>Geometry is saved with this garden. Existing bed and planting links remain read-only.</span></p></div>
     </aside>

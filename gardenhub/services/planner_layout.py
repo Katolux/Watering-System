@@ -48,6 +48,65 @@ def _number(value, field, minimum=None, maximum=None):
     return value
 
 
+MAX_GEOMETRY_POINTS = 128
+
+
+def _geometry(item, prefix):
+    geometry_type = item.get("geometryType", "rect")
+    if geometry_type not in ("rect", "area", "path"):
+        raise PlannerLayoutValidationError(
+            f"{prefix}.geometryType is not supported."
+        )
+
+    if geometry_type == "rect":
+        if "points" in item:
+            raise PlannerLayoutValidationError(
+                f"{prefix}.points requires area or path geometry."
+            )
+        return {"geometryType": "rect"} if "geometryType" in item else {}
+
+    raw_points = item.get("points")
+    minimum = 3 if geometry_type == "area" else 2
+    if (
+        not isinstance(raw_points, list)
+        or not minimum <= len(raw_points) <= MAX_GEOMETRY_POINTS
+    ):
+        raise PlannerLayoutValidationError(
+            f"{prefix}.points must contain {minimum} to "
+            f"{MAX_GEOMETRY_POINTS} vertices."
+        )
+
+    points = []
+    for index, point in enumerate(raw_points):
+        field = f"{prefix}.points[{index}]"
+        if not isinstance(point, dict):
+            raise PlannerLayoutValidationError(f"{field} must be an object.")
+        points.append({
+            "x": _number(point.get("x"), f"{field}.x", 0, 1),
+            "y": _number(point.get("y"), f"{field}.y", 0, 1),
+        })
+
+    if geometry_type == "area":
+        twice_area = sum(
+            point["x"] * points[(index + 1) % len(points)]["y"]
+            - points[(index + 1) % len(points)]["x"] * point["y"]
+            for index, point in enumerate(points)
+        )
+        valid = abs(twice_area) > 1e-8
+    else:
+        first = points[0]
+        valid = any(
+            point["x"] != first["x"] or point["y"] != first["y"]
+            for point in points[1:]
+        )
+
+    if not valid:
+        raise PlannerLayoutValidationError(
+            f"{prefix}.points must form a non-zero shape."
+        )
+
+    return {"geometryType": geometry_type, "points": points}
+
 def validate_planner_layout(payload):
     if not isinstance(payload, dict):
         raise PlannerLayoutValidationError("The Planner layout must be a JSON object.")
@@ -126,6 +185,12 @@ def validate_planner_layout(payload):
             raise PlannerLayoutValidationError(f"{prefix}.plantId is required for a plant group.")
         if kind != "plant" and "variant" not in cleaned:
             raise PlannerLayoutValidationError(f"{prefix}.variant is required for this object.")
+        if "locked" in item:
+            if not isinstance(item["locked"], bool):
+                raise PlannerLayoutValidationError(
+                    f"{prefix}.locked must be true or false."
+                )
+            cleaned["locked"] = item["locked"]
         if "active" in item:
             if not isinstance(item["active"], bool):
                 raise PlannerLayoutValidationError(f"{prefix}.active must be true or false.")
@@ -140,6 +205,7 @@ def validate_planner_layout(payload):
             if isinstance(source_id, bool) or not isinstance(source_id, int) or source_id < 1:
                 raise PlannerLayoutValidationError(f"{prefix}.sourcePlantingId must be a positive integer.")
             cleaned["sourcePlantingId"] = source_id
+        cleaned.update(_geometry(item, prefix))
         objects.append(cleaned)
 
     return {"version": LAYOUT_SCHEMA_VERSION, "garden": garden, "objects": objects}

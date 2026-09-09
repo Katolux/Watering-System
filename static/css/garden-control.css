@@ -44,10 +44,35 @@
 .garden-control-section-header__icon--warning { background: var(--gh-warning-soft); color: var(--gh-warning); }
 .garden-control-readonly { display: inline-flex; flex: 0 0 auto; align-items: center; gap: var(--gh-space-1); padding: var(--gh-space-1) var(--gh-space-2); border-radius: var(--gh-radius-round); background: var(--gh-primary-soft); color: var(--gh-primary-hover); font-size: var(--gh-font-size-xs); font-weight: var(--gh-weight-semibold); }
 .garden-control-readonly .icon { width: 0.9rem; }
-
 .garden-snapshot__viewport { display: grid; width: 100%; height: clamp(25rem, 36vw, 30rem); place-items: center; padding: var(--gh-space-1); overflow: hidden; border: var(--gh-border-width) solid var(--gh-border); border-radius: var(--gh-radius-md); background: var(--gh-surface-subtle); container-type: size; }
 .garden-snapshot__canvas { position: relative; width: min(100cqw, calc(100cqh * var(--garden-aspect))); height: min(100cqh, calc(100cqw / var(--garden-aspect))); aspect-ratio: var(--garden-aspect); overflow: hidden; border: var(--gh-border-width) solid var(--gh-border); border-radius: var(--gh-radius-md); background-color: #ece9df; background-image: linear-gradient(rgba(116, 112, 99, 0.13) 1px, transparent 1px), linear-gradient(90deg, rgba(116, 112, 99, 0.13) 1px, transparent 1px); background-size: 5% 5%; box-shadow: var(--gh-shadow-sm); isolation: isolate; }
 .garden-snapshot__dimensions { position: absolute; z-index: 2002; bottom: var(--gh-space-2); left: var(--gh-space-2); padding: 0.25rem 0.45rem; border: var(--gh-border-width) solid rgba(80, 78, 69, 0.22); border-radius: var(--gh-radius-sm); background: rgba(255, 255, 255, 0.9); color: var(--gh-text-muted); font-size: 0.65rem; font-weight: var(--gh-weight-semibold); }
+.garden-snapshot__shape {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  pointer-events: none;
+}
+
+.garden-snapshot__shape polygon {
+  fill: #9eb58c;
+  fill-rule: evenodd;
+  stroke: #657b55;
+  stroke-width: 1px;
+  vector-effect: non-scaling-stroke;
+}
+
+.garden-snapshot__shape polyline {
+  fill: none;
+  stroke: #75624e;
+  stroke-width: 3px;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
+}
 .garden-snapshot__object { position: absolute; top: var(--object-y); left: var(--object-x); display: flex; width: var(--object-w); height: var(--object-h); min-width: 0; align-items: center; justify-content: center; padding: 0; overflow: visible; border: 0; background: transparent; color: var(--gh-text-strong); font: inherit; text-align: center; transform: rotate(var(--object-rotation)); transform-origin: center; }
 .garden-snapshot__object-visual { position: absolute; inset: 0; overflow: hidden; border: 1px solid rgba(69, 67, 58, 0.48); border-radius: 0.22rem; background: #b7b3a5; box-shadow: 0 1px 3px rgba(48, 46, 39, 0.16); }
 .garden-snapshot__object-label,

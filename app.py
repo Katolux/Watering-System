@@ -1,3 +1,4 @@
+from pathlib import Path
 from flask import (
     Flask,
     jsonify,
@@ -8,6 +9,10 @@ from flask import (
 )
 
 from gardenhub.services.weather import refresh_weather
+from gardenhub.services.geocoding import (
+    search_location,
+    resolve_timezone,
+)
 from gardenhub.services.garden_context import (
     get_active_garden,
     get_garden_context,
@@ -29,9 +34,11 @@ from gardenhub.demo_config import DEMO_GARDEN
 from gardenhub.services.overview import (
     get_garden_snapshot,
     get_planner_state,
-    get_weather_snapshot,
 )
+from gardenhub.services.weather_view import get_weather_snapshot
 from gardenhub.repositories.system_events_repo import get_recent_system_events
+from gardenhub.repositories.garden_location_repo import save_garden_location
+from gardenhub.repositories.plants_repo import get_all_plants_catalog
 from gardenhub.services.notifications import (
     get_notification_feed,
     unavailable_notification_feed,
@@ -40,6 +47,7 @@ from gardenhub.services.history import get_garden_history
 from gardenhub.repositories.weather_repo import (
     should_refresh_weather,
 )
+from seeding.plant_seeder import seed_all_plants
 
 
 
@@ -55,6 +63,9 @@ app.register_blueprint(notifications_bp)
 
 init_all_tables()
 
+if not get_all_plants_catalog():
+    seed_all_plants(str(Path(__file__).resolve().parent / "plants"))
+
 try:
     if not is_demo_database() and should_refresh_weather():
         startup_garden_context = get_garden_context(False)
@@ -63,6 +74,7 @@ try:
             startup_coordinates["latitude"],
             startup_coordinates["longitude"],
             startup_coordinates["timezone"],
+            force_refresh=True,
         )
 except Exception as e:
     print(f"Startup weather refresh skipped: {e}")
@@ -117,6 +129,7 @@ def refresh_weather_route():
             coordinates["latitude"],
             coordinates["longitude"],
             coordinates["timezone"],
+            force_refresh=True,
         )
     except Exception:
         app.logger.exception(
@@ -140,6 +153,103 @@ def refresh_weather_route():
         })
     return redirect(url_for("weather.weather"))
 
+@app.route("/garden-location", methods=["POST"])
+def save_garden_location_route():
+    data = request.get_json(silent=True) or {}
+
+    location_label = data.get("location_label")
+    latitude = data.get("latitude")
+    longitude = data.get("longitude")
+
+    if latitude is None or longitude is None:
+        return jsonify({
+            "ok": False,
+            "error": "Latitude and longitude are required.",
+        }), 400
+
+    try:
+        latitude = float(latitude)
+        longitude = float(longitude)
+    except (TypeError, ValueError):
+        return jsonify({
+            "ok": False,
+            "error": "Latitude and longitude must be valid numbers.",
+        }), 400
+
+    if not -90 <= latitude <= 90:
+        return jsonify({
+            "ok": False,
+            "error": "Latitude must be between -90 and 90.",
+        }), 400
+
+    if not -180 <= longitude <= 180:
+        return jsonify({
+            "ok": False,
+            "error": "Longitude must be between -180 and 180.",
+        }), 400
+
+    try:
+        timezone_name = resolve_timezone(
+            latitude,
+            longitude,
+        )
+    except Exception:
+        app.logger.exception(
+            "Timezone resolution failed for latitude=%s longitude=%s",
+            latitude,
+            longitude,
+        )
+
+        return jsonify({
+            "ok": False,
+            "error": "The timezone for this location could not be determined.",
+        }), 502
+
+    save_garden_location(
+        location_label=location_label,
+        latitude=latitude,
+        longitude=longitude,
+        timezone_name=timezone_name,
+    )
+
+    return jsonify({
+        "ok": True,
+        "location": {
+            "location_label": location_label,
+            "latitude": latitude,
+            "longitude": longitude,
+            "timezone": timezone_name,
+        },
+    })
+
+@app.route("/garden-location/search")
+def search_garden_location():
+    query = request.args.get("q", "").strip()
+
+    if len(query) < 2:
+        return jsonify({
+            "ok": False,
+            "error": "Enter a location to search.",
+        }), 400
+
+    try:
+        results = search_location(query)
+
+    except Exception:
+        app.logger.exception(
+            "Garden location search failed for query=%s",
+            query,
+        )
+
+        return jsonify({
+            "ok": False,
+            "error": "Location search is currently unavailable.",
+        }), 502
+
+    return jsonify({
+        "ok": True,
+        "results": results,
+    })
 
 @app.route("/history")
 def history():
@@ -148,4 +258,3 @@ def history():
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000, debug=False) 
-

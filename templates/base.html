@@ -1,5 +1,6 @@
 {% from "components/icons.html" import icon %}
 {% from "components/app_header.html" import app_header with context %}
+{% from "components/garden_location_dialog.html" import garden_location_dialog %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -12,6 +13,17 @@
   <link rel="manifest" href="{{ url_for('static', filename='manifest.webmanifest') }}">
   <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
   <link rel="stylesheet" href="{{ url_for('static', filename='css/surfaces.css') }}">
+
+  <link
+    rel="stylesheet"
+    href="{{ url_for('static', filename='css/garden-location.css') }}"
+  >
+
+  <link
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+  >
+
   {% block extra_styles %}{% endblock %}
 </head>
 <body class="{% block body_class %}{% endblock %}">
@@ -82,28 +94,42 @@
       <main class="app-main" id="main-content">{% block content %}{% endblock %}</main>
     </div>
   </div>
-  <dialog class="garden-location-dialog" data-location-dialog aria-labelledby="garden-location-title">
-    <form method="dialog" data-location-form>
-      <header>
-        <div><span>Active garden</span><h2 id="garden-location-title">Garden location</h2></div>
-        <button class="button button--ghost button--icon" type="button" data-location-dialog-close aria-label="Close location settings">{{ icon("x") }}</button>
-      </header>
-      <p class="garden-location-dialog__intro">Location belongs to the garden and will drive its weather once backend garden coordinates are available.</p>
-      <button class="button button--secondary garden-location-dialog__geolocate" type="button" data-use-device-location>{{ icon("map-pin") }} Use my current location</button>
-      <div class="garden-location-dialog__divider"><span>or enter it manually</span></div>
-      <label>Location or address<input type="text" name="address_label" data-location-label autocomplete="street-address" placeholder="Home garden, Madrid"></label>
-      <div class="garden-location-dialog__coordinates" data-location-coordinates hidden>
-        <span><small>Latitude</small><output data-location-latitude></output></span>
-        <span><small>Longitude</small><output data-location-longitude></output></span>
-      </div>
-      <p class="garden-location-dialog__note">Manual address lookup is not connected yet. The label can be kept for this browser session; coordinate resolution will connect to the future garden API.</p>
-      <p class="garden-location-dialog__status" data-location-status role="status" aria-live="polite"></p>
-      <footer><button class="button button--ghost" type="button" data-location-dialog-close>Cancel</button><button class="button button--primary" type="submit">Use this location</button></footer>
-    </form>
-  </dialog>
-  <script type="application/json" data-garden-context>{{ garden_context|tojson }}</script>
-  <script src="{{ url_for('static', filename='js/app-shell.js') }}" defer></script>
-  <script src="{{ url_for('static', filename='js/garden-context.js') }}" defer></script>
-  {% block extra_scripts %}{% endblock %}
+  {{ garden_location_dialog() }}
+
+<script type="application/json" data-garden-context>
+  {{ garden_context|tojson }}
+</script>
+
+<script
+  src="{{ url_for('static', filename='js/app-shell.js') }}"
+  defer
+></script>
+
+<script
+  src="{{ url_for('static', filename='js/garden-context.js') }}"
+  defer
+></script>
+
+<script
+  src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+  defer
+></script>
+
+<script
+  src="{{ url_for('static', filename='js/garden-location-api.js') }}"
+  defer
+></script>
+
+<script
+  src="{{ url_for('static', filename='js/garden-location-map.js') }}"
+  defer
+></script>
+
+<script
+  src="{{ url_for('static', filename='js/garden-location.js') }}"
+  defer
+></script>
+
+{% block extra_scripts %}{% endblock %}
 </body>
 </html>

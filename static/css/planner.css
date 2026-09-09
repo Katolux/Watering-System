@@ -33,7 +33,7 @@
   z-index: 20;
   display: grid;
   min-height: var(--planner-toolbar-height);
-  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-columns: auto minmax(0, 1fr);
   align-items: center;
   gap: var(--gh-space-2);
   padding: .35rem .65rem;
@@ -448,8 +448,38 @@
 .planner-object--plant.is-block .planner-plant-halo { border-radius: 24%; }
 .planner-plant-instances { position: absolute; z-index: 2; inset: 0; display: grid; grid-template-columns: repeat(var(--plant-columns), 1fr); grid-template-rows: repeat(var(--plant-rows), 1fr); align-items: stretch; justify-items: stretch; }
 .planner-plant-instance { position: relative; display: grid; min-width: 0; min-height: 0; place-items: center; }
-.planner-plant-instance__halo { position: absolute; z-index: 1; inset: -8% -18%; border: 0; border-radius: 50%; background: radial-gradient(ellipse at center,rgba(var(--plant-space-rgb,111,145,91),.15) 0 48%,rgba(var(--plant-space-rgb,111,145,91),.1) 70%,rgba(var(--plant-space-rgb,111,145,91),.025) 100%); box-shadow: 0 0 calc(5px * var(--planner-inverse-zoom,1)) rgba(var(--plant-space-rgb,111,145,91),.08); filter: blur(calc(.7px * var(--planner-inverse-zoom,1))); pointer-events: none; }
-.planner-plant-instance img { position: relative; z-index: 2; display: block; width: clamp(14px, 82%, 64px); height: clamp(14px, 82%, 64px); object-fit: contain; object-position: center; filter: drop-shadow(0 0 1px rgba(255,255,255,.85)) drop-shadow(0 1px 1px rgba(34,52,36,.24)); pointer-events: none; }
+.planner-plant-instance__halo {
+  position: absolute;
+  z-index: 1;
+  inset: -8% -18%;
+  box-sizing: border-box;
+  border: calc(1px * var(--planner-inverse-zoom, 1)) solid
+    rgba(var(--plant-space-rgb, 111,145,91), .65);
+  border-radius: 50%;
+  background: radial-gradient(
+    ellipse at center,
+    rgba(var(--plant-space-rgb, 111,145,91), .25) 0 48%,
+    rgba(var(--plant-space-rgb, 111,145,91), .18) 70%,
+    rgba(var(--plant-space-rgb, 111,145,91), .10) 100%
+  );
+  box-shadow: 0 0 0 calc(1px * var(--planner-inverse-zoom, 1))
+    rgba(255,255,255,.45);
+  pointer-events: none;
+}
+.planner-plant-instance img {
+  position: relative;
+  z-index: 2;
+  display: block;
+  width: clamp(14px, 82%, 64px);
+  height: clamp(14px, 82%, 64px);
+  object-fit: contain;
+  object-position: center;
+  transform: scale(1.25);
+  transform-origin: center;
+  filter: drop-shadow(0 0 1px rgba(255,255,255,.85))
+    drop-shadow(0 1px 1px rgba(34,52,36,.24));
+  pointer-events: none;
+}
 .planner-plant-instance img[hidden],
 .planner-plant-placeholder[hidden],
 .planner-measure[hidden],
@@ -469,7 +499,7 @@
 .planner-plant-unavailable > span { font-size: calc(18px * var(--planner-inverse-zoom,1)); line-height: 1; }
 .planner-plant-unavailable > strong { padding: 0 calc(4px * var(--planner-inverse-zoom,1)); font-size: calc(9px * var(--planner-inverse-zoom,1)); line-height: 1.15; }
 .planner-plant-placeholder--missing,.planner-calendar__missing-symbol { border-color: #8b928e; background: #edf0ee; color: #59615d; }
-.planner-object--plant:not(.is-selected) .planner-object__label { display: none; }
+.planner-stage:not(.hide-labels) .planner-object__label { display: block; }
 .planner-live-label { position: absolute; z-index: 50; bottom: calc(-44px * var(--planner-inverse-zoom,1)); left: 50%; display: none; min-width: max-content; padding: calc(5px * var(--planner-inverse-zoom,1)) calc(8px * var(--planner-inverse-zoom,1)); border: calc(1px * var(--planner-inverse-zoom,1)) solid rgba(76,86,80,.24); border-radius: calc(6px * var(--planner-inverse-zoom,1)); background: rgba(255,255,255,.96); color: #36413b; box-shadow: 0 calc(3px * var(--planner-inverse-zoom,1)) calc(10px * var(--planner-inverse-zoom,1)) rgba(44,54,48,.15); font-size: calc(10px * var(--planner-inverse-zoom,1)); line-height: 1.25; text-align: center; transform: translateX(-50%) rotate(var(--object-counter-rotation,0deg)); transform-origin: center; pointer-events: none; }
 .planner-live-label strong,.planner-live-label span { display: block; }
 .planner-live-label span { color: var(--gh-text-muted); font-weight: var(--gh-weight-medium); }
@@ -507,6 +537,107 @@
 .planner-surface--soil { border-color: #796a56; background-color: #ab9475; background-image: radial-gradient(ellipse at 30% 35%,rgba(105,82,60,.66) 0 1px,transparent 1.6px),radial-gradient(ellipse at 70% 65%,rgba(225,202,168,.42) 0 1px,transparent 1.7px); background-size: 13px 11px,17px 15px; }
 .planner-surface--paving { border-color: #85857f; background: linear-gradient(90deg,transparent 47%,rgba(103,102,96,.3) 49%,rgba(255,255,255,.25) 52%,transparent 54%) 0 0/30px 26px,linear-gradient(transparent 47%,rgba(103,102,96,.3) 49%,rgba(255,255,255,.25) 52%,transparent 54%) 0 0/30px 26px,#c8c6bf; }
 .planner-surface--gravel { border-color: #89877f; background-color:#d2cec3; background-image:radial-gradient(ellipse at 35% 40%,#8d8a82 0 1px,transparent 1.6px),radial-gradient(ellipse at 70% 62%,#b6b0a5 0 1.2px,transparent 1.9px),radial-gradient(ellipse at 50% 85%,rgba(244,240,231,.76) 0 1px,transparent 1.7px); background-size:11px 10px,16px 14px,19px 17px; }
+/* Additional ground materials: shared canvas and catalogue styling. */
+.planner-surface--mulch,
+.planner-surface--woodchips,
+.planner-surface--concrete,
+.planner-surface--decking,
+.planner-object-symbol--mulch,
+.planner-object-symbol--woodchips,
+.planner-object-symbol--concrete,
+.planner-object-symbol--decking {
+  box-sizing: border-box;
+  border: 1px solid #827565;
+  border-radius: 0;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .18);
+}
+
+.planner-surface--mulch,
+.planner-object-symbol--mulch {
+  border-color: #77634f;
+  background:
+    radial-gradient(
+      ellipse at 25% 35%,
+      rgba(76, 56, 39, .3) 0 1px,
+      transparent 1.8px
+    ) 0 0 / 13px 11px,
+    radial-gradient(
+      ellipse at 70% 65%,
+      rgba(209, 181, 144, .3) 0 1px,
+      transparent 2px
+    ) 0 0 / 19px 15px,
+    #9c8062;
+}
+
+.planner-surface--woodchips,
+.planner-object-symbol--woodchips {
+  border-color: #947657;
+  background:
+    repeating-linear-gradient(
+      28deg,
+      transparent 0 8px,
+      rgba(107, 76, 44, .2) 8px 10px,
+      transparent 10px 17px
+    ),
+    repeating-linear-gradient(
+      116deg,
+      transparent 0 11px,
+      rgba(230, 202, 158, .35) 11px 13px,
+      transparent 13px 23px
+    ),
+    #b59972;
+}
+
+.planner-surface--concrete,
+.planner-object-symbol--concrete {
+  border-color: #92918a;
+  background:
+    radial-gradient(
+      circle,
+      rgba(101, 101, 94, .16) 0 .7px,
+      transparent 1.2px
+    ) 0 0 / 9px 11px,
+    #c6c4bc;
+}
+
+.planner-surface--decking,
+.planner-object-symbol--decking {
+  border-color: #80694f;
+  background:
+    repeating-linear-gradient(
+      90deg,
+      transparent 0 17px,
+      rgba(81, 61, 42, .45) 17px 18px,
+      rgba(230, 207, 172, .35) 18px 19px
+    ),
+    linear-gradient(
+      0deg,
+      rgba(92, 69, 45, .08),
+      transparent 55%
+    ),
+    #b29876;
+}
+
+/* Hose catalogue symbols. */
+.planner-object-symbol--soaker-hose,
+.planner-object-symbol--garden-hose {
+  height: .35rem;
+  border: 1px solid rgba(51, 66, 54, .45);
+  border-radius: 999px;
+  box-shadow: none;
+}
+
+.planner-object-symbol--soaker-hose {
+  background: repeating-linear-gradient(
+    90deg,
+    #57574b 0 5px,
+    #868372 5px 7px
+  );
+}
+
+.planner-object-symbol--garden-hose {
+  background: #6d8761;
+}
 .planner-line { top: 50%; width: 100%; height: var(--line-width, 6px); border: 1px solid rgba(62,83,91,.44); border-radius: 999px; background: #6e919f; box-sizing: border-box; transform: translateY(-50%); }
 .planner-line--main-half { --line-width: 4px; }
 .planner-line--main-quarter { --line-width: 2px; }
@@ -674,7 +805,7 @@
 
 @media (max-width: 64rem) {
   .planner-route .app-main { height: auto; }
-  .planner-toolbar { grid-template-columns: auto minmax(0,1fr); }
+  .planner-toolbar { z-index: 31; grid-template-columns: auto minmax(0,1fr); }
   .planner-tools { justify-self: start; }
   .planner-toolbar__actions { min-width: 0; }
   .planner-view-switch button { min-height: 2.2rem; padding-inline: .45rem; font-size: .62rem; }
@@ -753,4 +884,222 @@
 @media (prefers-reduced-motion: reduce) {
   .planner-library,
   .planner-inspector { transition: none; }
+}
+
+.planner-object.is-locked {
+  cursor: default;
+}
+
+.planner-selection-overlay.is-locked::after,
+.planner-selection-overlay.planner-object--plant.is-selected.is-locked::after {
+  border-style: dashed;
+}
+
+.planner-lock-status {
+  margin: 0;
+  padding: .55rem .65rem;
+  border: 1px solid var(--gh-border);
+  border-radius: var(--gh-radius-sm);
+  background: var(--gh-surface-subtle);
+  color: var(--gh-text-strong);
+  font-size: .75rem;
+}
+
+.planner-lock-status[hidden] {
+  display: none;
+}
+
+.planner-inspector-actions {
+  flex-wrap: wrap;
+}
+
+.planner-inspector-actions [data-action="toggle-lock"][aria-pressed="true"] {
+  background: var(--gh-primary-soft);
+  color: var(--gh-primary-hover);
+}
+
+.planner-toolbar__actions .planner-panel-toggle.is-active {
+  background: var(--gh-primary-soft);
+  color: var(--gh-primary-hover);
+  border-color: var(--gh-primary);
+}
+
+@media (max-width: 40rem) {
+  .planner-toolbar__actions [data-panel-toggle="library"] {
+    font-size: .58rem;
+  }
+
+  .planner-toolbar__actions [data-panel-toggle="library"] span {
+    display: inline;
+  }
+}
+
+
+/* Geometry uses the exact metric frame, even at small base scales. */
+.planner-object[data-geometry-type="area"],
+.planner-object[data-geometry-type="path"] {
+  min-width: 0;
+  min-height: 0;
+  pointer-events: none;
+}
+
+.planner-shape {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  pointer-events: none;
+}
+
+.planner-object[data-variant="mulch"] .planner-shape polygon {
+  fill: #9c8062;
+  stroke: #77634f;
+}
+
+.planner-object[data-variant="woodchips"] .planner-shape polygon {
+  fill: #b59972;
+  stroke: #947657;
+}
+
+.planner-object[data-variant="concrete"] .planner-shape polygon {
+  fill: #c6c4bc;
+  stroke: #92918a;
+}
+
+.planner-object[data-variant="decking"] .planner-shape polygon {
+  fill: #b29876;
+  stroke: #80694f;
+}
+
+.planner-object[data-variant="soaker-hose"] .planner-shape polyline {
+  stroke: #57574b;
+  stroke-width: 4px;
+  stroke-dasharray: 5 2;
+}
+
+.planner-object[data-variant="garden-hose"] .planner-shape polyline {
+  stroke: #6d8761;
+  stroke-width: 5px;
+}
+
+.planner-shape polygon {
+  fill: #9eb58c;
+  fill-rule: evenodd;
+  stroke: #657b55;
+  stroke-width: 1.5px;
+  vector-effect: non-scaling-stroke;
+  pointer-events: visiblePainted;
+}
+
+.planner-shape polyline {
+  fill: none;
+  stroke: #75624e;
+  stroke-width: 5px;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
+  pointer-events: stroke;
+}
+
+.planner-selection-overlay .planner-shape-node {
+  position: absolute;
+  z-index: 40;
+  display: grid;
+  place-items: center;
+  width: 18px;
+  height: 18px;
+  padding: 0;
+  border: 2px solid #465b40;
+  border-radius: 50%;
+  background: #fff;
+  color: #30432c;
+  font: bold 12px/1 sans-serif;
+  transform: translate(-50%, -50%)
+    scale(var(--planner-inverse-zoom, 1));
+  transform-origin: center;
+  cursor: grab;
+  pointer-events: auto;
+  touch-action: none;
+}
+
+.planner-selection-overlay .planner-shape-node.is-insert {
+  width: 16px;
+  height: 16px;
+  border-width: 1px;
+  background: #e6eedf;
+  cursor: pointer;
+}
+
+.planner-selection-overlay .planner-shape-node:focus-visible {
+  outline: 3px solid #246da8;
+  outline-offset: 2px;
+}
+
+/* Working-mode control: reuse the existing view-switch appearance. */
+.planner-working-mode-switch {
+  grid-template-columns: repeat(3, auto);
+  flex: 0 0 auto;
+}
+
+.planner-working-mode-switch[hidden] {
+  display: none;
+}
+
+.planner-working-mode-switch button {
+  white-space: nowrap;
+}
+
+.planner-working-mode-switch button.is-active {
+  background: var(--gh-primary-soft);
+  color: var(--gh-primary-hover);
+  box-shadow: inset 0 0 0 1px var(--gh-primary);
+}
+
+.planner-working-mode-switch button:focus-visible {
+  outline: 2px solid var(--gh-primary);
+  outline-offset: 2px;
+}
+
+/* Allow the extra control to fit without clipping toolbar actions. */
+.planner-toolbar__actions {
+  flex-wrap: wrap;
+}
+
+/* Apply opacity once per rendered object, including its artwork and halos. */
+.planner-shell
+  .planner-stage__objects > .planner-object:not(.planner-selection-overlay) {
+  opacity: 1;
+}
+
+.planner-shell[data-working-mode="irrigation"]
+  .planner-stage__objects > .planner-object:not(.planner-selection-overlay),
+.planner-shell[data-working-mode="sensors"]
+  .planner-stage__objects > .planner-object:not(.planner-selection-overlay) {
+  opacity: 0.35;
+}
+
+/* Irrigation is fully emphasized in Irrigation mode. */
+.planner-shell[data-working-mode="irrigation"]
+  .planner-stage__objects > .planner-object[data-layer="irrigation"]:not(.planner-selection-overlay) {
+  opacity: 1;
+}
+
+/* Irrigation provides secondary context in Sensors mode. */
+.planner-shell[data-working-mode="sensors"]
+  .planner-stage__objects > .planner-object[data-layer="irrigation"]:not(.planner-selection-overlay) {
+  opacity: 0.65;
+}
+
+/* Presentation hook for objects belonging to the sensors layer. */
+.planner-shell[data-working-mode="sensors"]
+  .planner-stage__objects > .planner-object[data-layer="sensors"]:not(.planner-selection-overlay) {
+  opacity: 1;
+}
+
+/* Selection outlines, handles, and editing labels stay prominent. */
+.planner-shell
+  .planner-stage__objects > .planner-selection-overlay {
+  opacity: 1;
 }

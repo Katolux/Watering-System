@@ -16,7 +16,12 @@
         </button>
         <p class="weather-refresh-status" data-weather-refresh-status role="status" aria-live="polite" hidden></p>
       </div>
-      <span class="weather-location">{{ icon("map-pin") }} {{ weather.location.label }}</span>
+
+      <span class="weather-location" title="{{ weather.location.label }}">
+        {{ icon("map-pin") }}
+        <span class="weather-location__label">{{ weather.location.label }}</span>
+      </span>
+
       <button class="weather-icon-button" type="button" disabled aria-label="Weather settings" title="Weather settings">{{ icon("settings") }}</button>
     </div>
   </header>
@@ -24,6 +29,7 @@
   {% set names = ['Overview', 'Forecast', 'History', 'Insights'] %}
   {% set keys = ['overview', 'forecast', 'history', 'insights'] %}
   {% set active_index = keys.index(active_tab) %}
+
   <div class="weather-tabs" role="tablist" aria-label="Weather views" data-tabs>
     {% for name in names %}
     <button class="weather-tabs__button" type="button" role="tab" id="weather-tab-{{ loop.index0 }}" aria-selected="{{ 'true' if loop.index0 == active_index else 'false' }}" aria-controls="weather-panel-{{ loop.index0 }}" tabindex="{{ '0' if loop.index0 == active_index else '-1' }}">{{ name }}</button>
@@ -32,24 +38,56 @@
 
   <div class="weather-v2__panel" id="weather-panel-0" role="tabpanel" aria-labelledby="weather-tab-0"{% if active_tab != 'overview' %} hidden{% endif %}>
     <div class="weather-top-grid">
+
       <article class="weather-card weather-current">
         <header class="weather-card__header">
-          <h3>Today&apos;s Conditions</h3>
-          <span class="weather-current__ambient">{{ icon("cloud") }}</span>
+          <h3>Current Conditions</h3>
+          <span class="weather-current__ambient">{{ icon(weather.current.condition_icon if weather.current else "cloud") }}</span>
         </header>
+
         <div class="weather-current__main">
-          <span class="weather-condition-icon weather-condition-icon--{{ weather.today.condition_icon if weather.today else 'cloud' }}">{{ icon(weather.today.condition_icon if weather.today else 'cloud') }}</span>
+          <span class="weather-condition-icon weather-condition-icon--{{ weather.current.condition_icon if weather.current else 'cloud' }}">
+            {{ icon(weather.current.condition_icon if weather.current else "cloud") }}
+          </span>
           <div>
-            <strong>{% if weather.today and weather.today.temp_max is not none %}{{ "%.1f"|format(weather.today.temp_max) }}<small>&deg;C high</small>{% else %}&mdash;<small>&deg;C</small>{% endif %}</strong>
-            <p>{{ weather.today.condition if weather.today else "Today's forecast is unavailable" }}</p>
+            <strong>
+              {% if weather.current and weather.current.temperature is not none %}
+              {{ "%.1f"|format(weather.current.temperature) }}<small>&deg;C</small>
+              {% else %}
+              &mdash;<small>&deg;C</small>
+              {% endif %}
+            </strong>
+            <p>{{ weather.current.condition if weather.current else "Current conditions unavailable" }}</p>
           </div>
         </div>
+
         <div class="weather-current__facts">
-          <span>{{ icon("thermometer") }}<small>Low</small><strong>{% if weather.today and weather.today.temp_min is not none %}{{ "%.1f"|format(weather.today.temp_min) }}&deg;C{% else %}&mdash;{% endif %}</strong></span>
-          <span>{{ icon("droplet") }}<small>Expected rain</small><strong>{% if weather.today and weather.today.precipitation is not none %}{{ "%.1f"|format(weather.today.precipitation) }} mm{% else %}&mdash;{% endif %}</strong></span>
-          <span>{{ icon("wind") }}<small>Max wind</small><strong>{% if weather.today and weather.today.wind_max is not none %}{{ "%.1f"|format(weather.today.wind_max) }} km/h{% else %}&mdash;{% endif %}</strong></span>
+          <span>
+            {{ icon("thermometer") }}
+            <small>Feels like</small>
+            <strong>{% if weather.current and weather.current.apparent_temperature is not none %}{{ "%.1f"|format(weather.current.apparent_temperature) }}&deg;C{% else %}&mdash;{% endif %}</strong>
+          </span>
+
+          <span>
+            {{ icon("droplet") }}
+            <small>Humidity</small>
+            <strong>{% if weather.current and weather.current.humidity is not none %}{{ "%.0f"|format(weather.current.humidity) }}%{% else %}&mdash;{% endif %}</strong>
+          </span>
+
+          <span>
+            {{ icon("wind") }}
+            <small>Wind</small>
+            <strong>{% if weather.current and weather.current.wind_speed is not none %}{{ "%.1f"|format(weather.current.wind_speed) }} km/h{% else %}&mdash;{% endif %}</strong>
+          </span>
+
+          <span>
+            {{ icon("droplet") }}
+            <small>Rain now</small>
+            <strong>{% if weather.current and weather.current.precipitation is not none %}{{ "%.1f"|format(weather.current.precipitation) }} mm{% else %}&mdash;{% endif %}</strong>
+          </span>
         </div>
-        <footer class="weather-current__updated">Stored forecast snapshot &middot; {{ weather.current.updated_label }} {{ icon("refresh") }}</footer>
+
+        <footer class="weather-current__updated">{{ weather.current.updated_label }} {{ icon("refresh") }}</footer>
       </article>
 
       <article class="weather-card weather-glance">
@@ -69,86 +107,132 @@
       <article class="weather-card weather-impact">
         <header class="weather-card__header"><span class="weather-card__title-icon">{{ icon("sprout") }}</span><h3>Garden Impact</h3></header>
         <p>{{ weather.garden_impact }}</p>
-        <span class="weather-impact__note">Based on today’s recorded forecast.</span>
+        <span class="weather-impact__note">Based on today’s forecast.</span>
       </article>
     </div>
 
-    <div class="weather-chart-grid">
-      <article class="weather-card weather-chart-card">
-        <header class="weather-card__header weather-chart-card__header">
-          <h3>Temperature (&deg;C)</h3>
-          <div class="weather-legend" aria-label="Temperature chart legend">
-            <span><i class="weather-legend__line weather-legend__line--high"></i>High</span>
-            <span><i class="weather-legend__line weather-legend__line--low"></i>Low</span>
-            <span><i class="weather-legend__line weather-legend__line--average"></i>Avg</span>
-          </div>
-        </header>
-        {% if weather.chart.records %}
-        <div class="weather-line-chart">
-          <div class="weather-chart-scale" aria-hidden="true">
-            <span>{{ weather.chart.maximum|round|int }}</span><span>{{ ((weather.chart.maximum + weather.chart.minimum) / 2)|round|int }}</span><span>{{ weather.chart.minimum|round|int }}</span>
-          </div>
-          <svg viewBox="0 0 520 172" role="img" aria-label="Seven-day high, low and average temperature history">
-            <line x1="18" x2="502" y1="10" y2="10" class="weather-gridline"/>
-            <line x1="18" x2="502" y1="81" y2="81" class="weather-gridline"/>
-            <line x1="18" x2="502" y1="152" y2="152" class="weather-gridline"/>
-            <polyline points="{{ weather.chart.high_points }}" class="weather-chart-line weather-chart-line--high"/>
-            <polyline points="{{ weather.chart.low_points }}" class="weather-chart-line weather-chart-line--low"/>
-            <polyline points="{{ weather.chart.average_points }}" class="weather-chart-line weather-chart-line--average"/>
-          </svg>
-          <div class="weather-chart-labels">{% for row in weather.chart.records %}<span>{{ row.date_label }}</span>{% endfor %}</div>
+    <article class="weather-card weather-hourly-chart-card">
+      <header class="weather-hourly-chart__header">
+        <div>
+          <h3>Hourly Forecast</h3>
+          <small>Garden-local time &middot; next {{ weather.hourly|length }} hours</small>
         </div>
-        {% else %}
-        <p class="weather-empty-inline">Temperature history is not available yet.</p>
-        {% endif %}
-      </article>
+        <div class="weather-hourly-chart__legend" aria-label="Chart legend">
+          <span><i class="weather-hourly-chart__legend-line"></i>Temperature</span>
+          <span><i class="weather-hourly-chart__legend-sun"></i>Sunshine</span>
+          <span><i class="weather-hourly-chart__legend-rain"></i>Rain</span>
+        </div>
+      </header>
 
-      <article class="weather-card weather-chart-card">
-        <header class="weather-card__header weather-chart-card__header">
-          <h3>Rainfall (mm)</h3>
-          <small>{{ weather.chart.records|length }} days</small>
-        </header>
-        {% if weather.chart.records %}
-        <div class="weather-rain-chart">
-          <div class="weather-chart-scale" aria-hidden="true">
-            <span>{{ "%.1f"|format(weather.chart.rain_max) }}</span><span>{{ "%.1f"|format(weather.chart.rain_max / 2) }}</span><span>0</span>
+      {% if weather.hourly %}
+      {% set selected = weather.hourly[0] %}
+      <div class="weather-hourly-chart__details" data-hourly-details aria-live="polite">
+        <div class="weather-hourly-chart__details-heading">
+          <strong data-hourly-detail-time>{{ selected.date_label }} &middot; {{ selected.time[11:16] }}</strong>
+          <span data-hourly-detail-condition>{{ selected.condition }}</span>
+        </div>
+        <dl>
+          <div><dt>Temperature</dt><dd data-hourly-detail-temperature>{{ "%.1f"|format(selected.temperature) }}&deg;C</dd></div>
+          <div><dt>Feels like</dt><dd data-hourly-detail-feels>{{ "%.1f"|format(selected.apparent_temperature) }}&deg;C</dd></div>
+          <div><dt>Humidity</dt><dd data-hourly-detail-humidity>{{ "%.0f"|format(selected.humidity) }}%</dd></div>
+          <div><dt>Sunshine</dt><dd data-hourly-detail-sunshine>{{ "%.0f"|format(selected.sunshine_minutes) }} min</dd></div>
+          <div><dt>Rain</dt><dd data-hourly-detail-rain>{{ "%.1f"|format(selected.precipitation) }} mm &middot; {{ "%.0f"|format(selected.precipitation_probability) }}%</dd></div>
+          <div><dt>Wind</dt><dd data-hourly-detail-wind>{{ "%.1f"|format(selected.wind_speed) }} km/h</dd></div>
+        </dl>
+      </div>
+
+      <div class="weather-hourly-chart__scroll" tabindex="0" aria-label="Scrollable 24-hour weather chart">
+        <div class="weather-hourly-chart" data-hourly-chart style="--hour-count: {{ weather.hourly|length }}">
+          <div class="weather-hourly-chart__plot">
+            <span class="weather-hourly-chart__axis-label">TEMP &deg;C</span>
+            <svg data-hourly-temperature role="img" aria-label="Hourly temperature curve"></svg>
           </div>
-          <svg viewBox="0 0 520 172" role="img" aria-label="Seven-day rainfall history">
-            <line x1="18" x2="502" y1="14" y2="14" class="weather-gridline"/>
-            <line x1="18" x2="502" y1="84" y2="84" class="weather-gridline"/>
-            <line x1="18" x2="502" y1="154" y2="154" class="weather-gridline"/>
-            {% for row in weather.chart.records %}
-            <rect x="{{ row.rain_x }}" y="{{ row.rain_y }}" width="{{ row.rain_width }}" height="{{ row.rain_height }}" rx="3" class="weather-rain-bar"><title>{{ row.date_label }}: {{ "%.1f"|format(row.precipitation) }} mm</title></rect>
+
+          <div class="weather-hourly-chart__row weather-hourly-chart__times">
+            {% for hour in weather.hourly %}
+            <time datetime="{{ hour.time }}" class="{% if hour.is_new_day %}is-new-day{% endif %}">
+              {% if hour.is_new_day %}<small>{{ hour.date_label }}</small>{% endif %}
+              <strong>{{ hour.time[11:13] }}</strong>
+            </time>
             {% endfor %}
-          </svg>
-          <div class="weather-chart-labels">{% for row in weather.chart.records %}<span>{{ row.date_label }}</span>{% endfor %}</div>
-        </div>
-        {% else %}
-        <p class="weather-empty-inline">Rainfall history is not available yet.</p>
-        {% endif %}
-      </article>
+          </div>
 
-      <article class="weather-card weather-insights-card">
-        <header class="weather-card__header"><h3>Weather Insights</h3></header>
-        <ul class="weather-insight-list">
-          {% for insight in weather.insights[:4] %}
-          <li><span class="weather-insight-list__icon weather-insight-list__icon--{{ insight.icon }}">{{ icon(insight.icon) }}</span><span>{{ insight.text }}</span></li>
-          {% endfor %}
-        </ul>
-      </article>
-    </div>
+          <div class="weather-hourly-chart__row weather-hourly-chart__conditions" aria-label="Hourly conditions">
+            {% for hour in weather.hourly %}
+            <span class="weather-condition-icon--{{ hour.condition_icon }}" title="{{ hour.condition }}">{{ icon(hour.condition_icon) }}</span>
+            {% endfor %}
+          </div>
+
+          <div class="weather-hourly-chart__band weather-hourly-chart__sunshine" aria-label="Sunshine minutes per hour">
+            <span class="weather-hourly-chart__axis-label">SUN</span>
+            <div class="weather-hourly-chart__row">
+              {% for hour in weather.hourly %}
+              <span class="weather-hourly-chart__bar-cell" data-sunshine="{{ hour.sunshine_minutes }}" title="{{ '%.0f'|format(hour.sunshine_minutes) }} minutes of sunshine">
+                <i></i>
+              </span>
+              {% endfor %}
+            </div>
+          </div>
+
+          <div class="weather-hourly-chart__band weather-hourly-chart__rain" aria-label="Precipitation millimetres per hour">
+            <span class="weather-hourly-chart__axis-label">RAIN</span>
+            <div class="weather-hourly-chart__row">
+              {% for hour in weather.hourly %}
+              <span class="weather-hourly-chart__bar-cell" data-rain="{{ hour.precipitation }}" title="{{ '%.1f'|format(hour.precipitation) }} mm, {{ '%.0f'|format(hour.precipitation_probability) }}% probability">
+                <i></i>
+              </span>
+              {% endfor %}
+            </div>
+          </div>
+
+          <div class="weather-hourly-chart__hits" aria-label="Select an hour for details">
+            {% for hour in weather.hourly %}
+            <button
+              type="button"
+              data-hour-index="{{ loop.index0 }}"
+              data-time-label="{{ hour.time[11:16] }}"
+              data-date-label="{{ hour.date_label }}"
+              data-condition="{{ hour.condition }}"
+              data-temperature="{{ hour.temperature }}"
+              data-feels="{{ hour.apparent_temperature }}"
+              data-humidity="{{ hour.humidity }}"
+              data-sunshine="{{ hour.sunshine_minutes }}"
+              data-rain="{{ hour.precipitation }}"
+              data-rain-probability="{{ hour.precipitation_probability }}"
+              data-wind="{{ hour.wind_speed }}"
+              aria-label="{{ hour.date_label }} at {{ hour.time[11:16] }}, {{ hour.condition }}, {{ '%.1f'|format(hour.temperature) }} degrees Celsius"
+              aria-pressed="{{ 'true' if loop.first else 'false' }}"
+            ></button>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+      {% else %}
+      <p class="weather-empty-inline">Hourly forecast is not available right now.</p>
+      {% endif %}
+    </article>
   </div>
 
   <div class="weather-v2__panel" id="weather-panel-1" role="tabpanel" aria-labelledby="weather-tab-1"{% if active_tab != 'forecast' %} hidden{% endif %}>
-    <header class="weather-section-heading"><div><h3>Forecast</h3><p>Daily outlook from the configured weather service.</p></div><span>{{ weather.location.label }}</span></header>
+    <header class="weather-section-heading">
+      <div><h3>Forecast</h3><p>Daily outlook from the configured weather service.</p></div>
+      <span class="weather-section-location" title="{{ weather.location.label }}">{{ weather.location.label }}</span>
+    </header>
+
     {% if weather.forecast %}
     <div class="weather-forecast-grid">
       {% for day in weather.forecast %}
       <article class="weather-card weather-forecast-card">
-        <header><div><strong>{{ day.day_label }}</strong><small>{{ day.date_label }}</small></div><span class="weather-forecast-card__icon weather-condition-icon--{{ day.condition_icon }}">{{ icon(day.condition_icon) }}</span></header>
+        <header>
+          <div><strong>{{ day.day_label }}</strong><small>{{ day.date_label }}</small></div>
+          <span class="weather-forecast-card__icon weather-condition-icon--{{ day.condition_icon }}">{{ icon(day.condition_icon) }}</span>
+        </header>
         <p>{{ day.condition }}</p>
         <div class="weather-forecast-card__temps"><strong>{{ "%.1f"|format(day.temp_max) }}&deg;</strong><span>{{ "%.1f"|format(day.temp_min) }}&deg;</span></div>
-        <dl><div><dt>Rain</dt><dd>{{ "%.1f"|format(day.precipitation) }} mm</dd></div><div><dt>Wind</dt><dd>{{ "%.1f"|format(day.wind_max) }} km/h</dd></div></dl>
+        <dl>
+          <div><dt>Rain</dt><dd>{{ "%.1f"|format(day.precipitation) }} mm</dd></div>
+          <div><dt>Wind</dt><dd>{{ "%.1f"|format(day.wind_max) }} km/h</dd></div>
+        </dl>
       </article>
       {% endfor %}
     </div>
@@ -158,13 +242,25 @@
   </div>
 
   <div class="weather-v2__panel" id="weather-panel-2" role="tabpanel" aria-labelledby="weather-tab-2"{% if active_tab != 'history' %} hidden{% endif %}>
-    <header class="weather-section-heading"><div><h3>Weather History</h3><p>Recorded daily conditions, newest first.</p></div><span>{{ weather.history|length }} records</span></header>
+    <header class="weather-section-heading">
+      <div><h3>Weather History</h3><p>Recorded daily conditions, newest first.</p></div>
+      <span>{{ weather.history|length }} records</span>
+    </header>
+
     <div class="weather-table-wrap">
       <table class="weather-history-table">
         <thead><tr><th>Date</th><th>Conditions</th><th>High</th><th>Low</th><th>Rain</th><th>Sunshine</th><th>Wind</th></tr></thead>
         <tbody>
           {% for row in weather.history %}
-          <tr><td><strong>{{ row.date_label }}</strong></td><td><span class="weather-table-condition">{{ icon(row.condition_icon) }} {{ row.condition }}</span></td><td>{{ "%.1f"|format(row.temp_max) }}&deg;C</td><td>{{ "%.1f"|format(row.temp_min) }}&deg;C</td><td>{{ "%.1f"|format(row.precipitation) }} mm</td><td>{{ row.sunshine|round|int }} min</td><td>{{ "%.1f"|format(row.wind_max) }} km/h</td></tr>
+          <tr>
+            <td><strong>{{ row.date_label }}</strong></td>
+            <td><span class="weather-table-condition">{{ icon(row.condition_icon) }} {{ row.condition }}</span></td>
+            <td>{{ "%.1f"|format(row.temp_max) }}&deg;C</td>
+            <td>{{ "%.1f"|format(row.temp_min) }}&deg;C</td>
+            <td>{{ "%.1f"|format(row.precipitation) }} mm</td>
+            <td>{{ row.sunshine|round|int }} min</td>
+            <td>{{ "%.1f"|format(row.wind_max) }} km/h</td>
+          </tr>
           {% else %}
           <tr><td colspan="7">No weather history is available yet.</td></tr>
           {% endfor %}
@@ -174,10 +270,17 @@
   </div>
 
   <div class="weather-v2__panel" id="weather-panel-3" role="tabpanel" aria-labelledby="weather-tab-3"{% if active_tab != 'insights' %} hidden{% endif %}>
-    <header class="weather-section-heading"><div><h3>Weather Insights</h3><p>Deterministic summaries calculated from recorded weather.</p></div><span>Last {{ weather.summary.days }} days</span></header>
+    <header class="weather-section-heading">
+      <div><h3>Weather Insights</h3><p>Deterministic summaries calculated from recorded weather.</p></div>
+      <span>Last {{ weather.summary.days }} days</span>
+    </header>
+
     <div class="weather-insight-grid">
       {% for insight in weather.insights %}
-      <article class="weather-card weather-insight-card"><span class="weather-insight-card__icon weather-insight-list__icon--{{ insight.icon }}">{{ icon(insight.icon) }}</span><p>{{ insight.text }}</p></article>
+      <article class="weather-card weather-insight-card">
+        <span class="weather-insight-card__icon weather-insight-list__icon--{{ insight.icon }}">{{ icon(insight.icon) }}</span>
+        <p>{{ insight.text }}</p>
+      </article>
       {% endfor %}
     </div>
   </div>

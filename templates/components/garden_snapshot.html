@@ -23,7 +23,20 @@
             {% endif %}
             aria-label="{{ object.name }}{% if operational %}, {{ operational.status_label }}{% else %}, contextual {{ object.kind }}{% endif %}"
             style="--object-x: {{ object.left_pct }}%; --object-y: {{ object.top_pct }}%; --object-w: {{ object.width_pct }}%; --object-h: {{ object.height_pct }}%; --object-rotation: {{ object.rotation }}deg; z-index: {{ object.display_order }}">
-            <span class="garden-snapshot__object-visual" aria-hidden="true"></span>
+            {% if object.geometryType|default('rect') in ['area', 'path'] %}
+              <svg class="garden-snapshot__shape"
+                  viewBox="0 0 1 1"
+                  preserveAspectRatio="none"
+                  aria-hidden="true">
+                {% if object.geometryType == 'area' %}
+                  <polygon points="{% for point in object.points %}{{ point.x }},{{ point.y }} {% endfor %}"></polygon>
+                {% else %}
+                  <polyline points="{% for point in object.points %}{{ point.x }},{{ point.y }} {% endfor %}"></polyline>
+                {% endif %}
+              </svg>
+            {% else %}
+              <span class="garden-snapshot__object-visual" aria-hidden="true"></span>
+            {% endif %}
             <span class="garden-snapshot__object-label">{{ object.name }}</span>
             {% if operational %}
               <span class="garden-snapshot__object-detail">{{ object.domain_bed.plants|join(' + ') if object.domain_bed.plants else 'No current planting' }}</span>
