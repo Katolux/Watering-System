@@ -1,0 +1,125 @@
+{% from "components/icons.html" import icon %}
+
+{% macro garden_location_dialog() %}
+<dialog
+  class="garden-location-dialog"
+  data-location-dialog
+  aria-labelledby="garden-location-title"
+>
+  <form method="dialog" data-location-form>
+
+    <header class="garden-location-dialog__header">
+      <div>
+        <span class="garden-location-dialog__eyebrow">
+          Active garden
+        </span>
+
+        <h2 id="garden-location-title">
+          Garden location
+        </h2>
+      </div>
+
+      <button
+        class="button button--ghost button--icon"
+        type="button"
+        data-location-dialog-close
+        aria-label="Close location settings"
+      >
+        {{ icon("x") }}
+      </button>
+    </header>
+
+    <p class="garden-location-dialog__intro">
+      Select the location of your garden.
+      GardenHub uses it for local weather and forecasts.
+    </p>
+
+    <button
+      class="button button--secondary garden-location-dialog__geolocate"
+      type="button"
+      data-use-device-location
+    >
+      {{ icon("map-pin") }}
+      Use my current location
+    </button>
+
+    <div class="garden-location-dialog__divider">
+      <span>or search for a location</span>
+    </div>
+
+    <label class="garden-location-dialog__search">
+      <span>Location or address</span>
+
+      <div class="garden-location-dialog__search-row">
+        <input
+          type="text"
+          data-location-label
+          autocomplete="street-address"
+          placeholder="Engelburg, St. Gallen"
+        >
+
+        <button
+          class="button button--secondary"
+          type="button"
+          data-location-search
+        >
+          Search
+        </button>
+      </div>
+    </label>
+
+    <div
+      class="garden-location-dialog__results"
+      data-location-results
+      hidden
+    ></div>
+
+    <div
+      class="garden-location-dialog__map"
+      data-location-map
+      hidden
+    ></div>
+
+    <div
+      class="garden-location-dialog__coordinates"
+      data-location-coordinates
+      hidden
+    >
+      <span>
+        <small>Latitude</small>
+        <output data-location-latitude></output>
+      </span>
+
+      <span>
+        <small>Longitude</small>
+        <output data-location-longitude></output>
+      </span>
+    </div>
+
+    <p
+      class="garden-location-dialog__status"
+      data-location-status
+      role="status"
+      aria-live="polite"
+    ></p>
+
+    <footer class="garden-location-dialog__footer">
+      <button
+        class="button button--ghost"
+        type="button"
+        data-location-dialog-close
+      >
+        Cancel
+      </button>
+
+      <button
+        class="button button--primary"
+        type="submit"
+      >
+        Use this location
+      </button>
+    </footer>
+
+  </form>
+</dialog>
+{% endmacro %}
